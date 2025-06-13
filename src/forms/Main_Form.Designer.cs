@@ -244,8 +244,8 @@
             this.OpenConfiginiToolStripMenuItem1.Name = "OpenConfiginiToolStripMenuItem1";
             this.OpenConfiginiToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
             this.OpenConfiginiToolStripMenuItem1.Size = new System.Drawing.Size(220, 22);
-            this.OpenConfiginiToolStripMenuItem1.Text = "Open Config.ini";
-            this.OpenConfiginiToolStripMenuItem1.Click += new System.EventHandler(this.OpenConfiginiToolStripMenuItem1_Click);
+            this.OpenConfiginiToolStripMenuItem1.Text = "Open config.xml";
+            this.OpenConfiginiToolStripMenuItem1.Click += new System.EventHandler(this.OpenConfigXmlToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 

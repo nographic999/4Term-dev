@@ -14,23 +14,27 @@ namespace _4Term
          *
          * [✓] NewPortStripMenuItem_Click
          * [✓] PortOptionsToolStripMenuItem_Click
-         * [~] ScanCOMsToolStripMenuItem_Click - com ports description needs extra packages or works via suspicious method, needs changes
+         * [~] ScanCOMsToolStripMenuItem_Click
          * [✓] NewWindowToolStripMenuItem_Click
          * ---------------------------------------------------------
-         * [~] ConnectDisconnectToolStripMenuItem_Click - needs testing
-         * [~] AutoConnectToolStripMenuItem_Click - needs testing
+         * [✓] ConnectDisconnectToolStripMenuItem_Click
+         * [✓] AutoConnectToolStripMenuItem_Click
          * ---------------------------------------------------------
-         * [~] OpenToolStripMenuItem_Click - needs testing
+         * [✓] OpenToolStripMenuItem_Click
+         * [ ] SaveToolStripMenuItem_Click
+         * [ ] SaveAsToolStripMenuItem_Click
          * ---------------------------------------------------------
-         * [ ] 
+         * [✓] OpenConfigXmlToolStripMenuItem_Click
          * ---------------------------------------------------------
-         * [ ] ExitToolStripMenuItem_Click - Needs buffer cleaning and com port closing
+         * [ ] ExitToolStripMenuItem_Click
          *---------------------------------------------------------*/
 
-         /*----------------------------------------------------------
+        /*----------------------------------------------------------
          * NewPortStripMenuItem_Click
          * 
-         * Handles the "New Port" menu item click event.
+         * Closes the current serial port if open, clears the RichTextBox,
+         * opens the SerialPortOptionsForm for new configuration,
+         * then opens the serial port with updated settings.
          *---------------------------------------------------------*/
         private void NewPortStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -52,8 +56,8 @@ namespace _4Term
         /*----------------------------------------------------------
          * PortOptionsToolStripMenuItem_Click
          * 
-         * Handles the "Port Options..." menu item click event.
-         *---------------------------------------------------------*/    
+         * Opens the SerialPortOptionsForm dialog to configure serial port settings.
+         *---------------------------------------------------------*/
         private void PortOptionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             /* Open the SerialPortOptionsForm dialog to configure settings */
@@ -61,10 +65,11 @@ namespace _4Term
             OptionsForm.ShowDialog();
         }
 
-         /*----------------------------------------------------------
+        /*----------------------------------------------------------
          * ScanCOMsToolStripMenuItem_Click
          * 
-         * Handles the "Scan COMs" menu item click event.
+         * Retrieves and displays the list of available COM ports 
+         * in the RichTextBox.
          *---------------------------------------------------------*/
         private void ScanCOMsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -83,8 +88,8 @@ namespace _4Term
         /*----------------------------------------------------------
          * NewWindowToolStripMenuItem_Click
          * 
-         * Handles the "New Window" menu item click event.
-         *---------------------------------------------------------*/    
+         * Launches a new instance of the current application.
+         *---------------------------------------------------------*/
         private void NewWindowToolStripMenuItem_Click(object sender, EventArgs e)
         {
             /* Start new 4Term window */
@@ -93,13 +98,14 @@ namespace _4Term
 
         /*----------------------------------------------------------
          * Separator
-         *---------------------------------------------------------*/ 
+         *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
          * ConnectDisconnectToolStripMenuItem_Click
          * 
-         * Handles the "Connect/Disconnect" menu item click event.
-         *---------------------------------------------------------*/    
+         * Toggles the connection state by invoking the same logic 
+         * as the Connect button.
+         *---------------------------------------------------------*/
         private void ConnectDisconnectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             /* Call the same logic used by the Connect button */
@@ -109,7 +115,8 @@ namespace _4Term
         /*----------------------------------------------------------
          * ConnectDisconnectToolStripMenuItem_Click
          * 
-         * Handles the "Auto Connect" menu item click event.
+         * Toggles the Auto Connect feature by invoking the same logic 
+         * as the Auto Connect button.
          *---------------------------------------------------------*/
         private void AutoConnectToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -119,12 +126,12 @@ namespace _4Term
 
         /*----------------------------------------------------------
          * Separator
-         *---------------------------------------------------------*/ 
+         *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
          * OpenToolStripMenuItem_Click
          * 
-         * Handles the "Open..." menu item click event.
+         * Opens a file dialog to select and load a file into the application.
          *---------------------------------------------------------*/
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -153,9 +160,9 @@ namespace _4Term
         }
 
         /*----------------------------------------------------------
-         * OpenToolStripMenuItem_Click
+         * SaveToolStripMenuItem_Click
          * 
-         * Handles the "Open..." menu item click event.
+         * Saves the current document.
          *---------------------------------------------------------*/
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e) // added messageboxes, must be changed
         {
@@ -175,102 +182,178 @@ namespace _4Term
                 SaveAs();
         }
 
-        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e) // nothing changed, must be changed
+        /*----------------------------------------------------------
+         * SaveAsToolStripMenuItem_Click
+         * 
+         * Saves the current document or content to a user-specified file.
+         *---------------------------------------------------------*/
+        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveAs();
         }
 
         /*----------------------------------------------------------
          * Separator
-         *---------------------------------------------------------*/ 
+         *---------------------------------------------------------*/
 
-        private void OpenConfiginiToolStripMenuItem1_Click(object sender, EventArgs e) // added messagebox, added port close before opening config
+        /*----------------------------------------------------------
+         * OpenConfigXmlToolStripMenuItem_Click
+         * 
+         * Opens and loads the configuration from the config.xml file.
+         *---------------------------------------------------------*/
+        private void OpenConfigXmlToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            /* Check if the serial port is open; if so, ask the user if they want to close it */
             if (Port.IsOpen)
-            {
+            {                
                 DialogResult result = MessageBox.Show("Do you want to close the serial port?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
-                    ConnectButton_Click(this, EventArgs.Empty);
+                    Port.Close();
                 else
                     return;
             }
+
+            /* Clear RichTextBox */
             RichTextBox.Clear();
+
+            /* Load all text from file to RichTextBox */
             RichTextBox.Text = File.ReadAllText(Settings.XmlName);
             FilePath = Settings.XmlName;
         }
 
         /*----------------------------------------------------------
          * Separator
-         *---------------------------------------------------------*/ 
+         *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
          * ExitToolStripMenuItem_Click
          * 
-         * Handles the "Exit" menu item click event.
+         * Cleans buffers, closes the COM port properly, 
+         * and exits the application.
          *---------------------------------------------------------*/
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             /* Needs buffer cleaning and com port closing*/
-            Close();
+            //Close();
         }
 
-        ////////////////////////////////////////////////////////////////////////////////
-        //                              MenuStrip
-        ////////////////////////////////////////////////////////////////////////////////
-        //      // Edit //
+        /*----------------------------------------------------------
+         * MenuStrip - Edit
+         *---------------------------------------------------------
+         * DEVELOPMENT STATUS
+         *
+         * [✓] UndoToolStripMenuItem_Click
+         * ---------------------------------------------------------
+         * [✓] CutToolStripMenuItem_Click
+         * [✓] CopyToolStripMenuItem_Click
+         * [✓] PasteToolStripMenuItem_Click
+         * [✓] DeleteToolStripMenuItem_Click
+         * ---------------------------------------------------------
+         * [✓] SelectAllToolStripMenuItem_Click
+         * ---------------------------------------------------------
+         * [✓] ClearToolStripMenuItem_Click
+         *---------------------------------------------------------*/
 
-        private void UndoToolStripMenuItem_Click(object sender, EventArgs e) // nothing changed
+        /*----------------------------------------------------------
+         * UndoToolStripMenuItem_Click
+         * 
+         * Reverts the last change made in the RichTextBox
+         *---------------------------------------------------------*/
+        private void UndoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox.Undo();
         }
 
-        ////////////////////////////////////////////////////////////////////////////////
-        //                              Separator
-        ////////////////////////////////////////////////////////////////////////////////
+        /*----------------------------------------------------------
+         * Separator
+         *---------------------------------------------------------*/
 
-        private void CutToolStripMenuItem_Click(object sender, EventArgs e) // nothing changed
+        /*----------------------------------------------------------
+         * CutToolStripMenuItem_Click
+         * 
+         * Cuts the selected text from the RichTextBox
+         * and places it on the clipboard
+         *---------------------------------------------------------*/
+        private void CutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox.Cut();
         }
 
-        private void CopyToolStripMenuItem_Click(object sender, EventArgs e) // nothing changed
+        /*----------------------------------------------------------
+         * CopyToolStripMenuItem_Click
+         * 
+         * Copies the selected text from the RichTextBox
+         * to the clipboard
+         *---------------------------------------------------------*/
+        private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox.Copy();
         }
 
-        private void PasteToolStripMenuItem_Click(object sender, EventArgs e) // nothing changed
+        /*----------------------------------------------------------
+         * PasteToolStripMenuItem_Click
+         * 
+         * Pastes the clipboard content into the RichTextBox
+         * at the current cursor position
+         *---------------------------------------------------------*/
+        private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox.Paste();
         }
 
-        private void DeleteToolStripMenuItem_Click(object sender, EventArgs e) // nothing changed
+        /*----------------------------------------------------------
+         * DeleteToolStripMenuItem_Click
+         * 
+         * Deletes the selected text from the RichTextBox
+         *---------------------------------------------------------*/
+        private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox.SelectedText = "";
         }
 
-        ////////////////////////////////////////////////////////////////////////////////
-        //                              Separator
-        ////////////////////////////////////////////////////////////////////////////////
+        /*----------------------------------------------------------
+         * Separator
+         *---------------------------------------------------------*/
 
-        private void SelectAllToolStripMenuItem_Click(object sender, EventArgs e) // nothing changed
+        /*----------------------------------------------------------
+         * SelectAllToolStripMenuItem_Click
+         * 
+         * Selects all the text in the RichTextBox
+         *---------------------------------------------------------*/
+        private void SelectAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox.SelectAll();
         }
 
-        ////////////////////////////////////////////////////////////////////////////////
-        //                              Separator
-        ////////////////////////////////////////////////////////////////////////////////
+        /*----------------------------------------------------------
+         * Separator
+         *---------------------------------------------------------*/
 
-        private void ClearToolStripMenuItem_Click(object sender, EventArgs e) // nothing changed
+        /*----------------------------------------------------------
+         * ClearToolStripMenuItem_Click
+         * 
+         * Clears all text from the RichTextBox
+         *---------------------------------------------------------*/
+        private void ClearToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox.Clear();
         }
 
-        ////////////////////////////////////////////////////////////////////////////////
-        //                              MenuStrip
-        ////////////////////////////////////////////////////////////////////////////////
-        //              // Format //
+        /*----------------------------------------------------------
+         * MenuStrip - Format
+         *---------------------------------------------------------
+         * DEVELOPMENT STATUS
+         *
+         * [✓] WordWrapToolStripMenuItem_Click
+         * [✓] SettingsToolStripMenuItem_Click
+         *---------------------------------------------------------*/
 
+        /*----------------------------------------------------------
+         * WordWrapToolStripMenuItem_Click
+         * 
+         * Toggles word wrap in the RichTextBox. Updates the
+         * settings and saves them to XML.
+         *---------------------------------------------------------*/
         private void WordWrapToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox.WordWrap = !RichTextBox.WordWrap;
@@ -278,28 +361,50 @@ namespace _4Term
             Settings.WriteXml();
         }
 
+        /*----------------------------------------------------------
+         * SettingsToolStripMenuItem_Click
+         * 
+         * Opens the Settings form as a modal dialog
+         *---------------------------------------------------------*/
         private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Settings_Form SettingsForm = new Settings_Form();
             SettingsForm.ShowDialog();
         }
 
-        ////////////////////////////////////////////////////////////////////////////////
-        //                              MenuStrip
-        ////////////////////////////////////////////////////////////////////////////////
-        //                        // View //
+        /*----------------------------------------------------------
+         * MenuStrip - View
+         *---------------------------------------------------------
+         * DEVELOPMENT STATUS
+         *
+         * [✓] ToggleScrollingToolStripMenuItem_Click
+         * [✓] MacroModeToolStripMenuItem_Click
+         *---------------------------------------------------------*/
 
-        private void ToggleScrollingToolStripMenuItem_Click(object sender, EventArgs e) // added save after click
+        /*----------------------------------------------------------
+         * ToggleScrollingToolStripMenuItem_Click
+         * 
+         * Toggles the custom scrolling feature. Updates the setting
+         * and saves it to XML.
+         *---------------------------------------------------------*/
+        private void ToggleScrollingToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ToggleScrollingToolStripMenuItem.Checked = !ToggleScrollingToolStripMenuItem.Checked;
             Settings.RichTextBox.Scroll = ToggleScrollingToolStripMenuItem.Checked;
             Settings.WriteXml();
         }
 
-        ////////////////////////////////////////////////////////////////////////////////
-        //                              Separator
-        ////////////////////////////////////////////////////////////////////////////////
+        /*----------------------------------------------------------
+         * Separator
+         *---------------------------------------------------------*/
 
+        /*----------------------------------------------------------
+         * MacroModeToolStripMenuItem_Click
+         * 
+         * Toggles Macro Mode. When enabled, it activates all macro 
+         * editing UI elements and disables the main interface. 
+         * Updates visibility and enable states accordingly.
+         *---------------------------------------------------------*/
         private void MacroModeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MacroModeToolStripMenuItem.Checked = !MacroModeToolStripMenuItem.Checked;
@@ -315,21 +420,42 @@ namespace _4Term
                groupBox1.Enabled = groupBox1.Visible = COMBox.Enabled = COMBox.Visible = !MacroEditingFlag;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////
-        //                              MenuStrip
-        ////////////////////////////////////////////////////////////////////////////////
-        //                                // Help //
+        /*----------------------------------------------------------
+         * MenuStrip - Help
+         *---------------------------------------------------------
+         * DEVELOPMENT STATUS
+         *
+         * [✓] AboutToolStripMenuItem_Click
+         *---------------------------------------------------------*/
 
+        /*----------------------------------------------------------
+         * AboutToolStripMenuItem_Click
+         * 
+         * Opens the About form as a modal dialog to display
+         * application information.
+         *---------------------------------------------------------*/
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             About_Form AboutForm = new About_Form();
             AboutForm.ShowDialog();
         }
 
-        ////////////////////////////////////////////////////////////////////////////////
-        //                          Helper Functions
-        ////////////////////////////////////////////////////////////////////////////////
+        /*----------------------------------------------------------
+         * Helper functions
+         *---------------------------------------------------------
+         * DEVELOPMENT STATUS
+         *
+         * [✓] SaveAs
+         *---------------------------------------------------------*/
 
+        /*----------------------------------------------------------
+         * SaveAs
+         * 
+         * Saves the content of the RichTextBox to a file with 
+         * extensions .log or .cfg (removed .txt). 
+         * Displays message boxes for empty content or if the serial 
+         * port is open (must be closed before saving).
+         *---------------------------------------------------------*/
         private void SaveAs() // removed .txt added .log and .cfg extensions, added messageboxes
         {
             if (!Port.IsOpen)
