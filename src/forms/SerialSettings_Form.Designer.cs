@@ -72,7 +72,7 @@
             this.groupBox2.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(9, 5);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(334, 133);
+            this.groupBox2.Size = new System.Drawing.Size(354, 133);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "COM Port Configuration";
@@ -102,7 +102,7 @@
             // SaveSettingsButton
             // 
             this.SaveSettingsButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SaveSettingsButton.Location = new System.Drawing.Point(171, 100);
+            this.SaveSettingsButton.Location = new System.Drawing.Point(181, 100);
             this.SaveSettingsButton.Name = "SaveSettingsButton";
             this.SaveSettingsButton.Size = new System.Drawing.Size(153, 23);
             this.SaveSettingsButton.TabIndex = 4;
@@ -114,7 +114,7 @@
             // 
             this.HandshakingLabel.AutoSize = true;
             this.HandshakingLabel.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.HandshakingLabel.Location = new System.Drawing.Point(168, 76);
+            this.HandshakingLabel.Location = new System.Drawing.Point(178, 76);
             this.HandshakingLabel.Name = "HandshakingLabel";
             this.HandshakingLabel.Size = new System.Drawing.Size(73, 13);
             this.HandshakingLabel.TabIndex = 6;
@@ -126,9 +126,9 @@
             this.HandshakingComboBox.DropDownWidth = 125;
             this.HandshakingComboBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.HandshakingComboBox.FormattingEnabled = true;
-            this.HandshakingComboBox.Location = new System.Drawing.Point(247, 73);
+            this.HandshakingComboBox.Location = new System.Drawing.Point(257, 73);
             this.HandshakingComboBox.Name = "HandshakingComboBox";
-            this.HandshakingComboBox.Size = new System.Drawing.Size(77, 21);
+            this.HandshakingComboBox.Size = new System.Drawing.Size(87, 21);
             this.HandshakingComboBox.TabIndex = 11;
             // 
             // StopBitsComboBox
@@ -136,9 +136,9 @@
             this.StopBitsComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.StopBitsComboBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.StopBitsComboBox.FormattingEnabled = true;
-            this.StopBitsComboBox.Location = new System.Drawing.Point(247, 46);
+            this.StopBitsComboBox.Location = new System.Drawing.Point(257, 46);
             this.StopBitsComboBox.Name = "StopBitsComboBox";
-            this.StopBitsComboBox.Size = new System.Drawing.Size(77, 21);
+            this.StopBitsComboBox.Size = new System.Drawing.Size(87, 21);
             this.StopBitsComboBox.TabIndex = 10;
             // 
             // ParityComboBox
@@ -146,9 +146,9 @@
             this.ParityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ParityComboBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ParityComboBox.FormattingEnabled = true;
-            this.ParityComboBox.Location = new System.Drawing.Point(247, 19);
+            this.ParityComboBox.Location = new System.Drawing.Point(257, 19);
             this.ParityComboBox.Name = "ParityComboBox";
-            this.ParityComboBox.Size = new System.Drawing.Size(77, 21);
+            this.ParityComboBox.Size = new System.Drawing.Size(87, 21);
             this.ParityComboBox.TabIndex = 9;
             // 
             // DataBitsComboBox
@@ -158,7 +158,7 @@
             this.DataBitsComboBox.FormattingEnabled = true;
             this.DataBitsComboBox.Location = new System.Drawing.Point(85, 73);
             this.DataBitsComboBox.Name = "DataBitsComboBox";
-            this.DataBitsComboBox.Size = new System.Drawing.Size(77, 21);
+            this.DataBitsComboBox.Size = new System.Drawing.Size(87, 21);
             this.DataBitsComboBox.TabIndex = 8;
             // 
             // BaudRateComboBox
@@ -168,14 +168,14 @@
             this.BaudRateComboBox.FormattingEnabled = true;
             this.BaudRateComboBox.Location = new System.Drawing.Point(85, 46);
             this.BaudRateComboBox.Name = "BaudRateComboBox";
-            this.BaudRateComboBox.Size = new System.Drawing.Size(77, 21);
+            this.BaudRateComboBox.Size = new System.Drawing.Size(87, 21);
             this.BaudRateComboBox.TabIndex = 7;
             // 
             // ParityLabel
             // 
             this.ParityLabel.AutoSize = true;
             this.ParityLabel.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ParityLabel.Location = new System.Drawing.Point(168, 22);
+            this.ParityLabel.Location = new System.Drawing.Point(178, 22);
             this.ParityLabel.Name = "ParityLabel";
             this.ParityLabel.Size = new System.Drawing.Size(43, 13);
             this.ParityLabel.TabIndex = 5;
@@ -185,7 +185,7 @@
             // 
             this.StopBitsLabel.AutoSize = true;
             this.StopBitsLabel.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.StopBitsLabel.Location = new System.Drawing.Point(168, 49);
+            this.StopBitsLabel.Location = new System.Drawing.Point(178, 49);
             this.StopBitsLabel.Name = "StopBitsLabel";
             this.StopBitsLabel.Size = new System.Drawing.Size(61, 13);
             this.StopBitsLabel.TabIndex = 4;
@@ -224,11 +224,13 @@
             // COMPortComboBox
             // 
             this.COMPortComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.COMPortComboBox.DropDownWidth = 175;
             this.COMPortComboBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.COMPortComboBox.FormattingEnabled = true;
+            this.COMPortComboBox.IntegralHeight = false;
             this.COMPortComboBox.Location = new System.Drawing.Point(85, 19);
             this.COMPortComboBox.Name = "COMPortComboBox";
-            this.COMPortComboBox.Size = new System.Drawing.Size(77, 21);
+            this.COMPortComboBox.Size = new System.Drawing.Size(87, 21);
             this.COMPortComboBox.TabIndex = 0;
             this.COMPortComboBox.Click += new System.EventHandler(this.COMPortComboBox_Click);
             // 
@@ -272,7 +274,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(352, 147);
+            this.ClientSize = new System.Drawing.Size(372, 147);
             this.Controls.Add(this.groupBox2);
             this.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;

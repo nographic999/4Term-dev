@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.IO.Ports;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO.Ports;
+using System.Management;
+using System.Windows.Forms;
 
 namespace _4Term
 {
@@ -50,7 +52,7 @@ namespace _4Term
 
         private void SaveSettings_Click(object sender, EventArgs e)
         {
-            Settings.Port.PortName = COMPortComboBox.Text;
+            Settings.Port.PortName = COMPortComboBox.Text.Split('-')[0].Trim();
             Settings.Port.BaudRate = Int32.Parse(BaudRateComboBox.Text);
             Settings.Port.DataBits = DataBitsComboBox.SelectedIndex + 5;
             Settings.Port.Parity = (Parity)ParityComboBox.SelectedIndex;
@@ -68,13 +70,55 @@ namespace _4Term
             Serial Serial = Serial.Instance;
             int found = 0;
             string[] portList = Serial.GetAvailablePorts();
+
+  
+            Dictionary<string, string> portDescriptions = new Dictionary<string, string>();
+
+            try
+            {
+                using (var searcher = new ManagementObjectSearcher(
+                    "SELECT Caption, DeviceID FROM Win32_PnPEntity WHERE Caption LIKE '%(COM%'"))
+                {
+                    foreach (ManagementObject obj in searcher.Get())
+                    {
+                        string caption = obj["Caption"]?.ToString();
+                        string deviceId = obj["DeviceID"]?.ToString();
+
+                        if (caption != null && deviceId != null)
+                        {
+                            var match = System.Text.RegularExpressions.Regex.Match(caption, @"\((COM\d+)\)");
+                            if (match.Success)
+                            {
+                                string comPort = match.Groups[1].Value;
+                                string description = caption.Replace($"({comPort})", "").Trim();
+                                portDescriptions[comPort] = description;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+               
+            }
+
+        
             for (int i = 0; i < portList.Length; ++i)
             {
                 string name = portList[i];
-                COMPortComboBox.Items.Add(name);
+                string displayText = name;
+
+                if (portDescriptions.TryGetValue(name, out string desc))
+                {
+                    displayText += $" - {desc}";
+                }
+
+                COMPortComboBox.Items.Add(displayText);
+
                 if (name == Settings.Port.PortName)
                     found = i;
             }
+
             if (portList.Length > 0)
                 COMPortComboBox.SelectedIndex = found;
         }
