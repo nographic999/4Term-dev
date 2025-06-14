@@ -1,7 +1,14 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.IO.Ports;
+using System.Linq;
+using System.Management;
+using System.Text;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace _4Term
 {
@@ -12,15 +19,15 @@ namespace _4Term
          * ---------------------------------------------------------
          * DEVELOPMENT STATUS
          *
-         * [✓] NewPortStripMenuItem_Click
-         * [✓] PortOptionsToolStripMenuItem_Click
-         * [~] ScanCOMsToolStripMenuItem_Click
-         * [✓] NewWindowToolStripMenuItem_Click
+         * [✓] NewPortStripMenuItem_Click - tested OK
+         * [✓] PortOptionsToolStripMenuItem_Click - tested OK
+         * [✓] ScanCOMsToolStripMenuItem_Click - tested OK
+         * [✓] NewWindowToolStripMenuItem_Click - tested OK
          * ---------------------------------------------------------
-         * [✓] ConnectDisconnectToolStripMenuItem_Click
-         * [✓] AutoConnectToolStripMenuItem_Click
+         * [✓] ConnectDisconnectToolStripMenuItem_Click - tested OK
+         * [✓] AutoConnectToolStripMenuItem_Click - tested OK
          * ---------------------------------------------------------
-         * [✓] OpenToolStripMenuItem_Click
+         * [✓] OpenToolStripMenuItem_Click - tested OK
          * [ ] SaveToolStripMenuItem_Click
          * [ ] SaveAsToolStripMenuItem_Click
          * ---------------------------------------------------------
@@ -38,10 +45,22 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void NewPortStripMenuItem_Click(object sender, EventArgs e)
         {
-            /* Close the serial port if open */
+            /* Check if serial port is open */
             if (Port.IsOpen)
-                Port.Close();
-            
+            {
+                /* Ask user if they want to close the serial port */
+                DialogResult result = MessageBox.Show("A serial port connection is currently active. Close it to configure a new one?",
+                            "Active Serial Connection",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question,
+                            MessageBoxDefaultButton.Button1);
+
+                if (result == DialogResult.Yes)
+                    Port.Close();
+                if (result == DialogResult.No)
+                    return;
+            }
+
             /* Clear RichTextBox */
             RichTextBox.Clear();
 
@@ -73,16 +92,88 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void ScanCOMsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            /* Get an array of available serial port names */
-            string[] portList = System.IO.Ports.SerialPort.GetPortNames();
+            RichTextBox.AppendText("-------------------------------------------------------------------------------------------------\n");
 
-            /* Append text to RichTextBox */
-            RichTextBox.AppendText("----------------\nFound COM Ports:\n");
-            foreach (string port in portList)
+            /* Step 1: Get all available COM port names using the basic .NET API
+             * This returns just the raw port names (e.g., "COM1", "COM3") */
+            string[] allPorts = SerialPort.GetPortNames();
+
+            /* Check if any ports were found */
+            if (allPorts.Length == 0)
             {
-                RichTextBox.AppendText($"{port}\n");
+                RichTextBox.SelectionColor = Color.Red;
+                RichTextBox.AppendText("No COM ports found\n");
+                RichTextBox.AppendText("-------------------------------------------------------------------------------------------------\n");
+                return;
             }
-            RichTextBox.AppendText("----------------\n");
+
+            RichTextBox.AppendText("Detected COM Ports:\n");
+
+            /* Step 2: Attempt to get detailed port descriptions using WMI
+             * This provides more human-readable information about each port */
+            Dictionary<string, string> portDescriptions = new Dictionary<string, string>();
+            try
+            {
+                using (var searcher = new ManagementObjectSearcher(
+                    "SELECT Caption, DeviceID FROM Win32_PnPEntity WHERE Caption LIKE '%(COM%'"))
+                {
+                    /* Execute query and process results */
+                    foreach (ManagementObject obj in searcher.Get())
+                    {
+                        /* Get the device caption (description) and ID */
+                        string caption = obj["Caption"]?.ToString();
+                        string deviceId = obj["DeviceID"]?.ToString();
+
+                        /* Only process if we have valid data */
+                        if (caption != null && deviceId != null)
+                        {
+                            /* Extract COM port number from caption */
+                            var match = System.Text.RegularExpressions.Regex.Match(caption, @"\((COM\d+)\)");
+                            if (match.Success)
+                            {
+                                string comPort = match.Groups[1].Value;
+                                /* Clean up the description by removing the COM port reference */
+                                string description = caption.Replace($"({comPort})", "").Trim();
+                                /* Store in dictionary for later lookup */
+                                portDescriptions[comPort] = description;
+                            }
+                        }
+                    }
+                }
+            }
+            /* WMI query might fail due to permissions or other issues */
+            catch (Exception ex)
+            {
+                RichTextBox.AppendText($"Note: Could not retrieve detailed port info ({ex.Message})\n");
+            }
+
+            /* Step 3: Display all detected ports with their descriptions
+             * Ports are displayed in alphabetical order (COM1, COM2, etc.) */
+            foreach (string port in allPorts.OrderBy(p => p))
+            {
+                /* Try to get the description from our WMI results */
+                if (portDescriptions.TryGetValue(port, out string description))
+                {
+                    /* Display port with its detailed description in green */
+                    RichTextBox.SelectionColor = Color.Tomato;
+                    RichTextBox.AppendText($"{port}: ");
+                    RichTextBox.SelectionColor = Color.MediumTurquoise;
+                    RichTextBox.AppendText($"{description}\n");
+                }
+                else
+                {
+                    /* Fallback display for ports without WMI information in orange */
+                    RichTextBox.SelectionColor = Color.Tomato;
+                    RichTextBox.AppendText($"{port}: [Driver/Device description not available]\n");
+                    RichTextBox.SelectionColor = Color.MediumTurquoise; // Reset to default color
+                }
+            }
+
+            /* Display summary information */
+            RichTextBox.AppendText($"-------------------------------------------------------------------------------------------------\n");
+            RichTextBox.AppendText($"Total ports detected: ");
+            RichTextBox.SelectionColor = Color.Gold;
+            RichTextBox.AppendText($"{allPorts.Length}\n");
         }
 
         /*----------------------------------------------------------
@@ -135,26 +226,80 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            /* Check if serial port is open */
+            if (Port.IsOpen)
+            {
+                /* Ask user if they want to close the serial port */
+                DialogResult result = MessageBox.Show("A serial port connection is currently active. Close it to proceed with file operations?",
+                            "Active Serial Connection",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question,
+                            MessageBoxDefaultButton.Button2);
+
+                if (result == DialogResult.Yes)
+                    Port.Close();
+                if (result == DialogResult.No)
+                    return;
+            }
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                /* Set file type filters for the dialog (.log, .cfg, all files) */
+                /* Set dialog properties */
+                openFileDialog.Title = "Select File to Open";
                 openFileDialog.Filter = "Log Files (*.log)|*.log|Config Files (*.cfg)|*.cfg|All Files (*.*)|*.*";
                 openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = true;
+                openFileDialog.CheckFileExists = true;
+                openFileDialog.CheckPathExists = true;
 
-                /* Open a file dialog for the user to select file */
+                /* Process file selection */
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    /* Set file path */
-                    FilePath = openFileDialog.FileName;
+                    try
+                    {
+                        /* Step 3: Handle the selected file */
+                        FilePath = openFileDialog.FileName;
 
-                    /* Null and file existence check */
-                    if (string.IsNullOrEmpty(FilePath) || !File.Exists(FilePath)) return;
-                    
-                    /* Clears the RichTextBox */
-                    RichTextBox.Clear();
+                        /* Verify file size before loading */
+                        FileInfo fileInfo = new FileInfo(FilePath);
+                        /* 10MB limit */
+                        if (fileInfo.Length > 10 * 1024 * 1024)
+                        {
+                            MessageBox.Show(
+                                "The selected file is too large (maximum 10MB allowed).",
+                                "File Size Limit Exceeded",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+                            return;
+                        }
 
-                    /* Load the selected file's content into the RichTextBox */
-                    RichTextBox.Text = File.ReadAllText(FilePath);
+                        /* Clear existing content */
+                        RichTextBox.Clear();
+
+                        /* Use ReadAllText with explicit encoding handling */
+                        RichTextBox.Text = File.ReadAllText(FilePath, Encoding.UTF8);
+
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        MessageBox.Show("Access denied to the specified file",
+                                      "Permission Error",
+                                      MessageBoxButtons.OK,
+                                      MessageBoxIcon.Error);
+                    }
+                    catch (IOException ex)
+                    {
+                        MessageBox.Show($"File access error: {ex.Message}",
+                                      "I/O Error",
+                                      MessageBoxButtons.OK,
+                                      MessageBoxIcon.Error);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to load file: {ex.Message}",
+                                      "Error",
+                                      MessageBoxButtons.OK,
+                                      MessageBoxIcon.Error);
+                    }
                 }
             }
         }
@@ -166,10 +311,17 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e) // added messageboxes, must be changed
         {
+            /* Check if serial port is open */
             if (Port.IsOpen)
             {
-                MessageBox.Show("Please close the serial port before saving the file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                /* Ask user if they want to close the serial port */
+                DialogResult result = MessageBox.Show("Do you want to continue?", "Confirmation",
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                    Port.Close(); 
+                else if (result == DialogResult.No)
+                    return;
             }
             if (string.IsNullOrWhiteSpace(RichTextBox.Text))
             {
