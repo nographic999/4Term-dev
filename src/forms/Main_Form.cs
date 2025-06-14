@@ -27,6 +27,8 @@ namespace _4Term
         /* Tracks the base offset (0-112) of the currently selected 16-macro radio button group */
         private int CurrentRadioValue = 0;
         /* */
+        private int CurrentButtonValue = 0;
+        /* */
         private bool MacroEditingFlag = false;
         /* Path of the currently opened file */
         private string FilePath = null;
@@ -52,7 +54,7 @@ namespace _4Term
          * [✓] Main_Form(constructor)
          * [✓] Main_Form_Load
          * [~] Main_Form_Shown - needs connect on start optimization
-         * [~] Main_Form_FormClosing - needs closing optimization
+         * [✓] Main_Form_FormClosing
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -129,8 +131,16 @@ namespace _4Term
 
             /* UI-dependent initialization */
             WelcomeMsg();
+            RichTextBox.ForeColor = Color.FromArgb(Settings.ForeColor.R, Settings.ForeColor.G, Settings.ForeColor.B);
+            RichTextBox.BackColor = Color.FromArgb(Settings.BackColor.R, Settings.BackColor.G, Settings.BackColor.B);
         }
 
+        /*----------------------------------------------------------
+         * Main_Form_FormClosing
+         * 
+         * Handles cleanup tasks when the form is closing.
+         * Ensures the serial port is closed and performs base cleanup.
+         *---------------------------------------------------------*/
         private void Main_Form_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (Port.IsOpen)
@@ -143,15 +153,15 @@ namespace _4Term
          * ---------------------------------------------------------
          * DEVELOPMENT STATUS
          *
-         * [ ] ProgButton_Click - piece of code disabled, needs optimization and testing
-         * [~] SendButton_Click - needs optimization and testing
+         * [✓] ProgButton_Click
+         * [~] SendButton_Click - needs optimization
          * [✓] ClearButton_Click
          * [✓] OptionsButton_Click
          * [✓] AutoConnectButton_Click
          * [✓] ConnectButton_Click
          * [✓] SwapButton_Click
-         * [✓] RadioButton_Click - needs optimization and testing
-         * [~] MacroButton_Click - piece of code disabled, needs optimization and testing 
+         * [✓] RadioButton_Click
+         * [~] MacroButton_Click - needs optimization
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -185,16 +195,16 @@ namespace _4Term
                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            
+
             /* Store trimmed command text in settings array */
-            //Settings.MacroCommand.Text[MacroButton + ButtonNumber + MacroBank] = MacroBox.Text.Trim();
+            Settings.MacroCommand.Text[CurrentButtonValue + CurrentRadioValue + MacroBank] = MacroBox.Text.Trim();
 
             /* Store trimmed button display text in settings array */
-            //Settings.MacroText.Text[MacroButton + ButtonNumber + MacroBank] = MacroTextBox.Text.Trim();
+            Settings.MacroText.Text[CurrentButtonValue + CurrentRadioValue + MacroBank] = MacroTextBox.Text.Trim();
 
             /* Store trimmed tab/page title in settings array */
-            //Settings.Page.Text[MacroPage + PageIndex] = TabBox.Text.Trim();
-            
+            Settings.Page.Text[CurrentRadioValue / 16 + PageIndex] = TabBox.Text.Trim();
+
             /* Save changes to configuration file */
             Settings.WriteXml();
 
@@ -338,7 +348,6 @@ namespace _4Term
                         else
                         {
                             AddLine(cmd + lineEndedWith, 0);
-                            //AddLine("Port is closed!\r", 0);
                         }
 
                         await Task.Delay(50);
@@ -347,10 +356,10 @@ namespace _4Term
             }
             else
             {
-                //MacroBox.Text = Settings.MacroCommand.Text[macroIndex + CurrentRadioValue + MacroBank];
-                //MacroTextBox.Text = Settings.MacroText.Text[macroIndex + CurrentRadioValue + MacroBank];
-                //TabBox.Text = Settings.Page.Text[MacroPage + PageIndex];
-                //MacroButton = macroIndex;
+                MacroBox.Text = Settings.MacroCommand.Text[macroIndex + CurrentRadioValue + MacroBank];
+                MacroTextBox.Text = Settings.MacroText.Text[macroIndex + CurrentRadioValue + MacroBank];
+                TabBox.Text = Settings.Page.Text[CurrentRadioValue / 16 + PageIndex];
+                CurrentButtonValue = macroIndex;
             }
         }
 
@@ -364,7 +373,7 @@ namespace _4Term
          * [✓] ComboBox_Leave
          *---------------------------------------------------------*/
 
-        private void ComboBox_Enter(object sender, EventArgs e) // nothing changed
+        private void ComboBox_Enter(object sender, EventArgs e)
         {
             PasteToolStripMenuItem.Enabled = CopyToolStripMenuItem.Enabled = CutToolStripMenuItem.Enabled = false;
         }
@@ -379,7 +388,7 @@ namespace _4Term
             }
         }
 
-        private void ComboBox_Leave(object sender, EventArgs e) // nothing changed
+        private void ComboBox_Leave(object sender, EventArgs e)
         {
             PasteToolStripMenuItem.Enabled = CopyToolStripMenuItem.Enabled = CutToolStripMenuItem.Enabled = true;
         }
@@ -514,7 +523,7 @@ namespace _4Term
         * 
         * Adds a line of text to the RichTextBox with configurable formatting.
         * *---------------------------------------------------------*/
-        public void AddLine(string line, int type)
+        private void AddLine(string line, int type)
         {
             if (type == 0)
                 RichTextBox.SelectionColor = Color.FromArgb(Settings.TransmitColor.R, Settings.TransmitColor.G, Settings.TransmitColor.B);
@@ -541,7 +550,7 @@ namespace _4Term
         * 
         * Displays an animated ASCII art welcome message in a RichTextBox.
         * *---------------------------------------------------------*/
-        public async void WelcomeMsg()
+        private async void WelcomeMsg()
         {
             RichTextBox.BackColor = Color.Black;
             string[] asciiLines = new string[]
@@ -561,9 +570,9 @@ namespace _4Term
                 "        _\\///////////\\\\\\//________\\/\\\\\\_______\\//\\\\///////___\\/\\\\\\_________\\/\\\\\\__\\/\\\\\\__\\/\\\\\\_",
                 "         ___________\\/\\\\\\__________\\/\\\\\\________\\//\\\\\\\\\\\\\\\\\\\\_\\/\\\\\\_________\\/\\\\\\__\\/\\\\\\__\\/\\\\\\_",
                 "          ___________\\///___________\\///__________\\//////////__\\///__________\\///___\\///___\\///__",
-                "                                                                           Quick & Dirty 0.0.1 x64"
+                "                                                                             Version: 1.0.0-alpha x64"
             };
-            // Colors to cycle through
+            /* Colors to cycle through */
             Color[] colors = new Color[]
             {
                 Color.Firebrick,       // deep red
@@ -586,8 +595,6 @@ namespace _4Term
             }
             await Task.Delay(250);
             RichTextBox.Clear();
-            RichTextBox.ForeColor = Color.FromArgb(Settings.ForeColor.R, Settings.ForeColor.G, Settings.ForeColor.B);
-            RichTextBox.BackColor = Color.FromArgb(Settings.BackColor.R, Settings.BackColor.G, Settings.BackColor.B);
         }
 
         /*----------------------------------------------------------

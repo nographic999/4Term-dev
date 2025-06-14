@@ -8,7 +8,6 @@ using System.Linq;
 using System.Management;
 using System.Text;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace _4Term
 {
@@ -19,21 +18,21 @@ namespace _4Term
          * ---------------------------------------------------------
          * DEVELOPMENT STATUS
          *
-         * [✓] NewPortStripMenuItem_Click - tested OK
-         * [✓] PortOptionsToolStripMenuItem_Click - tested OK
-         * [✓] ScanCOMsToolStripMenuItem_Click - tested OK
-         * [✓] NewWindowToolStripMenuItem_Click - tested OK
+         * [✓] NewPortStripMenuItem_Click
+         * [✓] PortOptionsToolStripMenuItem_Click
+         * [✓] ScanCOMsToolStripMenuItem_Click
+         * [✓] NewWindowToolStripMenuItem_Click
          * ---------------------------------------------------------
-         * [✓] ConnectDisconnectToolStripMenuItem_Click - tested OK
-         * [✓] AutoConnectToolStripMenuItem_Click - tested OK
+         * [✓] ConnectDisconnectToolStripMenuItem_Click
+         * [✓] AutoConnectToolStripMenuItem_Click
          * ---------------------------------------------------------
-         * [✓] OpenToolStripMenuItem_Click - tested OK
-         * [ ] SaveToolStripMenuItem_Click
-         * [ ] SaveAsToolStripMenuItem_Click
+         * [✓] OpenToolStripMenuItem_Click
+         * [✓] SaveToolStripMenuItem_Click
+         * [✓] SaveAsToolStripMenuItem_Click
          * ---------------------------------------------------------
          * [✓] OpenConfigXmlToolStripMenuItem_Click
          * ---------------------------------------------------------
-         * [ ] ExitToolStripMenuItem_Click
+         * [✓] ExitToolStripMenuItem_Click
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -226,6 +225,77 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            try
+            { 
+                /* Check if serial port is open */
+                if (Port.IsOpen)
+                {
+                    /* Ask user if they want to close the serial port */
+                    DialogResult result = MessageBox.Show("A serial port connection is currently active. Close it to proceed with file operations?",
+                                "Active Serial Connection",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Question,
+                                MessageBoxDefaultButton.Button2);
+
+                    if (result == DialogResult.Yes)
+                        Port.Close();
+                    if (result == DialogResult.No)
+                        return;
+                }
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    /* Set dialog properties */
+                    openFileDialog.Title = "Select File to Open";
+                    openFileDialog.Filter = "Log Files (*.log)|*.log|Config Files (*.cfg)|*.cfg|All Files (*.*)|*.*";
+                    openFileDialog.FilterIndex = 1;
+                    openFileDialog.RestoreDirectory = true;
+                    openFileDialog.CheckFileExists = true;
+                    openFileDialog.CheckPathExists = true;
+
+                    /* Process file selection */
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                    
+                            /* Step 3: Handle the selected file */
+                            FilePath = openFileDialog.FileName;
+
+                            /* Verify file size before loading */
+                            FileInfo fileInfo = new FileInfo(FilePath);
+                            /* 10MB limit */
+                            if (fileInfo.Length > 10 * 1024 * 1024)
+                            {
+                                MessageBox.Show(
+                                    "The selected file is too large (maximum 10MB allowed).",
+                                    "File Size Limit Exceeded",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Warning);
+                                return;
+                            }
+
+                            /* Clear existing content */
+                            RichTextBox.Clear();
+
+                            /* Use ReadAllText with explicit encoding handling */
+                            RichTextBox.Text = File.ReadAllText(FilePath, Encoding.UTF8);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}",
+                              "Error",
+                              MessageBoxButtons.OK,
+                              MessageBoxIcon.Error);
+            }
+        }
+
+        /*----------------------------------------------------------
+         * SaveToolStripMenuItem_Click
+         * 
+         * Saves the current document.
+         *---------------------------------------------------------*/
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e) // added messageboxes, must be changed
+        {
             /* Check if serial port is open */
             if (Port.IsOpen)
             {
@@ -241,107 +311,102 @@ namespace _4Term
                 if (result == DialogResult.No)
                     return;
             }
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                /* Set dialog properties */
-                openFileDialog.Title = "Select File to Open";
-                openFileDialog.Filter = "Log Files (*.log)|*.log|Config Files (*.cfg)|*.cfg|All Files (*.*)|*.*";
-                openFileDialog.FilterIndex = 1;
-                openFileDialog.RestoreDirectory = true;
-                openFileDialog.CheckFileExists = true;
-                openFileDialog.CheckPathExists = true;
 
-                /* Process file selection */
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+            /* Validate content */
+            if (string.IsNullOrWhiteSpace(RichTextBox.Text))
+            {
+                MessageBox.Show("There is nothing to save.",
+                              "Warning",
+                              MessageBoxButtons.OK,
+                              MessageBoxIcon.Warning);
+                return;
+            }
+
+            /* Save to existing path or prompt for new one */
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(FilePath))
+                    File.WriteAllText(FilePath, RichTextBox.Text, Encoding.UTF8);
+                else
+                    SaveAsToolStripMenuItem_Click(sender, e);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}",
+                              "Error",
+                              MessageBoxButtons.OK,
+                              MessageBoxIcon.Error);
+            }
+        }
+
+        /*----------------------------------------------------------
+         * SaveAsToolStripMenuItem_Click
+         * 
+         * Saves the current document to a user-specified location.
+         *---------------------------------------------------------*/
+        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            /* Check if serial port is open */
+            if (Port.IsOpen)
+            {
+                /* Ask user if they want to close the serial port */
+                DialogResult result = MessageBox.Show("A serial port connection is currently active. Close it to proceed with file operations?",
+                            "Active Serial Connection",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question,
+                            MessageBoxDefaultButton.Button2);
+
+                if (result == DialogResult.Yes)
+                    Port.Close();
+                if (result == DialogResult.No)
+                    return;
+            }
+
+            /* Validate content */
+            if (string.IsNullOrWhiteSpace(RichTextBox.Text))
+            {
+                MessageBox.Show("There is nothing to save.",
+                              "Warning",
+                              MessageBoxButtons.OK,
+                              MessageBoxIcon.Warning);
+                return;
+            }
+
+            /* Show save dialog and save file */
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "Log Files (*.log)|*.log|Config Files (*.cfg)|*.cfg|Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+                saveFileDialog.FilterIndex = 1;
+                saveFileDialog.OverwritePrompt = true;
+                saveFileDialog.RestoreDirectory = true;
+
+                /* Set initial directory if available */
+                if (!string.IsNullOrWhiteSpace(FilePath))
+                {
+                    saveFileDialog.InitialDirectory = Path.GetDirectoryName(FilePath);
+                    saveFileDialog.FileName = Path.GetFileNameWithoutExtension(FilePath);
+                }
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
-                        /* Step 3: Handle the selected file */
-                        FilePath = openFileDialog.FileName;
-
-                        /* Verify file size before loading */
-                        FileInfo fileInfo = new FileInfo(FilePath);
-                        /* 10MB limit */
-                        if (fileInfo.Length > 10 * 1024 * 1024)
-                        {
-                            MessageBox.Show(
-                                "The selected file is too large (maximum 10MB allowed).",
-                                "File Size Limit Exceeded",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Warning);
-                            return;
-                        }
-
-                        /* Clear existing content */
-                        RichTextBox.Clear();
-
-                        /* Use ReadAllText with explicit encoding handling */
-                        RichTextBox.Text = File.ReadAllText(FilePath, Encoding.UTF8);
-
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        MessageBox.Show("Access denied to the specified file",
-                                      "Permission Error",
+                        File.WriteAllText(saveFileDialog.FileName, RichTextBox.Text, Encoding.UTF8);
+                        FilePath = saveFileDialog.FileName;
+                        MessageBox.Show("File saved successfully.",
+                                      "Success",
                                       MessageBoxButtons.OK,
-                                      MessageBoxIcon.Error);
-                    }
-                    catch (IOException ex)
-                    {
-                        MessageBox.Show($"File access error: {ex.Message}",
-                                      "I/O Error",
-                                      MessageBoxButtons.OK,
-                                      MessageBoxIcon.Error);
+                                      MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Failed to load file: {ex.Message}",
+                        MessageBox.Show($"Error: {ex.Message}",
                                       "Error",
                                       MessageBoxButtons.OK,
                                       MessageBoxIcon.Error);
                     }
                 }
             }
-        }
-
-        /*----------------------------------------------------------
-         * SaveToolStripMenuItem_Click
-         * 
-         * Saves the current document.
-         *---------------------------------------------------------*/
-        private void SaveToolStripMenuItem_Click(object sender, EventArgs e) // added messageboxes, must be changed
-        {
-            /* Check if serial port is open */
-            if (Port.IsOpen)
-            {
-                /* Ask user if they want to close the serial port */
-                DialogResult result = MessageBox.Show("Do you want to continue?", "Confirmation",
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (result == DialogResult.Yes)
-                    Port.Close(); 
-                else if (result == DialogResult.No)
-                    return;
-            }
-            if (string.IsNullOrWhiteSpace(RichTextBox.Text))
-            {
-                MessageBox.Show("There is nothing to save.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (!string.IsNullOrWhiteSpace(FilePath))
-                File.WriteAllText(FilePath, RichTextBox.Text);
-            else
-                SaveAs();
-        }
-
-        /*----------------------------------------------------------
-         * SaveAsToolStripMenuItem_Click
-         * 
-         * Saves the current document or content to a user-specified file.
-         *---------------------------------------------------------*/
-        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveAs();
         }
 
         /*----------------------------------------------------------
@@ -355,22 +420,59 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void OpenConfigXmlToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            /* Check if the serial port is open; if so, ask the user if they want to close it */
-            if (Port.IsOpen)
-            {                
-                DialogResult result = MessageBox.Show("Do you want to close the serial port?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
-                    Port.Close();
-                else
+            try
+            {
+                /* Check if serial port is open */
+                if (Port.IsOpen)
+                {
+                    /* Ask user if they want to close the serial port */
+                    DialogResult result = MessageBox.Show("A serial port connection is currently active. Close it to proceed with file operations?",
+                                "Active Serial Connection",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Question,
+                                MessageBoxDefaultButton.Button1);
+
+                    if (result == DialogResult.Yes)
+                        Port.Close();
+                    if (result == DialogResult.No)
+                        return;
+                }
+
+                /* Validate config file existence */
+                if (!File.Exists(Settings.XmlName))
+                {
+                    MessageBox.Show($"Configuration file not found: {Settings.XmlName}",
+                                  "File Missing",
+                                  MessageBoxButtons.OK,
+                                  MessageBoxIcon.Warning);
                     return;
+                }
+
+                /* Check file size(limit to 1MB for XML) */
+                FileInfo configFile = new FileInfo(Settings.XmlName);
+                if (configFile.Length > 1024 * 1024)  // 1MB limit
+                {
+                    MessageBox.Show("Configuration file exceeds maximum size (1MB)",
+                                  "File Too Large",
+                                  MessageBoxButtons.OK,
+                                  MessageBoxIcon.Error);
+                    return;
+                }
+
+                /* Clear and load content */
+                RichTextBox.Clear();
+
+                /* Read with explicit UTF-8 encoding and error handling */
+                RichTextBox.Text = File.ReadAllText(Settings.XmlName, Encoding.UTF8);
+                FilePath = Settings.XmlName;
             }
-
-            /* Clear RichTextBox */
-            RichTextBox.Clear();
-
-            /* Load all text from file to RichTextBox */
-            RichTextBox.Text = File.ReadAllText(Settings.XmlName);
-            FilePath = Settings.XmlName;
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}",
+                              "Error",
+                              MessageBoxButtons.OK,
+                              MessageBoxIcon.Error);
+            }
         }
 
         /*----------------------------------------------------------
@@ -385,8 +487,7 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            /* Needs buffer cleaning and com port closing*/
-            //Close();
+            this.Close();
         }
 
         /*----------------------------------------------------------
@@ -590,47 +691,6 @@ namespace _4Term
         {
             About_Form AboutForm = new About_Form();
             AboutForm.ShowDialog();
-        }
-
-        /*----------------------------------------------------------
-         * Helper functions
-         *---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] SaveAs
-         *---------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * SaveAs
-         * 
-         * Saves the content of the RichTextBox to a file with 
-         * extensions .log or .cfg (removed .txt). 
-         * Displays message boxes for empty content or if the serial 
-         * port is open (must be closed before saving).
-         *---------------------------------------------------------*/
-        private void SaveAs() // removed .txt added .log and .cfg extensions, added messageboxes
-        {
-            if (!Port.IsOpen)
-            {
-                if (string.IsNullOrWhiteSpace(RichTextBox.Text))
-                {
-                    MessageBox.Show("There is nothing to save.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-                {
-                    saveFileDialog.Filter = "Log Files (*.log)|*.log|Config Files (*.cfg)|*.cfg|All Files (*.*)|*.*";
-                    saveFileDialog.FilterIndex = 1;
-
-                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        FilePath = saveFileDialog.FileName;
-                        File.WriteAllText(FilePath, RichTextBox.Text);
-                    }
-                }
-            }
-            else
-                MessageBox.Show("Please close the serial port before saving the file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
     }
 }
