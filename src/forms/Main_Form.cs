@@ -15,24 +15,26 @@ namespace _4Term
         /*----------------------------------------------------------
          * Class variables
          * -------------------------------------------------------*/
-        
-        internal delegate void StringDelegate(string data);
-        private readonly Serial Port = Serial.Instance;
-        private readonly Timer AutoConnectTimer = new Timer();
 
+        /* Delegate for thread-safe operations that involve passing a string */
+        internal delegate void StringDelegate(string data);
+        /* Singleton instance of the Serial communication handler */
+        private readonly Serial Port = Serial.Instance;
+        /* Timer used for periodically attempting automatic connection */
+        private readonly Timer AutoConnectTimer = new Timer();
         /* Tracks the current page group index (0-31) where each group contains 8 pages */
         private int PageIndex = 0;
         /* Tracks the current macro bank offset (0-511) where each bank contains 128 macros */
         private int MacroBank = 0;
-        /* Tracks the base offset (0-112) of the currently selected 16-macro radio button group */
+        /* Stores the index of the currently selected radio button */
         private int CurrentRadioValue = 0;
-        /* */
+        /* Stores the index of the currently selected macro button */
         private int CurrentButtonValue = 0;
-        /* */
+        /* Flag indicating whether the application is currently in macro editing mode */
         private bool MacroEditingFlag = false;
         /* Path of the currently opened file */
         private string FilePath = null;
-
+        /* Radio Button to Macro Offset Mapping */
         private readonly Dictionary<string, int> radioButtonMapping = new Dictionary<string, int>
         {
             { "RadioButton0", 0 },
@@ -53,7 +55,7 @@ namespace _4Term
          *
          * [✓] Main_Form(constructor)
          * [✓] Main_Form_Load
-         * [~] Main_Form_Shown - needs connect on start optimization
+         * [✓] Main_Form_Shown
          * [✓] Main_Form_FormClosing
          *---------------------------------------------------------*/
 
@@ -130,9 +132,7 @@ namespace _4Term
             AutoConnectTimer.Tick += ReconnectTick;
 
             /* UI-dependent initialization */
-            WelcomeMsg();
-            RichTextBox.ForeColor = Color.FromArgb(Settings.ForeColor.R, Settings.ForeColor.G, Settings.ForeColor.B);
-            RichTextBox.BackColor = Color.FromArgb(Settings.BackColor.R, Settings.BackColor.G, Settings.BackColor.B);
+            WelcomeMsg();            
         }
 
         /*----------------------------------------------------------
@@ -153,6 +153,7 @@ namespace _4Term
          * ---------------------------------------------------------
          * DEVELOPMENT STATUS
          *
+         * [ ] ReturnButton_Click
          * [✓] ProgButton_Click
          * [~] SendButton_Click - needs optimization
          * [✓] ClearButton_Click
@@ -163,6 +164,11 @@ namespace _4Term
          * [✓] RadioButton_Click
          * [~] MacroButton_Click - needs optimization
          *---------------------------------------------------------*/
+
+        private void ReturnButton_Click(object sender, EventArgs e)
+        {
+            MacroModeToolStripMenuItem_Click(sender, e);
+        }
 
         /*----------------------------------------------------------
          * ProgButton_Click
@@ -220,29 +226,44 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void SendButton_Click(object sender, EventArgs e)
         {
-            /* Capture current input text */
-            string buffer = ComboBox.Text ?? string.Empty;
-
-            /* Add to command history (avoid empty strings and duplicates) */
-            if (!string.IsNullOrEmpty(buffer) && !ComboBox.Items.Contains(buffer))
+            /* Check if port is open */
+            if (Port.IsOpen)
             {
-                ComboBox.Items.Add(buffer);
-            }
+                /* Get the command from the ComboBox */
+                string buffer = ComboBox.Text;
 
-            /* Maintain input focus for next command */
-            ComboBox.Focus();
-
-            if (!string.IsNullOrEmpty(buffer))
-            {
-                /* Send and get the actual transmission (with line endings) */
-                string message = Port.Send(buffer);
-
-                if (Settings.RichTextBox.LocalEcho)
+                /* Proceed only if the command is not empty */
+                if (!string.IsNullOrEmpty(buffer))
                 {
-                    /* Show exactly what was sent (including line endings) */
-                    AddLine(message, 0);
+                    /* Send the command and get the appended line ending */
+                    string lineEnding = Port.Send(buffer);
+
+                    /* Add the command to ComboBox history if not already there */
+                    if(!ComboBox.Items.Contains(buffer))
+                    {
+                        ComboBox.Items.Add(buffer);
+                    }
+
+                    /* If local echo is enabled, display the sent command */
+                    if (Settings.RichTextBox.LocalEcho)
+                    {
+                        AddLine(buffer + lineEnding, 0);
+                    }
+
+                    /* Refocus the ComboBox for quick user input */
+                    ComboBox.Focus();
                 }
             }
+
+            else
+            {
+                /* Inform the user if the serial port is not open */
+                MessageBox.Show(
+                    "The serial port is not open. Please open a port before sending the macro.",
+                    "Port Not Open",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }           
         }
 
         /*----------------------------------------------------------
@@ -327,35 +348,58 @@ namespace _4Term
         /*----------------------------------------------------------
          * MacroButton_Click
          * 
-         * NEEDS COMMENT
+         * Sends the selected macro command if not in edit mode.
+         * If in edit mode, loads the macro into the editor UI.
          *---------------------------------------------------------*/
         public async void MacroButton_Click(int macroIndex)
         {
+            /* If not in macro editing mode, proceed with sending the macro */
             if (!MacroEditingFlag)
             {
-                string command = Settings.MacroCommand.Text[macroIndex + CurrentRadioValue + MacroBank];
-                string[] commands = command.Split(new[] { "$0D" }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (string cmd in commands)
+                /* Check if port is open */
+                if(Port.IsOpen)
                 {
-                    if (!string.IsNullOrEmpty(cmd))
+                    /* Retrieve the macro command based on current index and bank */
+                    string command = Settings.MacroCommand.Text[macroIndex + CurrentRadioValue + MacroBank];
+
+                    /* Send the command only if it's not empty */
+                    if (!string.IsNullOrEmpty(command))
                     {
-                        string lineEndedWith = "";
-                        lineEndedWith = Port.Send(cmd);
-                        if (Settings.RichTextBox.LocalEcho && lineEndedWith != "0")
+                        string lineEnding = Port.Send(command);
+
+                        if (Settings.RichTextBox.LocalEcho)
                         {
-                            AddLine(cmd + lineEndedWith, 0);
-                        }
-                        else
-                        {
-                            AddLine(cmd + lineEndedWith, 0);
+                            AddLine(command + lineEnding, 0);
                         }
 
                         await Task.Delay(50);
                     }
+
+                    else
+                    {
+                        /* Inform the user if the macro is empty */
+                        MessageBox.Show(
+                            "The selected macro is empty. Please configure a command before using this button.",
+                            "Empty Macro Command",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                    }
+                } 
+                
+                else
+                {
+                    /* Inform the user if the serial port is not open */
+                    MessageBox.Show(
+                        "The serial port is not open. Please open a port before sending the macro.",
+                        "Port Not Open",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                 }
             }
+
             else
             {
+                /* In macro editing mode: load macro details into the UI for editing */
                 MacroBox.Text = Settings.MacroCommand.Text[macroIndex + CurrentRadioValue + MacroBank];
                 MacroTextBox.Text = Settings.MacroText.Text[macroIndex + CurrentRadioValue + MacroBank];
                 TabBox.Text = Settings.Page.Text[CurrentRadioValue / 16 + PageIndex];
@@ -373,11 +417,30 @@ namespace _4Term
          * [✓] ComboBox_Leave
          *---------------------------------------------------------*/
 
+        /*----------------------------------------------------------
+         * ComboBox_Enter
+         * 
+         * Disables clipboard context menu items when the ComboBox
+         * gains focus, preventing operations like copy/paste while
+         * entering commands.
+         *---------------------------------------------------------*/
         private void ComboBox_Enter(object sender, EventArgs e)
         {
-            PasteToolStripMenuItem.Enabled = CopyToolStripMenuItem.Enabled = CutToolStripMenuItem.Enabled = false;
+            PasteToolStripMenuItem.Enabled = 
+                CopyToolStripMenuItem.Enabled = 
+                CutToolStripMenuItem.Enabled = 
+                DeleteToolStripMenuItem.Enabled =
+                SelectAllToolStripMenuItem.Enabled = false;
         }
 
+
+        /*----------------------------------------------------------
+         * ComboBox_KeyDown
+         * 
+         * Handles Enter key within the ComboBox. Sends the current
+         * command by calling SendButton_Click and prevents the beep
+         * or focus shift by suppressing the key press.
+         *---------------------------------------------------------*/
         private void ComboBox_KeyDown(object sender, KeyEventArgs keyboard)
         {
             if (keyboard.KeyCode == Keys.Enter)
@@ -388,9 +451,19 @@ namespace _4Term
             }
         }
 
+        /*----------------------------------------------------------
+         * ComboBox_Leave
+         * 
+         * Re-enables clipboard context menu items when the ComboBox
+         * loses focus, restoring standard edit options.
+         *---------------------------------------------------------*/
         private void ComboBox_Leave(object sender, EventArgs e)
         {
-            PasteToolStripMenuItem.Enabled = CopyToolStripMenuItem.Enabled = CutToolStripMenuItem.Enabled = true;
+            PasteToolStripMenuItem.Enabled =
+                CopyToolStripMenuItem.Enabled =
+                CutToolStripMenuItem.Enabled =
+                DeleteToolStripMenuItem.Enabled =
+                SelectAllToolStripMenuItem.Enabled = true;
         }
 
         /*----------------------------------------------------------
@@ -461,7 +534,7 @@ namespace _4Term
          * 
          * [✓] AssignButtonClickHandlers
          * [✓] LoadGroupContent
-         * [~] AddLine - needs new code
+         * [✓] AddLine
          * [✓] WelcomeMsg
          * [✓] WndProc
          *---------------------------------------------------------*/
@@ -525,19 +598,32 @@ namespace _4Term
         * *---------------------------------------------------------*/
         private void AddLine(string line, int type)
         {
+            /* Set the selection color based on message type */
             if (type == 0)
+                /* Transmit color */
                 RichTextBox.SelectionColor = Color.FromArgb(Settings.TransmitColor.R, Settings.TransmitColor.G, Settings.TransmitColor.B);
             else
+                /* Receive color */
                 RichTextBox.SelectionColor = Color.FromArgb(Settings.ReceiveColor.R, Settings.ReceiveColor.G, Settings.ReceiveColor.B);
+
             string buffer = "";
+
+            /* Check if HexOutput is enabled */
             if (Settings.RichTextBox.HexOutput)
             {
+                /* Convert the line to bytes and format as a hex string */
                 byte[] lineBytes = Encoding.UTF8.GetBytes(line + buffer);
                 string lineAsString = BitConverter.ToString(lineBytes).Replace("-", " ");
+
+                /* Append the hex-formatted line to the RichTextBox */
                 RichTextBox.AppendText($" [{lineAsString}]");
             }
+
             else
+                /* Append the plain text line to the RichTextBox */
                 RichTextBox.AppendText(line + buffer);
+
+            /* Scroll to the latest line if auto-scroll is enabled */
             if (Settings.RichTextBox.Scroll)
             {
                 RichTextBox.SelectionStart = RichTextBox.Text.Length;
@@ -550,7 +636,7 @@ namespace _4Term
         * 
         * Displays an animated ASCII art welcome message in a RichTextBox.
         * *---------------------------------------------------------*/
-        private async void WelcomeMsg()
+                private async void WelcomeMsg()
         {
             RichTextBox.BackColor = Color.Black;
             string[] asciiLines = new string[]
@@ -595,6 +681,8 @@ namespace _4Term
             }
             await Task.Delay(250);
             RichTextBox.Clear();
+            RichTextBox.ForeColor = Color.FromArgb(Settings.TransmitColor.R, Settings.TransmitColor.G, Settings.TransmitColor.B);
+            RichTextBox.BackColor = Color.FromArgb(Settings.BackColor.R, Settings.BackColor.G, Settings.BackColor.B);
         }
 
         /*----------------------------------------------------------
@@ -609,6 +697,6 @@ namespace _4Term
                 return;
             }
             base.WndProc(ref buffer);
-        }
+        }        
     }
 }

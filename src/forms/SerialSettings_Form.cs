@@ -97,7 +97,7 @@ namespace _4Term
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                
             }

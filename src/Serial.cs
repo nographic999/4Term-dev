@@ -100,8 +100,14 @@ namespace _4Term
                             /* Prevent tight loop when no data available */
                             Thread.Sleep(1);
                         }
-                    } 
-                    
+                    }
+
+                    catch (TimeoutException tex)
+                    {
+                        StatusChanged?.Invoke($"Timeout: {tex.Message}");
+                        Thread.Sleep(10);
+                    }
+
                     /* This is a generic catch block that catches any other exceptions that may occur. */
                     catch (Exception ex)
                     {                        
@@ -120,27 +126,32 @@ namespace _4Term
 
         public string Send(string data)
         {
-            if (IsOpen)//Check if the serial port is open
-            {
-                string lineEnding = "";
-                switch (Settings.Port.AppendToSend)//Determine the line ending based on the chosen append type
-                {
-                    case Settings.Port.AppendType.AppendCR:
-                        lineEnding = "\r";
-                        break;
-                    case Settings.Port.AppendType.AppendLF:
-                        lineEnding = "\n";
-                        break;
-                    case Settings.Port.AppendType.AppendCRLF:
-                        lineEnding = "\r\n";
-                        break;
-                }
-                SerialPortInstance.Write(data + lineEnding);//Write the data to the serial port with the chosen line ending
+            string lineEnding = "";
 
-                return lineEnding;
+            /* Determine which line ending to append based on user settings */
+            switch (Settings.Port.AppendToSend)
+            {
+                /* Carriage Return */
+                case Settings.Port.AppendType.AppendCR:
+                    lineEnding = "\r";
+                    break;
+
+                /* Line Feed */
+                case Settings.Port.AppendType.AppendLF:
+                    lineEnding = "\n";
+                    break;
+
+                /* Carriage Return + Line Feed */
+                case Settings.Port.AppendType.AppendCRLF:
+                    lineEnding = "\r\n";
+                    break;
             }
 
-            return "0";
+            /* Send the data with the selected line ending via the serial port */
+            SerialPortInstance.Write(data + lineEnding);
+
+            /* Return the appended line ending so the caller can use/display it */
+            return lineEnding;
         }
 
         public void Close()

@@ -29,7 +29,6 @@ namespace _4Term
             public static bool LocalEcho = true;
         }
 
-        public static (int R, int G, int B) ForeColor = (255, 255, 255);
         public static (int R, int G, int B) BackColor = (0, 0, 0);
         public static (int R, int G, int B) TransmitColor = (255, 165, 0);
         public static (int R, int G, int B) ReceiveColor = (0, 250, 154);
@@ -175,10 +174,6 @@ namespace _4Term
             RichTextBox.HexOutput = bool.Parse(root.SelectSingleNode("RichTextBox/HexOutput").InnerText);
             RichTextBox.LocalEcho = bool.Parse(root.SelectSingleNode("RichTextBox/LocalEcho").InnerText);
 
-            ForeColor.R = int.Parse(root.SelectSingleNode("ForeColor/R").InnerText);
-            ForeColor.G = int.Parse(root.SelectSingleNode("ForeColor/G").InnerText);
-            ForeColor.B = int.Parse(root.SelectSingleNode("ForeColor/B").InnerText);
-
             BackColor.R = int.Parse(root.SelectSingleNode("BackColor/R").InnerText);
             BackColor.G = int.Parse(root.SelectSingleNode("BackColor/G").InnerText);
             BackColor.B = int.Parse(root.SelectSingleNode("BackColor/B").InnerText);
@@ -264,11 +259,6 @@ namespace _4Term
             AddValue("RichTextBox", "Scroll", RichTextBox.Scroll.ToString());
             AddValue("RichTextBox", "HexOutput", RichTextBox.HexOutput.ToString());
             AddValue("RichTextBox", "LocalEcho", RichTextBox.LocalEcho.ToString());
-
-            // ForeColor
-            AddValue("ForeColor", "R", ForeColor.R.ToString());
-            AddValue("ForeColor", "G", ForeColor.G.ToString());
-            AddValue("ForeColor", "B", ForeColor.B.ToString());
 
             // BackColor
             AddValue("BackColor", "R", BackColor.R.ToString());

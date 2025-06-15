@@ -109,6 +109,7 @@
             this.ProgButton = new System.Windows.Forms.Button();
             this.labelinfo = new System.Windows.Forms.Label();
             this.RichTextBox = new System.Windows.Forms.RichTextBox();
+            this.ReturnButton = new System.Windows.Forms.Button();
             this.MenuStrip.SuspendLayout();
             this.COMBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -863,7 +864,7 @@
             // 
             this.TabBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.TabBox.Enabled = false;
-            this.TabBox.Location = new System.Drawing.Point(416, 343);
+            this.TabBox.Location = new System.Drawing.Point(408, 343);
             this.TabBox.Name = "TabBox";
             this.TabBox.Size = new System.Drawing.Size(221, 20);
             this.TabBox.TabIndex = 225;
@@ -874,7 +875,7 @@
             this.TabLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.TabLabel.AutoSize = true;
             this.TabLabel.Enabled = false;
-            this.TabLabel.Location = new System.Drawing.Point(340, 349);
+            this.TabLabel.Location = new System.Drawing.Point(332, 349);
             this.TabLabel.Name = "TabLabel";
             this.TabLabel.Size = new System.Drawing.Size(26, 13);
             this.TabLabel.TabIndex = 224;
@@ -886,7 +887,7 @@
             this.MacroTextLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.MacroTextLabel.AutoSize = true;
             this.MacroTextLabel.Enabled = false;
-            this.MacroTextLabel.Location = new System.Drawing.Point(340, 323);
+            this.MacroTextLabel.Location = new System.Drawing.Point(332, 323);
             this.MacroTextLabel.Name = "MacroTextLabel";
             this.MacroTextLabel.Size = new System.Drawing.Size(58, 13);
             this.MacroTextLabel.TabIndex = 223;
@@ -898,7 +899,7 @@
             this.MacroLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.MacroLabel.AutoSize = true;
             this.MacroLabel.Enabled = false;
-            this.MacroLabel.Location = new System.Drawing.Point(340, 297);
+            this.MacroLabel.Location = new System.Drawing.Point(332, 297);
             this.MacroLabel.Name = "MacroLabel";
             this.MacroLabel.Size = new System.Drawing.Size(37, 13);
             this.MacroLabel.TabIndex = 222;
@@ -909,7 +910,7 @@
             // 
             this.MacroTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.MacroTextBox.Enabled = false;
-            this.MacroTextBox.Location = new System.Drawing.Point(416, 317);
+            this.MacroTextBox.Location = new System.Drawing.Point(408, 317);
             this.MacroTextBox.Name = "MacroTextBox";
             this.MacroTextBox.Size = new System.Drawing.Size(221, 20);
             this.MacroTextBox.TabIndex = 221;
@@ -919,7 +920,7 @@
             // 
             this.MacroBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.MacroBox.Enabled = false;
-            this.MacroBox.Location = new System.Drawing.Point(416, 291);
+            this.MacroBox.Location = new System.Drawing.Point(408, 291);
             this.MacroBox.Name = "MacroBox";
             this.MacroBox.Size = new System.Drawing.Size(221, 20);
             this.MacroBox.TabIndex = 220;
@@ -930,9 +931,9 @@
             this.ProgButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ProgButton.Enabled = false;
             this.ProgButton.Image = ((System.Drawing.Image)(resources.GetObject("ProgButton.Image")));
-            this.ProgButton.Location = new System.Drawing.Point(643, 291);
+            this.ProgButton.Location = new System.Drawing.Point(635, 291);
             this.ProgButton.Name = "ProgButton";
-            this.ProgButton.Size = new System.Drawing.Size(50, 72);
+            this.ProgButton.Size = new System.Drawing.Size(58, 72);
             this.ProgButton.TabIndex = 219;
             this.ProgButton.UseVisualStyleBackColor = true;
             this.ProgButton.Visible = false;
@@ -968,11 +969,29 @@
             this.RichTextBox.TabIndex = 213;
             this.RichTextBox.Text = "";
             // 
+            // ReturnButton
+            // 
+            this.ReturnButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ReturnButton.BackColor = System.Drawing.SystemColors.Control;
+            this.ReturnButton.Enabled = false;
+            this.ReturnButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ReturnButton.ForeColor = System.Drawing.Color.Black;
+            this.ReturnButton.Location = new System.Drawing.Point(635, 264);
+            this.ReturnButton.Name = "ReturnButton";
+            this.ReturnButton.Size = new System.Drawing.Size(58, 21);
+            this.ReturnButton.TabIndex = 239;
+            this.ReturnButton.Text = "Return";
+            this.ReturnButton.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.ReturnButton.UseVisualStyleBackColor = true;
+            this.ReturnButton.Visible = false;
+            this.ReturnButton.Click += new System.EventHandler(this.ReturnButton_Click);
+            // 
             // Main_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(702, 486);
+            this.Controls.Add(this.ReturnButton);
             this.Controls.Add(this.labelinfo);
             this.Controls.Add(this.TabBox);
             this.Controls.Add(this.TabLabel);
@@ -1086,5 +1105,6 @@
         private System.Windows.Forms.ToolStripMenuItem ScanCOMsToolStripMenuItem;
         private System.Windows.Forms.RichTextBox RichTextBox;
         private System.Windows.Forms.Button SwapButton;
+        private System.Windows.Forms.Button ReturnButton;
     }
 }

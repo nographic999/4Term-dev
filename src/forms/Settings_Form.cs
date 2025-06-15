@@ -24,12 +24,12 @@ namespace _4Term
                     radioButton4.Checked = true;
                     break;
             }
-
-            HexOutputCheckBox.Checked = Settings.RichTextBox.HexOutput;
-            LocalEchoCheckBox.Checked = Settings.RichTextBox.LocalEcho;
-            
             FormWidthTextBox.Text = Settings.Form.Width.ToString();
             FormHeightTextBox.Text = Settings.Form.Height.ToString();
+            WordWrapCheckBox.Checked = Settings.RichTextBox.WordWrap;
+            ToggleScrollingCheckBox.Checked = Settings.RichTextBox.Scroll;
+            HexOutputCheckBox.Checked = Settings.RichTextBox.HexOutput;
+            LocalEchoCheckBox.Checked = Settings.RichTextBox.LocalEcho;                 
         }
         
         private void OKButton_Click(object sender, EventArgs e)
@@ -43,11 +43,13 @@ namespace _4Term
             else
                 Settings.Port.AppendToSend = Settings.Port.AppendType.AppendNothing;
 
+            Settings.Form.Width = int.Parse(FormWidthTextBox.Text);
+            Settings.Form.Height = int.Parse(FormHeightTextBox.Text);
+            Settings.RichTextBox.WordWrap = WordWrapCheckBox.Checked;
+            Settings.RichTextBox.Scroll = ToggleScrollingCheckBox.Checked;
             Settings.RichTextBox.HexOutput = HexOutputCheckBox.Checked;
             Settings.RichTextBox.LocalEcho = LocalEchoCheckBox.Checked;
       
-            Settings.Form.Width = int.Parse(FormWidthTextBox.Text);
-            Settings.Form.Height = int.Parse(FormHeightTextBox.Text);
             Settings.WriteXml();
             Close();
         }
@@ -92,25 +94,6 @@ namespace _4Term
             else if (fontStyle == FontStyle.Bold)
                 return "Bold";
             return "Regular";
-        }
-        private void ForegroundColorButton_Click(object sender, EventArgs e)
-        {
-            using (ColorDialog colorDialog = new ColorDialog())
-            {
-                colorDialog.Color = Color.FromArgb(
-                    Settings.ForeColor.R,
-                    Settings.ForeColor.G,
-                    Settings.ForeColor.B
-                );
-                DialogResult result = colorDialog.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    Settings.ForeColor.R = colorDialog.Color.R;
-                    Settings.ForeColor.G = colorDialog.Color.G;
-                    Settings.ForeColor.B = colorDialog.Color.B;
-                    Settings.WriteXml();
-                }
-            }
         }
 
         private void BackgroundColorButton_Click(object sender, EventArgs e)

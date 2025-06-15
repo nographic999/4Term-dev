@@ -662,7 +662,8 @@ namespace _4Term
         {
             MacroModeToolStripMenuItem.Checked = !MacroModeToolStripMenuItem.Checked;
             MacroEditingFlag = !MacroEditingFlag;
-            ProgButton.Enabled = ProgButton.Visible = MacroBox.Enabled = MacroBox.Visible =
+            ReturnButton.Enabled = ReturnButton.Visible = ProgButton.Enabled = 
+                ProgButton.Visible = MacroBox.Enabled = MacroBox.Visible =
                 MacroTextBox.Enabled = MacroTextBox.Visible = MacroLabel.Enabled = MacroLabel.Visible =
                 MacroTextLabel.Enabled = MacroTextLabel.Visible = TabLabel.Enabled = TabLabel.Visible =
                 TabBox.Enabled = TabBox.Visible = labelinfo.Enabled = labelinfo.Visible = MacroEditingFlag;
