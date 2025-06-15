@@ -1,6 +1,7 @@
 using System;
-using System.Windows.Forms;
+using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace _4Term
 {
@@ -9,12 +10,21 @@ namespace _4Term
         public About_Form()
         {
             InitializeComponent();
+
+            var assembly = Assembly.GetExecutingAssembly();
+            var metadataAttributes = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
+
+            string license = metadataAttributes
+                .Where(attr => attr.Key == "License")
+                .Select(attr => attr.Value)
+                .FirstOrDefault() ?? "License info not found";
             this.Text = String.Format("About {0}", AssemblyTitle);
-            this.labelProductName.Text = AssemblyProduct;
+           this.labelProductName.Text = AssemblyProduct;
             this.labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
             this.labelCopyright.Text = AssemblyCopyright;
             this.labelCompanyName.Text = AssemblyCompany;
             this.textBoxDescription.Text = AssemblyDescription;
+            this.labelMetadata.Text = license;
         }
         #region Assembly Attribute Accessors
         public string AssemblyTitle
@@ -90,6 +100,7 @@ namespace _4Term
                 return;
             }
             base.WndProc(ref buffer);
-        }      
+        }
+
     }
 }

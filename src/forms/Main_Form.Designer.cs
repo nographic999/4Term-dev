@@ -1018,7 +1018,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.MenuStrip;
             this.Name = "Main_Form";
-            this.Text = "4Term x64";
+            this.Text = "4Term";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_Form_FormClosing);
             this.Load += new System.EventHandler(this.Main_Form_Load);
             this.Shown += new System.EventHandler(this.Main_Form_Shown);
