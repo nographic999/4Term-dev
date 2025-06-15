@@ -64,6 +64,7 @@
             this.ToggleScrollingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.MacroModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.MacroRepeatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.COMBox = new System.Windows.Forms.GroupBox();
@@ -381,7 +382,8 @@
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToggleScrollingToolStripMenuItem,
             this.toolStripSeparator4,
-            this.MacroModeToolStripMenuItem});
+            this.MacroModeToolStripMenuItem,
+            this.MacroRepeatToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "&View";
@@ -408,6 +410,14 @@
             this.MacroModeToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.MacroModeToolStripMenuItem.Text = "&Macro Mode";
             this.MacroModeToolStripMenuItem.Click += new System.EventHandler(this.MacroModeToolStripMenuItem_Click);
+            // 
+            // MacroRepeatToolStripMenuItem
+            // 
+            this.MacroRepeatToolStripMenuItem.Name = "MacroRepeatToolStripMenuItem";
+            this.MacroRepeatToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.MacroRepeatToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.MacroRepeatToolStripMenuItem.Text = "Macro &Repeat";
+            this.MacroRepeatToolStripMenuItem.Click += new System.EventHandler(this.MacroRepeatToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -1106,5 +1116,6 @@
         private System.Windows.Forms.RichTextBox RichTextBox;
         private System.Windows.Forms.Button SwapButton;
         private System.Windows.Forms.Button ReturnButton;
+        private System.Windows.Forms.ToolStripMenuItem MacroRepeatToolStripMenuItem;
     }
 }

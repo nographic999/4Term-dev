@@ -674,6 +674,22 @@ namespace _4Term
                groupBox1.Enabled = groupBox1.Visible = COMBox.Enabled = COMBox.Visible = !MacroEditingFlag;
         }
 
+        private void MacroRepeatToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MacroRepeatTimer.Enabled)
+            {
+                MacroRepeatToolStripMenuItem.Checked = false;
+                MacroRepeatTimer.Enabled = false;
+            }
+            else
+            {
+                MacroRepeatFlag = true;
+                MacroRepeatToolStripMenuItem.Checked = true;
+                RichTextBox.SelectionColor = Color.IndianRed;
+                RichTextBox.AppendText("Press any macro button to repeat\n");
+            }
+        }
+
         /*----------------------------------------------------------
          * MenuStrip - Help
          *---------------------------------------------------------

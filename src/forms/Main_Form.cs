@@ -22,6 +22,8 @@ namespace _4Term
         private readonly Serial Port = Serial.Instance;
         /* Timer used for periodically attempting automatic connection */
         private readonly Timer AutoConnectTimer = new Timer();
+        /* Timer used for periodically send macros */
+        private readonly Timer MacroRepeatTimer = new Timer();
         /* Tracks the current page group index (0-31) where each group contains 8 pages */
         private int PageIndex = 0;
         /* Tracks the current macro bank offset (0-511) where each bank contains 128 macros */
@@ -30,6 +32,11 @@ namespace _4Term
         private int CurrentRadioValue = 0;
         /* Stores the index of the currently selected macro button */
         private int CurrentButtonValue = 0;
+
+        private int CurrentMacroRepeat = 0;
+
+        private bool MacroRepeatFlag = false;
+
         /* Flag indicating whether the application is currently in macro editing mode */
         private bool MacroEditingFlag = false;
         /* Path of the currently opened file */
@@ -130,6 +137,9 @@ namespace _4Term
             /* Start background operations */
             AutoConnectTimer.Interval = 100;
             AutoConnectTimer.Tick += ReconnectTick;
+            MacroRepeatTimer.Interval = 500;
+            MacroRepeatTimer.Tick += MacroRepeat;
+
 
             /* UI-dependent initialization */
             WelcomeMsg();            
@@ -354,7 +364,7 @@ namespace _4Term
         public async void MacroButton_Click(int macroIndex)
         {
             /* If not in macro editing mode, proceed with sending the macro */
-            if (!MacroEditingFlag)
+            if (!MacroEditingFlag && !MacroRepeatFlag)
             {
                 /* Check if port is open */
                 if(Port.IsOpen)
@@ -396,8 +406,13 @@ namespace _4Term
                         MessageBoxIcon.Information);
                 }
             }
-
-            else
+            else if (MacroRepeatFlag)
+            {
+                CurrentMacroRepeat = macroIndex + CurrentRadioValue + MacroBank;
+                MacroRepeatFlag = false;
+                MacroRepeatTimer.Enabled = true;
+            }
+            else if (MacroEditingFlag)
             {
                 /* In macro editing mode: load macro details into the UI for editing */
                 MacroBox.Text = Settings.MacroCommand.Text[macroIndex + CurrentRadioValue + MacroBank];
@@ -513,6 +528,7 @@ namespace _4Term
          * DEVELOPMENT STATUS
          *
          * [✓] ReconnectTick
+         * [ ] MacroRepeat
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -525,6 +541,27 @@ namespace _4Term
             ConnectButton.Text = Port.IsOpen ? "Disconnect" : "Connect";
             ConnectButton.ForeColor = Port.IsOpen ? Color.Red : Color.Green;
             if (!Port.IsOpen) Port.Open();
+        }
+
+        private void MacroRepeat(object sender, EventArgs e)
+        {
+            /* Check if port is open */
+            if (Port.IsOpen)
+            {
+                /* Retrieve the macro command based on current index and bank */
+                string command = Settings.MacroCommand.Text[CurrentMacroRepeat];
+
+                /* Send the command only if it's not empty */
+                if (!string.IsNullOrEmpty(command))
+                {
+                    string lineEnding = Port.Send(command);
+
+                    if (Settings.RichTextBox.LocalEcho)
+                    {
+                        AddLine(command + lineEnding, 0);
+                    }
+                }
+            }
         }
 
         /*----------------------------------------------------------
@@ -697,6 +734,6 @@ namespace _4Term
                 return;
             }
             base.WndProc(ref buffer);
-        }        
+        }     
     }
 }
