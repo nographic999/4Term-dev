@@ -117,8 +117,9 @@ namespace _4Term
                     "SELECT Caption, DeviceID FROM Win32_PnPEntity WHERE Caption LIKE '%(COM%'"))
                 {
                     /* Execute query and process results */
-                    foreach (ManagementObject obj in searcher.Get())
+                    foreach (ManagementBaseObject baseObj in searcher.Get())
                     {
+                        ManagementObject obj = (ManagementObject)baseObj;
                         /* Get the device caption (description) and ID */
                         string caption = obj["Caption"]?.ToString();
                         string deviceId = obj["DeviceID"]?.ToString();
@@ -439,9 +440,9 @@ namespace _4Term
                 }
 
                 /* Validate config file existence */
-                if (!File.Exists(Settings.XmlName))
+                if (!File.Exists(Xml.FileNameq))
                 {
-                    MessageBox.Show($"Configuration file not found: {Settings.XmlName}",
+                    MessageBox.Show($"Configuration file not found: {Xml.FileNameq}",
                                   "File Missing",
                                   MessageBoxButtons.OK,
                                   MessageBoxIcon.Warning);
@@ -449,7 +450,7 @@ namespace _4Term
                 }
 
                 /* Check file size(limit to 1MB for XML) */
-                FileInfo configFile = new FileInfo(Settings.XmlName);
+                FileInfo configFile = new FileInfo(Xml.FileNameq);
                 if (configFile.Length > 1024 * 1024)  // 1MB limit
                 {
                     MessageBox.Show("Configuration file exceeds maximum size (1MB)",
@@ -463,8 +464,8 @@ namespace _4Term
                 RichTextBox.Clear();
 
                 /* Read with explicit UTF-8 encoding and error handling */
-                RichTextBox.Text = File.ReadAllText(Settings.XmlName, Encoding.UTF8);
-                FilePath = Settings.XmlName;
+                RichTextBox.Text = File.ReadAllText(Xml.FileNameq, Encoding.UTF8);
+                FilePath = Xml.FileNameq;
             }
             catch (Exception ex)
             {

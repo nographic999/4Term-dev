@@ -90,21 +90,10 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void Main_Form_Load(object sender, EventArgs e)
         {
-            /* Configuration file handling */
-            if (!File.Exists(Settings.XmlName))
-            {
-                DialogResult result = MessageBox.Show("The configuration file does not exist. Would you like to create a new configuration file?",
-                                                   "Create New Configuration",
-                                                   MessageBoxButtons.YesNo,
-                                                   MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
-                    Settings.WriteXml();
-                else
-                    Environment.Exit(0);
-            }
-
             /* Load settings and configure UI */
             Settings.ReadXml();
+
+            /* Set Form size*/
             Size = new Size(Settings.Form.Width, Settings.Form.Height);
 
             /* Initialize font settings */
@@ -638,10 +627,10 @@ namespace _4Term
             /* Set the selection color based on message type */
             if (type == 0)
                 /* Transmit color */
-                RichTextBox.SelectionColor = Color.FromArgb(Settings.TransmitColor.R, Settings.TransmitColor.G, Settings.TransmitColor.B);
+                RichTextBox.SelectionColor = Color.FromArgb(Settings.Color.Transmit.R, Settings.Color.Transmit.G, Settings.Color.Transmit.B);
             else
                 /* Receive color */
-                RichTextBox.SelectionColor = Color.FromArgb(Settings.ReceiveColor.R, Settings.ReceiveColor.G, Settings.ReceiveColor.B);
+                RichTextBox.SelectionColor = Color.FromArgb(Settings.Color.Receive.R, Settings.Color.Receive.G, Settings.Color.Receive.B);
 
             string buffer = "";
 
@@ -718,8 +707,8 @@ namespace _4Term
             }
             await Task.Delay(250);
             RichTextBox.Clear();
-            RichTextBox.ForeColor = Color.FromArgb(Settings.TransmitColor.R, Settings.TransmitColor.G, Settings.TransmitColor.B);
-            RichTextBox.BackColor = Color.FromArgb(Settings.BackColor.R, Settings.BackColor.G, Settings.BackColor.B);
+            RichTextBox.ForeColor = Color.FromArgb(Settings.Color.Transmit.R, Settings.Color.Transmit.G, Settings.Color.Transmit.B);
+            RichTextBox.BackColor = Color.FromArgb(Settings.Color.Back.R, Settings.Color.Back.G, Settings.Color.Back.B);
         }
 
         /*----------------------------------------------------------

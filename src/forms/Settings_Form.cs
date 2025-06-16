@@ -101,16 +101,16 @@ namespace _4Term
             using (ColorDialog colorDialog = new ColorDialog())
             {
                 colorDialog.Color = Color.FromArgb(
-                    Settings.BackColor.R,
-                    Settings.BackColor.G,
-                    Settings.BackColor.B
+                    Settings.Color.Back.R,
+                    Settings.Color.Back.G,
+                    Settings.Color.Back.B
                 );
                 DialogResult result = colorDialog.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    Settings.BackColor.R = colorDialog.Color.R;
-                    Settings.BackColor.G = colorDialog.Color.G;
-                    Settings.BackColor.B = colorDialog.Color.B;
+                    Settings.Color.Back.R = colorDialog.Color.R;
+                    Settings.Color.Back.G = colorDialog.Color.G;
+                    Settings.Color.Back.B = colorDialog.Color.B;
                     Settings.WriteXml();
                 }
             }
@@ -120,16 +120,16 @@ namespace _4Term
             using (ColorDialog colorDialog = new ColorDialog())
             {
                 colorDialog.Color = Color.FromArgb(
-                    Settings.TransmitColor.R,
-                    Settings.TransmitColor.G,
-                    Settings.TransmitColor.B
+                    Settings.Color.Transmit.R,
+                    Settings.Color.Transmit.G,
+                    Settings.Color.Transmit.B
                 );
                 DialogResult result = colorDialog.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    Settings.TransmitColor.R = colorDialog.Color.R;
-                    Settings.TransmitColor.G = colorDialog.Color.G;
-                    Settings.TransmitColor.B = colorDialog.Color.B;
+                    Settings.Color.Transmit.R = colorDialog.Color.R;
+                    Settings.Color.Transmit.G = colorDialog.Color.G;
+                    Settings.Color.Transmit.B = colorDialog.Color.B;
                     Settings.WriteXml();
                 }
             }
@@ -139,16 +139,16 @@ namespace _4Term
             using (ColorDialog colorDialog = new ColorDialog())
             {
                 colorDialog.Color = Color.FromArgb(
-                    Settings.ReceiveColor.R,
-                    Settings.ReceiveColor.G,
-                    Settings.ReceiveColor.B
+                    Settings.Color.Receive.R,
+                    Settings.Color.Receive.G,
+                    Settings.Color.Receive.B
                 );
                 DialogResult result = colorDialog.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    Settings.ReceiveColor.R = colorDialog.Color.R;
-                    Settings.ReceiveColor.G = colorDialog.Color.G;
-                    Settings.ReceiveColor.B = colorDialog.Color.B;
+                    Settings.Color.Receive.R = colorDialog.Color.R;
+                    Settings.Color.Receive.G = colorDialog.Color.G;
+                    Settings.Color.Receive.B = colorDialog.Color.B;
                     Settings.WriteXml();
                 }
             }

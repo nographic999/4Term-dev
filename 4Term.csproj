@@ -12,7 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-  </PropertyGroup>  
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DEBUG|X86-64'">
     <DebugSymbols>true</DebugSymbols>
     <IntermediateOutputPath>obj\debug</IntermediateOutputPath>
@@ -24,7 +24,6 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
-  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RELEASE|X86-64'">
     <IntermediateOutputPath>obj\release</IntermediateOutputPath>
     <OutputPath>bin\release</OutputPath>
@@ -38,8 +37,8 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
-  </PropertyGroup> 
-  <ItemGroup>  
+  </PropertyGroup>
+  <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.CodeDom, Version=9.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.CodeDom.9.0.6\lib\net462\System.CodeDom.dll</HintPath>
@@ -100,6 +99,7 @@
       <DependentUpon>Settings_Form.cs</DependentUpon>
     </Compile>
     <Compile Include="src\Settings.cs" />
+    <Compile Include="src\Xml.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="src\forms\About_Form.resx">

@@ -95,11 +95,6 @@ namespace _4Term
                             /* Notify subscribers of new data */
                             DataReceived?.Invoke(serialIn);                            
                         }
-                        else
-                        {
-                            /* Prevent tight loop when no data available */
-                            Thread.Sleep(1);
-                        }
                     }
 
                     catch (TimeoutException tex)
@@ -107,7 +102,6 @@ namespace _4Term
                         StatusChanged?.Invoke($"Timeout: {tex.Message}");
                         Thread.Sleep(10);
                     }
-
                     /* This is a generic catch block that catches any other exceptions that may occur. */
                     catch (Exception ex)
                     {                        

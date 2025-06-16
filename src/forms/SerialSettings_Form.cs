@@ -79,8 +79,9 @@ namespace _4Term
                 using (var searcher = new ManagementObjectSearcher(
                     "SELECT Caption, DeviceID FROM Win32_PnPEntity WHERE Caption LIKE '%(COM%'"))
                 {
-                    foreach (ManagementObject obj in searcher.Get())
+                    foreach (ManagementBaseObject baseObj in searcher.Get())
                     {
+                        ManagementObject obj = (ManagementObject)baseObj;
                         string caption = obj["Caption"]?.ToString();
                         string deviceId = obj["DeviceID"]?.ToString();
 
