@@ -1,79 +1,194 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.IO;
 using System.IO.Ports;
+using System.Linq;
 using System.Management;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace _4Term
 {
     public partial class SerialPortOptionsForm : Form
     {
+        /*----------------------------------------------------------
+         * Class Functions
+         * ---------------------------------------------------------
+         * DEVELOPMENT STATUS
+         *
+         * [✓] SerialPortOptionsForm (Constructor)
+         * [✓] SaveSettings_Click
+         * [✓] COMPortComboBox_Click
+         * [✓] WndProc
+         *---------------------------------------------------------*/
+
+        /*----------------------------------------------------------
+         * SerialPortOptionsForm (Constructor)
+         * 
+         * Initializes serial port configuration form components:
+         *---------------------------------------------------------*/
         public SerialPortOptionsForm()
         {
             InitializeComponent();
-            COMPortComboBox_Click(this, EventArgs.Empty);
-            Int32[] baudRates = {
-                100,300,600,1200,2400,4800,9600,14400,19200,
-                38400,56000,57600,115200,128000,256000,460800,921600,0
-            };
 
-            int found = 0;
-            for (int i = 0; baudRates[i] != 0; ++i)
+            /* Refresh list of available COM ports */
+            COMPortComboBox_Click(this, EventArgs.Empty);
+
+            switch (Settings.Port.BaudRate)
             {
-                BaudRateComboBox.Items.Add(baudRates[i].ToString());
-                if (baudRates[i] == Settings.Port.BaudRate)
-                    found = i;
+                case 600: BaudRate600RadioButton.Checked = true; break;
+                case 1200: BaudRate1200RadioButton.Checked = true; break;
+                case 2400: BaudRate2400RadioButton.Checked = true; break;
+                case 4800: BaudRate4800RadioButton.Checked = true; break;
+                case 9600: BaudRate9600RadioButton.Checked = true; break;
+                case 14400: BaudRate14400RadioButton.Checked = true; break;
+                case 19200: BaudRate19200RadioButton.Checked = true; break;
+                case 28800: BaudRate28800RadioButton.Checked = true; break;
+                case 38400: BaudRate38400RadioButton.Checked = true; break;
+                case 56000: BaudRate56000RadioButton.Checked = true; break;
+                case 57600: BaudRate57600RadioButton.Checked = true; break;
+                case 115200: BaudRate115200RadioButton.Checked = true; break;
+                case 128000: BaudRate128000RadioButton.Checked = true; break;
+                case 256000: BaudRate256000RadioButton.Checked = true; break;
+                default: 
+                    BaudRateCustomRadioButton.Checked = true;
+                    BaudRateCustomRadioButton_Click(this, EventArgs.Empty);
+                    CustomBRTextBox.Text = Settings.Port.BaudRate.ToString();
+                    break;
             }
-            BaudRateComboBox.SelectedIndex = found;
-            DataBitsComboBox.Items.Add("5");
-            DataBitsComboBox.Items.Add("6");
-            DataBitsComboBox.Items.Add("7");
-            DataBitsComboBox.Items.Add("8");
-            DataBitsComboBox.SelectedIndex = Settings.Port.DataBits - 5;
-            foreach (string s in Enum.GetNames(typeof(Parity)))
+
+            switch (Settings.Port.Append)
             {
-                ParityComboBox.Items.Add(s);
+                case Settings.Port.AppendType.AppendNothing: AppendNoneRadioButton.Checked = true; break;
+                case Settings.Port.AppendType.AppendCR: AppendCRRadioButton.Checked = true; break;
+                case Settings.Port.AppendType.AppendLF: AppendLFRadioButton.Checked = true; break;
+                case Settings.Port.AppendType.AppendCRLF: AppendCRLFRadioButton.Checked = true; break;
             }
-            ParityComboBox.SelectedIndex = (int)Settings.Port.Parity;
-            foreach (string s in Enum.GetNames(typeof(StopBits)))
+
+            switch (Settings.Port.DataBits)
             {
-                StopBitsComboBox.Items.Add(s);
+                case 5: DataBits5RadioButton.Checked = true; break;
+                case 6: DataBits6RadioButton.Checked = true; break;
+                case 7: DataBits7RadioButton.Checked = true; break;
+                case 8: DataBits8RadioButton.Checked = true; break;
             }
-            StopBitsComboBox.SelectedIndex = (int)Settings.Port.StopBits;
-            foreach (string s in Enum.GetNames(typeof(Handshake)))
+            
+            switch (Settings.Port.Parity)
             {
-                HandshakingComboBox.Items.Add(s);
+                case System.IO.Ports.Parity.None: ParityNoneRadioButton.Checked = true; break;
+                case System.IO.Ports.Parity.Odd: ParityOddRadioButton.Checked = true; break;
+                case System.IO.Ports.Parity.Even: ParityEvenRadioButton.Checked = true; break;
+                case System.IO.Ports.Parity.Mark: ParityMarkRadioButton.Checked = true; break;
+                case System.IO.Ports.Parity.Space: ParitySpaceRadioButton.Checked = true; break;
             }
-            HandshakingComboBox.SelectedIndex = (int)Settings.Port.Handshake;
-            DtrCheckBox.Checked = Settings.Port.Dtr;
-            RtsCheckBox.Checked = Settings.Port.Rts;
+
+            switch (Settings.Port.StopBits)
+            {
+                case System.IO.Ports.StopBits.One: StopBits1RadioButton.Checked = true; break;
+                case System.IO.Ports.StopBits.OnePointFive: StopBits15RadioButton.Checked = true; break;
+                case System.IO.Ports.StopBits.Two: StopBits2RadioButton.Checked = true; break;
+            }
+
+            switch (Settings.Port.Handshake)
+            {
+                case System.IO.Ports.Handshake.None: HandshakingNoneRadioButton.Checked = true; break;
+                case System.IO.Ports.Handshake.XOnXOff: HandshakingRTSCTSRadioButton.Checked = true; break;
+                case System.IO.Ports.Handshake.RequestToSend: HandshakingXONXOFRadioButton.Checked = true; break;
+                case System.IO.Ports.Handshake.RequestToSendXOnXOff: HandshakingRTSCTSXONXOFRadioButton.Checked = true; break;
+            }
+
+            TransmitDTRCheckBox.Checked = Settings.Port.Dtr;
+            TransmitRTSCheckBox.Checked = Settings.Port.Rts;
         }
 
-        private void SaveSettings_Click(object sender, EventArgs e)
+        /*----------------------------------------------------------
+         * SaveSettings_Click
+         * 
+         * Saves current UI selections to application settings.
+         *---------------------------------------------------------*/
+        private void SaveOptions_Click(object sender, EventArgs e)
         {
+            // Save COM Port
             Settings.Port.PortName = COMPortComboBox.Text.Split('-')[0].Trim();
-            Settings.Port.BaudRate = Int32.Parse(BaudRateComboBox.Text);
-            Settings.Port.DataBits = DataBitsComboBox.SelectedIndex + 5;
-            Settings.Port.Parity = (Parity)ParityComboBox.SelectedIndex;
-            Settings.Port.StopBits = (StopBits)StopBitsComboBox.SelectedIndex;
-            Settings.Port.Handshake = (Handshake)HandshakingComboBox.SelectedIndex;
-            Settings.Port.Dtr = DtrCheckBox.Checked;
-            Settings.Port.Rts = RtsCheckBox.Checked;
+
+            // Save Baud Rate
+            if (BaudRateCustomRadioButton.Checked && int.TryParse(CustomBRTextBox.Text, out int customBaud))
+            {
+                Settings.Port.BaudRate = customBaud;
+            }
+            else
+            {
+                Settings.Port.BaudRate = BaudRate600RadioButton.Checked ? 600 :
+                                        BaudRate1200RadioButton.Checked ? 1200 :
+                                        BaudRate2400RadioButton.Checked ? 2400 :
+                                        BaudRate4800RadioButton.Checked ? 4800 :
+                                        BaudRate9600RadioButton.Checked ? 9600 :
+                                        BaudRate14400RadioButton.Checked ? 14400 :
+                                        BaudRate19200RadioButton.Checked ? 19200 :
+                                        BaudRate28800RadioButton.Checked ? 28800 :
+                                        BaudRate38400RadioButton.Checked ? 38400 :
+                                        BaudRate56000RadioButton.Checked ? 56000 :
+                                        BaudRate57600RadioButton.Checked ? 57600 :
+                                        BaudRate115200RadioButton.Checked ? 115200 :
+                                        BaudRate128000RadioButton.Checked ? 128000 :
+                                        BaudRate256000RadioButton.Checked ? 256000 : 9600;
+            }
+            // Save Data Bits
+            Settings.Port.DataBits = DataBits5RadioButton.Checked ? 5 :
+                                    DataBits6RadioButton.Checked ? 6 :
+                                    DataBits7RadioButton.Checked ? 7 : 8;
+
+            // Save Line Ending
+            Settings.Port.Append = AppendNoneRadioButton.Checked ? Settings.Port.AppendType.AppendNothing :
+                                  AppendCRRadioButton.Checked ? Settings.Port.AppendType.AppendCR :
+                                  AppendLFRadioButton.Checked ? Settings.Port.AppendType.AppendLF :
+                                  Settings.Port.AppendType.AppendCRLF;
+
+            // Save Parity
+            Settings.Port.Parity = ParityNoneRadioButton.Checked ? Parity.None :
+                                  ParityOddRadioButton.Checked ? Parity.Odd :
+                                  ParityEvenRadioButton.Checked ? Parity.Even :
+                                  ParityMarkRadioButton.Checked ? Parity.Mark : Parity.Space;
+
+            // Save Stop Bits
+            Settings.Port.StopBits = StopBits1RadioButton.Checked ? StopBits.One :
+                                    StopBits15RadioButton.Checked ? StopBits.OnePointFive : StopBits.Two;
+
+            // Save Handshake
+            Settings.Port.Handshake = HandshakingNoneRadioButton.Checked ? Handshake.None :
+                                     HandshakingXONXOFRadioButton.Checked ? Handshake.XOnXOff :
+                                     HandshakingRTSCTSRadioButton.Checked ? Handshake.RequestToSend :
+                                     Handshake.RequestToSendXOnXOff;
+
+            Settings.Port.Dtr = TransmitDTRCheckBox.Checked;
+            Settings.Port.Rts = TransmitRTSCheckBox.Checked;
+
             Settings.WriteXml();
+
             Close();
         }
 
+        /*----------------------------------------------------------
+         * COMPortComboBox_Click
+         * 
+         * Refreshes COM port list with device descriptions.
+         *---------------------------------------------------------*/
         private void COMPortComboBox_Click(object sender, EventArgs e)
         {
+            /* Clear existing port listings */
             COMPortComboBox.Items.Clear();
+
+            /* Get serial port manager instance */
             Serial Serial = Serial.Instance;
             int found = 0;
-            string[] portList = Serial.GetAvailablePorts();
 
-  
+            /* Retrieve raw COM port names */
+            string[] portList = System.IO.Ports.SerialPort.GetPortNames();
+
+            /* Dictionary to store port descriptions */
             Dictionary<string, string> portDescriptions = new Dictionary<string, string>();
 
+            /* Attempt to get friendly port names from Windows Management */
             try
             {
                 using (var searcher = new ManagementObjectSearcher(
@@ -98,17 +213,17 @@ namespace _4Term
                     }
                 }
             }
-            catch (Exception )
-            {
-               
-            }
 
-        
+            /* Silent fail - use basic port names if WMI unavailable */
+            catch (Exception ){}
+
+            /* Build display items combining port names and descriptions */
             for (int i = 0; i < portList.Length; ++i)
             {
                 string name = portList[i];
                 string displayText = name;
 
+                /* Append description if available */
                 if (portDescriptions.TryGetValue(name, out string desc))
                 {
                     displayText += $" - {desc}";
@@ -116,12 +231,40 @@ namespace _4Term
 
                 COMPortComboBox.Items.Add(displayText);
 
+                /* Track currently configured port */
                 if (name == Settings.Port.PortName)
                     found = i;
             }
 
+            /* Select configured port if available */
             if (portList.Length > 0)
                 COMPortComboBox.SelectedIndex = found;
+        }
+
+        /*----------------------------------------------------------
+         * WndProc
+         * 
+         * Blocks right-clicks on title bar/borders.
+        *---------------------------------------------------------*/
+        protected override void WndProc(ref Message buffer)
+        {
+            if (buffer.Msg == 0xA3)
+            {
+                return;
+            }
+            base.WndProc(ref buffer);
+        }
+
+        private void BaudRateCustomRadioButton_Click(object sender, EventArgs e)
+        {
+            CustomBRTextBox.Visible = CustomBRTextBox.Enabled = CustomBRGroupBox.Visible = CustomBRGroupBox.Enabled = true;
+            ComPortGroupBox.Size = new System.Drawing.Size(99, 46);
+        }
+
+        private void BaudRateRadioButton_Click(object sender, EventArgs e)
+        {
+            CustomBRTextBox.Visible = CustomBRTextBox.Enabled = CustomBRGroupBox.Visible = CustomBRGroupBox.Enabled = false;
+            ComPortGroupBox.Size = new System.Drawing.Size(99, 95);
         }
     }
 }

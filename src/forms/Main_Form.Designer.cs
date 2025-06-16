@@ -64,9 +64,26 @@
             this.ToggleScrollingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.MacroModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.MacroRepeatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AdvancedModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DtrToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RtsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.M1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.M1SetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.M1ToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
+            this.M2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.M2SetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.M2ToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
+            this.M3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.M3SetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.M3ToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
+            this.M4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.M4SetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.M4ToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
+            this.M5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.M5SetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.M5ToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
             this.COMBox = new System.Windows.Forms.GroupBox();
             this.AutoConnectButton = new System.Windows.Forms.Button();
             this.SettingsButton = new System.Windows.Forms.Button();
@@ -124,7 +141,14 @@
             this.editToolStripMenuItem,
             this.formatToolStripMenuItem,
             this.viewToolStripMenuItem,
-            this.helpToolStripMenuItem});
+            this.helpToolStripMenuItem,
+            this.DtrToolStripMenuItem,
+            this.RtsToolStripMenuItem,
+            this.M1ToolStripMenuItem,
+            this.M2ToolStripMenuItem,
+            this.M3ToolStripMenuItem,
+            this.M4ToolStripMenuItem,
+            this.M5ToolStripMenuItem});
             this.MenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip.Name = "MenuStrip";
             this.MenuStrip.Size = new System.Drawing.Size(702, 24);
@@ -383,7 +407,7 @@
             this.ToggleScrollingToolStripMenuItem,
             this.toolStripSeparator4,
             this.MacroModeToolStripMenuItem,
-            this.MacroRepeatToolStripMenuItem});
+            this.AdvancedModeToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "&View";
@@ -411,13 +435,13 @@
             this.MacroModeToolStripMenuItem.Text = "&Macro Mode";
             this.MacroModeToolStripMenuItem.Click += new System.EventHandler(this.MacroModeToolStripMenuItem_Click);
             // 
-            // MacroRepeatToolStripMenuItem
+            // AdvancedModeToolStripMenuItem
             // 
-            this.MacroRepeatToolStripMenuItem.Name = "MacroRepeatToolStripMenuItem";
-            this.MacroRepeatToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.MacroRepeatToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
-            this.MacroRepeatToolStripMenuItem.Text = "Macro &Repeat";
-            this.MacroRepeatToolStripMenuItem.Click += new System.EventHandler(this.MacroRepeatToolStripMenuItem_Click);
+            this.AdvancedModeToolStripMenuItem.Name = "AdvancedModeToolStripMenuItem";
+            this.AdvancedModeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.A)));
+            this.AdvancedModeToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.AdvancedModeToolStripMenuItem.Text = "&Advanced Mode";
+            this.AdvancedModeToolStripMenuItem.Click += new System.EventHandler(this.AdvancedModeToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -434,6 +458,165 @@
             this.AboutToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.AboutToolStripMenuItem.Text = "&About...";
             this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
+            // 
+            // DtrToolStripMenuItem
+            // 
+            this.DtrToolStripMenuItem.Enabled = false;
+            this.DtrToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.DtrToolStripMenuItem.Margin = new System.Windows.Forms.Padding(186, 0, 0, 0);
+            this.DtrToolStripMenuItem.Name = "DtrToolStripMenuItem";
+            this.DtrToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F6;
+            this.DtrToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+            this.DtrToolStripMenuItem.Text = "&DTR";
+            this.DtrToolStripMenuItem.Visible = false;
+            this.DtrToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DtrToolStripMenuItem_MouseDown);
+            // 
+            // RtsToolStripMenuItem
+            // 
+            this.RtsToolStripMenuItem.Enabled = false;
+            this.RtsToolStripMenuItem.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.RtsToolStripMenuItem.Name = "RtsToolStripMenuItem";
+            this.RtsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F7;
+            this.RtsToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
+            this.RtsToolStripMenuItem.Text = "&RTS";
+            this.RtsToolStripMenuItem.Visible = false;
+            this.RtsToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RtsToolStripMenuItem_MouseDown);
+            // 
+            // M1ToolStripMenuItem
+            // 
+            this.M1ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.M1SetToolStripMenuItem,
+            this.M1ToolStripTextBox});
+            this.M1ToolStripMenuItem.Enabled = false;
+            this.M1ToolStripMenuItem.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.M1ToolStripMenuItem.Name = "M1ToolStripMenuItem";
+            this.M1ToolStripMenuItem.Size = new System.Drawing.Size(36, 20);
+            this.M1ToolStripMenuItem.Text = "M1";
+            this.M1ToolStripMenuItem.Visible = false;
+            this.M1ToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.M1ToolStripMenuItem_MouseDown);
+            // 
+            // M1SetToolStripMenuItem
+            // 
+            this.M1SetToolStripMenuItem.Name = "M1SetToolStripMenuItem";
+            this.M1SetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.M1SetToolStripMenuItem.Text = "Set";
+            this.M1SetToolStripMenuItem.Click += new System.EventHandler(this.M1SetToolStripMenuItem_Click);
+            // 
+            // M1ToolStripTextBox
+            // 
+            this.M1ToolStripTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.M1ToolStripTextBox.Name = "M1ToolStripTextBox";
+            this.M1ToolStripTextBox.Size = new System.Drawing.Size(100, 23);
+            this.M1ToolStripTextBox.Text = "500";
+            // 
+            // M2ToolStripMenuItem
+            // 
+            this.M2ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.M2SetToolStripMenuItem,
+            this.M2ToolStripTextBox});
+            this.M2ToolStripMenuItem.Enabled = false;
+            this.M2ToolStripMenuItem.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.M2ToolStripMenuItem.Name = "M2ToolStripMenuItem";
+            this.M2ToolStripMenuItem.Size = new System.Drawing.Size(36, 20);
+            this.M2ToolStripMenuItem.Text = "M2";
+            this.M2ToolStripMenuItem.Visible = false;
+            this.M2ToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.M2ToolStripMenuItem_MouseDown);
+            // 
+            // M2SetToolStripMenuItem
+            // 
+            this.M2SetToolStripMenuItem.Name = "M2SetToolStripMenuItem";
+            this.M2SetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.M2SetToolStripMenuItem.Text = "Set";
+            this.M2SetToolStripMenuItem.Click += new System.EventHandler(this.M2SetToolStripMenuItem_Click);
+            // 
+            // M2ToolStripTextBox
+            // 
+            this.M2ToolStripTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.M2ToolStripTextBox.Name = "M2ToolStripTextBox";
+            this.M2ToolStripTextBox.Size = new System.Drawing.Size(100, 23);
+            this.M2ToolStripTextBox.Text = "500";
+            // 
+            // M3ToolStripMenuItem
+            // 
+            this.M3ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.M3SetToolStripMenuItem,
+            this.M3ToolStripTextBox});
+            this.M3ToolStripMenuItem.Enabled = false;
+            this.M3ToolStripMenuItem.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.M3ToolStripMenuItem.Name = "M3ToolStripMenuItem";
+            this.M3ToolStripMenuItem.Size = new System.Drawing.Size(36, 20);
+            this.M3ToolStripMenuItem.Text = "M3";
+            this.M3ToolStripMenuItem.Visible = false;
+            this.M3ToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.M3ToolStripMenuItem_MouseDown);
+            // 
+            // M3SetToolStripMenuItem
+            // 
+            this.M3SetToolStripMenuItem.Name = "M3SetToolStripMenuItem";
+            this.M3SetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.M3SetToolStripMenuItem.Text = "Set";
+            this.M3SetToolStripMenuItem.Click += new System.EventHandler(this.M3SetToolStripMenuItem_Click);
+            // 
+            // M3ToolStripTextBox
+            // 
+            this.M3ToolStripTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.M3ToolStripTextBox.Name = "M3ToolStripTextBox";
+            this.M3ToolStripTextBox.Size = new System.Drawing.Size(100, 23);
+            this.M3ToolStripTextBox.Text = "500";
+            // 
+            // M4ToolStripMenuItem
+            // 
+            this.M4ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.M4SetToolStripMenuItem,
+            this.M4ToolStripTextBox});
+            this.M4ToolStripMenuItem.Enabled = false;
+            this.M4ToolStripMenuItem.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.M4ToolStripMenuItem.Name = "M4ToolStripMenuItem";
+            this.M4ToolStripMenuItem.Size = new System.Drawing.Size(36, 20);
+            this.M4ToolStripMenuItem.Text = "M4";
+            this.M4ToolStripMenuItem.Visible = false;
+            this.M4ToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.M4ToolStripMenuItem_MouseDown);
+            // 
+            // M4SetToolStripMenuItem
+            // 
+            this.M4SetToolStripMenuItem.Name = "M4SetToolStripMenuItem";
+            this.M4SetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.M4SetToolStripMenuItem.Text = "Set";
+            this.M4SetToolStripMenuItem.Click += new System.EventHandler(this.M4SetToolStripMenuItem_Click);
+            // 
+            // M4ToolStripTextBox
+            // 
+            this.M4ToolStripTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.M4ToolStripTextBox.Name = "M4ToolStripTextBox";
+            this.M4ToolStripTextBox.Size = new System.Drawing.Size(100, 23);
+            this.M4ToolStripTextBox.Text = "500";
+            // 
+            // M5ToolStripMenuItem
+            // 
+            this.M5ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.M5SetToolStripMenuItem,
+            this.M5ToolStripTextBox});
+            this.M5ToolStripMenuItem.Enabled = false;
+            this.M5ToolStripMenuItem.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.M5ToolStripMenuItem.Name = "M5ToolStripMenuItem";
+            this.M5ToolStripMenuItem.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.M5ToolStripMenuItem.Size = new System.Drawing.Size(36, 20);
+            this.M5ToolStripMenuItem.Text = "M5";
+            this.M5ToolStripMenuItem.Visible = false;
+            this.M5ToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.M5ToolStripMenuItem_MouseDown);
+            // 
+            // M5SetToolStripMenuItem
+            // 
+            this.M5SetToolStripMenuItem.Name = "M5SetToolStripMenuItem";
+            this.M5SetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.M5SetToolStripMenuItem.Text = "Set";
+            this.M5SetToolStripMenuItem.Click += new System.EventHandler(this.M5SetToolStripMenuItem_Click);
+            // 
+            // M5ToolStripTextBox
+            // 
+            this.M5ToolStripTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.M5ToolStripTextBox.Name = "M5ToolStripTextBox";
+            this.M5ToolStripTextBox.Size = new System.Drawing.Size(100, 23);
+            this.M5ToolStripTextBox.Text = "500";
             // 
             // COMBox
             // 
@@ -812,7 +995,7 @@
             this.SwapButton.Size = new System.Drawing.Size(704, 68);
             this.SwapButton.TabIndex = 239;
             this.SwapButton.UseVisualStyleBackColor = false;
-            this.SwapButton.Click += new System.EventHandler(this.SwapButton_Click);
+            this.SwapButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SwapButton_MouseDown);
             // 
             // groupBox1
             // 
@@ -1084,7 +1267,6 @@
         private System.Windows.Forms.Button ClearButton;
         private System.Windows.Forms.ComboBox ComboBox;
         private System.Windows.Forms.Button SendButton;
-        private System.Windows.Forms.ToolStripMenuItem MacroModeToolStripMenuItem;
         private System.Windows.Forms.TextBox TabBox;
         private System.Windows.Forms.Label TabLabel;
         private System.Windows.Forms.Label MacroTextLabel;
@@ -1116,6 +1298,24 @@
         private System.Windows.Forms.RichTextBox RichTextBox;
         private System.Windows.Forms.Button SwapButton;
         private System.Windows.Forms.Button ReturnButton;
-        private System.Windows.Forms.ToolStripMenuItem MacroRepeatToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DtrToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem RtsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem M1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem M2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem M3ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem M4ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem M5ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem M1SetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem M2SetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem M3SetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem M4SetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem MacroModeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem AdvancedModeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripTextBox M1ToolStripTextBox;
+        private System.Windows.Forms.ToolStripTextBox M2ToolStripTextBox;
+        private System.Windows.Forms.ToolStripTextBox M3ToolStripTextBox;
+        private System.Windows.Forms.ToolStripTextBox M4ToolStripTextBox;
+        private System.Windows.Forms.ToolStripMenuItem M5SetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripTextBox M5ToolStripTextBox;
     }
 }

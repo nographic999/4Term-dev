@@ -1,7 +1,5 @@
 ﻿using System;
-using System.CodeDom;
 using System.IO.Ports;
-using System.Windows.Forms;
 
 namespace _4Term
 {
@@ -27,6 +25,7 @@ namespace _4Term
             public static bool Scroll = true;
             public static bool HexOutput = false;
             public static bool LocalEcho = true;
+            public static bool AdvancedMode = false;
         }
 
         public class Color
@@ -55,7 +54,7 @@ namespace _4Term
                 AppendCRLF
             }
 
-            public static AppendType AppendToSend = AppendType.AppendCR;
+            public static AppendType Append = AppendType.AppendCR;
         }
 
         public class Page
@@ -198,6 +197,7 @@ namespace _4Term
             RichTextBox.Scroll = Xml.ReadBoolParmQ("RichTextBox/Scroll");
             RichTextBox.HexOutput = Xml.ReadBoolParmQ("RichTextBox/HexOutput");
             RichTextBox.LocalEcho = Xml.ReadBoolParmQ("RichTextBox/LocalEcho");
+            RichTextBox.AdvancedMode = Xml.ReadBoolParmQ("RichTextBox/AdvancedMode");
 
             /* Color section */
             Color.Back.R = Xml.ReadIntParmQ("Back/R");
@@ -217,7 +217,7 @@ namespace _4Term
             Port.Parity = (Parity)Enum.Parse(typeof(Parity), Xml.ReadStringParmQ("Port/Parity"));
             Port.StopBits = (StopBits)Enum.Parse(typeof(StopBits), Xml.ReadStringParmQ("Port/StopBits"));
             Port.Handshake = (Handshake)Enum.Parse(typeof(Handshake), Xml.ReadStringParmQ("Port/Handshake"));
-            Port.AppendToSend = (Port.AppendType)Enum.Parse(typeof(Port.AppendType), Xml.ReadStringParmQ("Port/AppendToSend"));
+            Port.Append = (Port.AppendType)Enum.Parse(typeof(Port.AppendType), Xml.ReadStringParmQ("Port/AppendToSend"));
             Port.Dtr = Xml.ReadBoolParmQ("Port/Dtr");
             Port.Rts = Xml.ReadBoolParmQ("Port/Rts");
 
@@ -271,6 +271,7 @@ namespace _4Term
             Xml.WriteBoolParmQ("RichTextBox/Scroll", RichTextBox.Scroll);
             Xml.WriteBoolParmQ("RichTextBox/HexOutput", RichTextBox.HexOutput);
             Xml.WriteBoolParmQ("RichTextBox/LocalEcho", RichTextBox.LocalEcho);
+            Xml.WriteBoolParmQ("RichTextBox/AdvancedMode", RichTextBox.AdvancedMode);
 
             /* Color section */
             Xml.WriteIntParmQ("Back/R", Color.Back.R);
@@ -290,7 +291,7 @@ namespace _4Term
             Xml.WriteStringParmQ("Port/Parity", Port.Parity.ToString());
             Xml.WriteStringParmQ("Port/StopBits", Port.StopBits.ToString());
             Xml.WriteStringParmQ("Port/Handshake", Port.Handshake.ToString());
-            Xml.WriteStringParmQ("Port/AppendToSend", Port.AppendToSend.ToString());
+            Xml.WriteStringParmQ("Port/AppendToSend", Port.Append.ToString());
             Xml.WriteBoolParmQ("Port/Dtr", Port.Dtr);
             Xml.WriteBoolParmQ("Port/Rts", Port.Rts);
 
