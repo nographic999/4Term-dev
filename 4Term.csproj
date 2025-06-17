@@ -86,11 +86,11 @@
     </Compile>
     <Compile Include="src\Program.cs" />
     <Compile Include="src\Serial.cs" />
-    <Compile Include="src\forms\SerialSettings_Form.cs">
+    <Compile Include="src\forms\SerialOptions_Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\forms\SerialSettings_Form.Designer.cs">
-      <DependentUpon>SerialSettings_Form.cs</DependentUpon>
+    <Compile Include="src\forms\SerialOptions_Form.Designer.cs">
+      <DependentUpon>SerialOptions_Form.cs</DependentUpon>
     </Compile>
     <Compile Include="src\forms\Settings_Form.cs">
       <SubType>Form</SubType>
@@ -108,8 +108,8 @@
     <EmbeddedResource Include="src\forms\Main_Form.resx">
       <DependentUpon>Main_Form.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\forms\SerialSettings_Form.resx">
-      <DependentUpon>SerialSettings_Form.cs</DependentUpon>
+    <EmbeddedResource Include="src\forms\SerialOptions_Form.resx">
+      <DependentUpon>SerialOptions_Form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\forms\Settings_Form.resx">
       <DependentUpon>Settings_Form.cs</DependentUpon>

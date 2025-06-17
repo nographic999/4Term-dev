@@ -153,15 +153,15 @@ namespace _4Term
             AutoConnectTimer.Tick += ReconnectTick;
 
             M1Timer.Interval = 500;
-            M1Timer.Tick += M1Repeat;
+            M1Timer.Tick += M1Tick;
             M2Timer.Interval = 500;
-            M2Timer.Tick += M2Repeat;
+            M2Timer.Tick += M2Tick;
             M3Timer.Interval = 500;
-            M3Timer.Tick += M3Repeat;
+            M3Timer.Tick += M3Tick;
             M4Timer.Interval = 500;
-            M4Timer.Tick += M4Repeat;
+            M4Timer.Tick += M4Tick;
             M5Timer.Interval = 500;
-            M5Timer.Tick += M5Repeat;
+            M5Timer.Tick += M5Tick;
 
             /* UI-dependent initialization */
             WelcomeMsg();            
@@ -185,8 +185,8 @@ namespace _4Term
          * ---------------------------------------------------------
          * DEVELOPMENT STATUS
          *
-         * [✓] ReturnButton_Click
-         * [✓] ProgButton_Click
+         * [✓] CloseButton_Click
+         * [✓] AlienButton_Click
          * [~] SendButton_Click - needs optimization
          * [✓] ClearButton_Click
          * [✓] OptionsButton_Click
@@ -197,9 +197,10 @@ namespace _4Term
          * [~] MacroButton_Click - needs optimization
          *---------------------------------------------------------*/
 
-        private void ReturnButton_Click(object sender, EventArgs e)
+        private void CloseButton_Click(object sender, EventArgs e)
         {
-            MacroModeToolStripMenuItem_Click(sender, e);
+            MacroEditingFlag = !MacroEditingFlag;
+            SetMacroSetMode(MacroEditingFlag);
         }
 
         /*----------------------------------------------------------
@@ -208,40 +209,40 @@ namespace _4Term
          * Handles macro button editing confirmation
          * Saves macro settings when text fields are valid
          *---------------------------------------------------------*/
-        private void ProgButton_Click(object sender, EventArgs e)
+        private void AlienButton_Click(object sender, EventArgs e)
         {
-            /* Validate that the command input box */
-            if (string.IsNullOrWhiteSpace(MacroBox.Text))
-    {
-                MessageBox.Show("Command text cannot be empty", "Validation Error",
-                               MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            /* Validate that the tab text input box */
+            if (string.IsNullOrWhiteSpace(PageBox.Text))
+            {
+                ErrorMessage("Tab cannot be empty\n");
                 return;
-            }
+            }            
 
             /* Validate that the button text input box */
             if (string.IsNullOrWhiteSpace(MacroTextBox.Text))
             {
-                MessageBox.Show("Button text cannot be empty", "Validation Error",
-                               MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ErrorMessage("Text cannot be empty\n");
                 return;
             }
 
-            /* Validate that the tab text input box */
-            if (string.IsNullOrWhiteSpace(TabBox.Text))
+            /* Validate that the command input box */
+            if (string.IsNullOrWhiteSpace(MacroBox.Text))
             {
-                MessageBox.Show("Tab text cannot be empty", "Validation Error",
-                               MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ErrorMessage("Macro cannot be empty\n");
                 return;
             }
 
-            /* Store trimmed command text in settings array */
-            Settings.MacroCommand.Text[CurrentButtonValue + CurrentRadioValue + MacroBank] = MacroBox.Text.Trim();
+            /* Store trimmed tab/page title in settings array */
+            Settings.Page.Text[CurrentRadioValue / 16 + PageIndex] = PageBox.Text.Trim();
+            InfoMessage($"Page{CurrentRadioValue / 16 + PageIndex} set to: " + PageBox.Text.Trim() + "\n");
 
             /* Store trimmed button display text in settings array */
             Settings.MacroText.Text[CurrentButtonValue + CurrentRadioValue + MacroBank] = MacroTextBox.Text.Trim();
+            InfoMessage($"Text{CurrentButtonValue + CurrentRadioValue + MacroBank} set to: " + MacroTextBox.Text.Trim() + "\n");
 
-            /* Store trimmed tab/page title in settings array */
-            Settings.Page.Text[CurrentRadioValue / 16 + PageIndex] = TabBox.Text.Trim();
+            /* Store trimmed command text in settings array */
+            Settings.MacroCommand.Text[CurrentButtonValue + CurrentRadioValue + MacroBank] = MacroBox.Text.Trim();
+            InfoMessage($"Macro{CurrentButtonValue + CurrentRadioValue + MacroBank} set to: " + MacroBox.Text.Trim() + "\n");
 
             /* Save changes to configuration file */
             Settings.WriteXml();
@@ -288,14 +289,8 @@ namespace _4Term
             }
 
             else
-            {
                 /* Inform the user if the serial port is not open */
-                MessageBox.Show(
-                    "The serial port is not open. Please open a port before sending the macro.",
-                    "Port Not Open",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-            }           
+                InfoMessage("The serial port is not open. Please open a port before sending the macro.\n");       
         }
 
         /*----------------------------------------------------------
@@ -394,7 +389,7 @@ namespace _4Term
         public async void MacroButton_Click(int macroIndex)
         {
             /* If not in macro editing mode, proceed with sending the macro */
-            if (!M1Flag && !M2Flag && !M3Flag && !M4Flag && !M5Flag)
+            if (!M1Flag && !M2Flag && !M3Flag && !M4Flag && !M5Flag && !MacroEditingFlag)
             {
                 /* Check if port is open */
                 if(Port.IsOpen)
@@ -417,78 +412,44 @@ namespace _4Term
 
                     else
                     {
-                        /* Inform the user if the macro is empty */
-                        MessageBox.Show(
-                            "The selected macro is empty. Please configure a command before using this button.",
-                            "Empty Macro Command",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
+                        InfoMessage("The selected macro is empty. Please configure a command before using this button.\n");
                     }
                 } 
                 
                 else
                 {
                     /* Inform the user if the serial port is not open */
-                    MessageBox.Show(
-                        "The serial port is not open. Please open a port before sending the macro.",
-                        "Port Not Open",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                    InfoMessage("The serial port is not open. Please open a port before sending the macro.\n");
                 }
             }
-            else if (M1Flag)
-            {
-                M1SetToolStripMenuItem.Text = Settings.MacroText.Text[macroIndex + CurrentRadioValue + MacroBank];
-                CurrentM1Repeat = macroIndex + CurrentRadioValue + MacroBank;
-                M1Flag = false;
-                M1ToolStripMenuItem.BackColor = SystemColors.Control;
-                RichTextBox.SelectionColor = Color.IndianRed;
-                RichTextBox.AppendText("M1=" + M1SetToolStripMenuItem.Text + "\n");
-            }
+            if (M1Flag)
+                SetMacro(ref M1Flag, M1SetToolStripMenuItem, M1ToolStripMenuItem, ref CurrentM1Repeat, macroIndex);
             else if (M2Flag)
-            {
-                M2SetToolStripMenuItem.Text = Settings.MacroText.Text[macroIndex + CurrentRadioValue + MacroBank];
-                CurrentM2Repeat = macroIndex + CurrentRadioValue + MacroBank;
-                M2Flag = false;
-                M2ToolStripMenuItem.BackColor = SystemColors.Control;
-                RichTextBox.SelectionColor = Color.IndianRed;
-                RichTextBox.AppendText("M2=" + M1SetToolStripMenuItem.Text + "\n");
-            }
+                SetMacro(ref M2Flag, M2SetToolStripMenuItem, M2ToolStripMenuItem, ref CurrentM2Repeat, macroIndex);
             else if (M3Flag)
-            {
-                M3SetToolStripMenuItem.Text = Settings.MacroText.Text[macroIndex + CurrentRadioValue + MacroBank];
-                CurrentM3Repeat = macroIndex + CurrentRadioValue + MacroBank;
-                M3Flag = false;
-                M3ToolStripMenuItem.BackColor = SystemColors.Control;
-                RichTextBox.SelectionColor = Color.IndianRed;
-                RichTextBox.AppendText("M3=" + M1SetToolStripMenuItem.Text + "\n");
-            }
+                SetMacro(ref M3Flag, M3SetToolStripMenuItem, M3ToolStripMenuItem, ref CurrentM3Repeat, macroIndex);
             else if (M4Flag)
-            {
-                M4SetToolStripMenuItem.Text = Settings.MacroText.Text[macroIndex + CurrentRadioValue + MacroBank];
-                CurrentM4Repeat = macroIndex + CurrentRadioValue + MacroBank;
-                M4Flag = false;
-                M4ToolStripMenuItem.BackColor = SystemColors.Control;
-                RichTextBox.SelectionColor = Color.IndianRed;
-                RichTextBox.AppendText("M4=" + M1SetToolStripMenuItem.Text + "\n");
-            }
+                SetMacro(ref M4Flag, M4SetToolStripMenuItem, M4ToolStripMenuItem, ref CurrentM4Repeat, macroIndex);
             else if (M5Flag)
-            {
-                M5SetToolStripMenuItem.Text = Settings.MacroText.Text[macroIndex + CurrentRadioValue + MacroBank];
-                CurrentM5Repeat = macroIndex + CurrentRadioValue + MacroBank;
-                M5Flag = false;
-                M5ToolStripMenuItem.BackColor = SystemColors.Control;
-                RichTextBox.SelectionColor = Color.IndianRed;
-                RichTextBox.AppendText("M5=" + M1SetToolStripMenuItem.Text + "\n");
-            }
+                SetMacro(ref M5Flag, M5SetToolStripMenuItem, M5ToolStripMenuItem, ref CurrentM5Repeat, macroIndex);
             else if (MacroEditingFlag)
             {
                 /* In macro editing mode: load macro details into the UI for editing */
                 MacroBox.Text = Settings.MacroCommand.Text[macroIndex + CurrentRadioValue + MacroBank];
                 MacroTextBox.Text = Settings.MacroText.Text[macroIndex + CurrentRadioValue + MacroBank];
-                TabBox.Text = Settings.Page.Text[CurrentRadioValue / 16 + PageIndex];
+                PageBox.Text = Settings.Page.Text[CurrentRadioValue / 16 + PageIndex];
                 CurrentButtonValue = macroIndex;
             }
+        }
+
+        private void SetMacro(ref bool flag, ToolStripMenuItem setItem, ToolStripMenuItem mainItem, ref int currentRepeat, int macroIndex)
+        {
+            int index = macroIndex + CurrentRadioValue + MacroBank;
+            setItem.Text = Settings.MacroText.Text[index];
+            currentRepeat = index;
+            flag = false;
+            mainItem.BackColor = SystemColors.Control;
+            InfoMessage($"Macro{setItem.Name[1]} set to: {Settings.MacroText.Text[index]}\n");
         }
 
         /*----------------------------------------------------------
@@ -496,9 +457,9 @@ namespace _4Term
          * ---------------------------------------------------------
          * DEVELOPMENT STATUS
          *
-         * [✓] ComboBox_Enter
-         * [✓] ComboBox_KeyDown
-         * [✓] ComboBox_Leave
+         * [✓] ComboBox_Enter - OK
+         * [✓] ComboBox_KeyDown - OK
+         * [✓] ComboBox_Leave - OK
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -510,7 +471,8 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void ComboBox_Enter(object sender, EventArgs e)
         {
-            PasteToolStripMenuItem.Enabled = 
+            UndoToolStripMenuItem.Enabled =
+                PasteToolStripMenuItem.Enabled = 
                 CopyToolStripMenuItem.Enabled = 
                 CutToolStripMenuItem.Enabled = 
                 DeleteToolStripMenuItem.Enabled =
@@ -543,7 +505,8 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void ComboBox_Leave(object sender, EventArgs e)
         {
-            PasteToolStripMenuItem.Enabled =
+            UndoToolStripMenuItem.Enabled =
+                PasteToolStripMenuItem.Enabled =
                 CopyToolStripMenuItem.Enabled =
                 CutToolStripMenuItem.Enabled =
                 DeleteToolStripMenuItem.Enabled =
@@ -555,8 +518,8 @@ namespace _4Term
          * ---------------------------------------------------------
          * DEVELOPMENT STATUS
          *
-         * [✓] ChangeStatus
-         * [✓] DataReceive
+         * [✓] ChangeStatus - OK
+         * [✓] DataReceive - OK
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -597,7 +560,11 @@ namespace _4Term
          * DEVELOPMENT STATUS
          *
          * [✓] ReconnectTick
-         * [ ] MacroRepeat
+         * [✓] M1Repeat
+         * [✓] M2Repeat
+         * [✓] M3Repeat
+         * [✓] M4Repeat
+         * [✓] M5Repeat
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -611,74 +578,54 @@ namespace _4Term
             ConnectButton.ForeColor = Port.IsOpen ? Color.Red : Color.Green;
             if (!Port.IsOpen) Port.Open();
         }
-        /*
-        private void MacroRepeat(object sender, EventArgs e)
+
+        /*----------------------------------------------------------
+         * M1Tick
+         * 
+         * Timer tick handler for M1 macro repeat.
+         *---------------------------------------------------------*/
+        private void M1Tick(object sender, EventArgs e)
         {
-            
-            if (Port.IsOpen)
-            {
-               
-                string command = Settings.MacroCommand.Text[CurrentMacroRepeat];
-
-                
-                if (!string.IsNullOrEmpty(command))
-                {
-                    string lineEnding = Port.Send(command);
-
-                    if (Settings.RichTextBox.LocalEcho)
-                    {
-                        AddLine(command + lineEnding, 0);
-                    }
-                }
-            }
-        }
-        */
-        private void Repeat(int current, ToolStripMenuItem item, ref bool flicker)
-        {
-            flicker = !flicker;
-            item.BackColor = flicker ? Color.Green : SystemColors.Control;
-            /* Check if port is open */
-            if (Port.IsOpen)
-            {
-                /* Retrieve the macro command based on current index and bank */
-                string command = Settings.MacroCommand.Text[current];
-
-                /* Send the command only if it's not empty */
-                if (!string.IsNullOrEmpty(command))
-                {
-                    string lineEnding = Port.Send(command);
-
-                    if (Settings.RichTextBox.LocalEcho)
-                    {
-                        AddLine(command + lineEnding, 0);
-                    }
-                }
-            }
+            MacroTick(CurrentM1Repeat, M1ToolStripMenuItem, ref M1Flicker);
         }
 
-        private void M1Repeat(object sender, EventArgs e)
+        /*----------------------------------------------------------
+         * M2Tick
+         * 
+         * Timer tick handler for M2 macro repeat.
+         *---------------------------------------------------------*/
+        private void M2Tick(object sender, EventArgs e)
         {
-            Repeat(CurrentM1Repeat, M1ToolStripMenuItem, ref M1Flicker);
+            MacroTick(CurrentM2Repeat, M2ToolStripMenuItem, ref M2Flicker);
+        }
+        /*----------------------------------------------------------
+         * M3Tick
+         * 
+         * Timer tick handler for M3 macro repeat.
+         *---------------------------------------------------------*/
+        private void M3Tick(object sender, EventArgs e)
+        {
+            MacroTick(CurrentM3Repeat, M3ToolStripMenuItem, ref M3Flicker);
         }
 
-        private void M2Repeat(object sender, EventArgs e)
+        /*----------------------------------------------------------
+         * M4Tick
+         * 
+         * Timer tick handler for M4 macro repeat.
+         *---------------------------------------------------------*/
+        private void M4Tick(object sender, EventArgs e)
         {
-            Repeat(CurrentM2Repeat, M2ToolStripMenuItem, ref M2Flicker);
+            MacroTick(CurrentM4Repeat, M4ToolStripMenuItem, ref M4Flicker);
         }
 
-        private void M3Repeat(object sender, EventArgs e)
+        /*----------------------------------------------------------
+         * M5Tick
+         * 
+         * Timer tick handler for M5 macro repeat.
+         *---------------------------------------------------------*/
+        private void M5Tick(object sender, EventArgs e)
         {
-            Repeat(CurrentM3Repeat, M3ToolStripMenuItem, ref M3Flicker);
-        }
-
-        private void M4Repeat(object sender, EventArgs e)
-        {
-            Repeat(CurrentM4Repeat, M4ToolStripMenuItem, ref M4Flicker);
-        }
-
-        private void M5Repeat(object sender, EventArgs e)
-        {
-            Repeat(CurrentM5Repeat, M5ToolStripMenuItem, ref M5Flicker);
+            MacroTick(CurrentM5Repeat, M5ToolStripMenuItem, ref M5Flicker);
         }
 
         /*----------------------------------------------------------
@@ -690,6 +637,12 @@ namespace _4Term
          * [✓] LoadGroupContent
          * [✓] AddLine
          * [✓] WelcomeMsg
+         * [✓] SetAdvancedMode
+         * [✓] SetMacroSetMode
+         * [~] MacroTick  - needs optimization
+         * [✓] ErrorMessage
+         * [✓] InfoMessage
+         * [✓] MacroButton_MouseDown
          * [✓] WndProc
          *---------------------------------------------------------*/
 
@@ -790,7 +743,7 @@ namespace _4Term
         * 
         * Displays an animated ASCII art welcome message in a RichTextBox.
         * *---------------------------------------------------------*/
-                private async void WelcomeMsg()
+        private async void WelcomeMsg()
         {
             RichTextBox.BackColor = Color.Black;
             string[] asciiLines = new string[]
@@ -810,7 +763,7 @@ namespace _4Term
                 "        _\\///////////\\\\\\//________\\/\\\\\\_______\\//\\\\///////___\\/\\\\\\_________\\/\\\\\\__\\/\\\\\\__\\/\\\\\\_",
                 "         ___________\\/\\\\\\__________\\/\\\\\\________\\//\\\\\\\\\\\\\\\\\\\\_\\/\\\\\\_________\\/\\\\\\__\\/\\\\\\__\\/\\\\\\_",
                 "          ___________\\///___________\\///__________\\//////////__\\///__________\\///___\\///___\\///__",
-                "                                                                             Version: 1.0.0-alpha x64"
+                "                                                                           Version: 1.1.0-beta x64"
             };
             /* Colors to cycle through */
             Color[] colors = new Color[]
@@ -839,6 +792,11 @@ namespace _4Term
             RichTextBox.BackColor = Color.FromArgb(Settings.Color.Back.R, Settings.Color.Back.G, Settings.Color.Back.B);
         }
 
+        /*----------------------------------------------------------
+         * SetAdvancedMode
+         * 
+         * Enables or disables advanced UI controls and flags.
+         *---------------------------------------------------------*/
         private void SetAdvancedMode(bool enable)
         {
             Settings.RichTextBox.AdvancedMode = AdvancedModeToolStripMenuItem.Checked =
@@ -849,6 +807,85 @@ namespace _4Term
                 M3ToolStripMenuItem.Visible = M3ToolStripMenuItem.Enabled =
                 M4ToolStripMenuItem.Visible = M4ToolStripMenuItem.Enabled =
                 M5ToolStripMenuItem.Visible = M5ToolStripMenuItem.Enabled = enable;
+        }
+
+        /*----------------------------------------------------------
+         * SetMacroSetMode
+         * 
+         * Enables or disables macro UI controls and flags.
+         *---------------------------------------------------------*/
+        private void SetMacroSetMode(bool enable)
+        {
+
+            MacroSetPanel.Visible = MacroSetPanel.Enabled = MacroModeToolStripMenuItem.Checked = enable;
+                
+            UndoToolStripMenuItem.Enabled = CutToolStripMenuItem.Enabled =
+                CopyToolStripMenuItem.Enabled = PasteToolStripMenuItem.Enabled =
+                DeleteToolStripMenuItem.Enabled = SelectAllToolStripMenuItem.Enabled = !enable;
+        }
+
+        /*----------------------------------------------------------
+         * MacroTick
+         * 
+         * Toggles flicker effect and sends macro command if port is open.
+         *---------------------------------------------------------*/
+        private void MacroTick(int current, ToolStripMenuItem item, ref bool flicker)
+        {
+            flicker = !flicker;
+            item.BackColor = flicker ? Color.Green : SystemColors.Control;
+            /* Check if port is open */
+            if (Port.IsOpen)
+            {
+                /* Retrieve the macro command based on current index and bank */
+                string command = Settings.MacroCommand.Text[current];
+
+                /* Send the command only if it's not empty */
+                if (!string.IsNullOrEmpty(command))
+                {
+                    string lineEnding = Port.Send(command);
+
+                    if (Settings.RichTextBox.LocalEcho)
+                    {
+                        AddLine(command + lineEnding, 0);
+                    }
+                }
+            }
+        }
+
+        /*----------------------------------------------------------
+         * ErrorMessage
+         * 
+         * Displays an error message in the RichTextBox.
+         *---------------------------------------------------------*/
+        private void ErrorMessage(string message)
+        {
+            RichTextBox.SelectionColor = Color.FromArgb(Settings.Color.Transmit.R, Settings.Color.Transmit.G, Settings.Color.Transmit.B);
+            RichTextBox.AppendText("[ Error ] " + message);
+        }
+
+        /*----------------------------------------------------------
+         * InfoMessage
+         * 
+         * Displays an informational message in the RichTextBox.
+         *---------------------------------------------------------*/
+        private void InfoMessage(string message)
+        {
+            RichTextBox.SelectionColor = Color.FromArgb(Settings.Color.Transmit.R, Settings.Color.Transmit.G, Settings.Color.Transmit.B);
+            RichTextBox.AppendText("[ Info ] " + message);
+        }
+
+        /*----------------------------------------------------------
+         * MacroButton_MouseDown
+         * 
+         * Toggles macro editing mode on right-click.
+         *---------------------------------------------------------*/
+        private void MacroButton_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                MacroEditingFlag = !MacroEditingFlag;
+                SetMacroSetMode(MacroEditingFlag);
+            }
         }
 
         /*----------------------------------------------------------
@@ -863,6 +900,6 @@ namespace _4Term
                 return;
             }
             base.WndProc(ref buffer);
-        }
+        }      
     }
 }

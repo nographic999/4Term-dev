@@ -662,18 +662,8 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void MacroModeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MacroModeToolStripMenuItem.Checked = !MacroModeToolStripMenuItem.Checked;
             MacroEditingFlag = !MacroEditingFlag;
-            ReturnButton.Enabled = ReturnButton.Visible = ProgButton.Enabled = 
-                ProgButton.Visible = MacroBox.Enabled = MacroBox.Visible =
-                MacroTextBox.Enabled = MacroTextBox.Visible = MacroLabel.Enabled = MacroLabel.Visible =
-                MacroTextLabel.Enabled = MacroTextLabel.Visible = TabLabel.Enabled = TabLabel.Visible =
-                TabBox.Enabled = TabBox.Visible = labelinfo.Enabled = labelinfo.Visible = MacroEditingFlag;
-            ComboBox.Enabled = ComboBox.Visible = SendButton.Enabled = SendButton.Visible =
-               ClearButton.Enabled = ClearButton.Visible = SettingsButton.Enabled = SettingsButton.Visible =
-               AutoConnectButton.Enabled = AutoConnectButton.Visible = ConnectButton.Enabled = ConnectButton.Visible =
-               RichTextBox.Visible = PasteToolStripMenuItem.Enabled = CopyToolStripMenuItem.Enabled = CutToolStripMenuItem.Enabled =
-               groupBox1.Enabled = groupBox1.Visible = COMBox.Enabled = COMBox.Visible = !MacroEditingFlag;
+            SetMacroSetMode(MacroEditingFlag);
         }
 /*
         private void MacroRepeatToolStripMenuItem_Click(object sender, EventArgs e)
@@ -718,8 +708,7 @@ namespace _4Term
             {
                 M1ToolStripMenuItem.BackColor = Color.Yellow;
                 M1Flag = true;
-                RichTextBox.SelectionColor = Color.IndianRed;
-                RichTextBox.AppendText("Please Select macro\n");
+                InfoMessage("Please Select macro\n");
             }
         }
 
@@ -729,8 +718,7 @@ namespace _4Term
             {
                 M2ToolStripMenuItem.BackColor = Color.Yellow;
                 M2Flag = true;
-                RichTextBox.SelectionColor = Color.IndianRed;
-                RichTextBox.AppendText("Please Select macro\n");
+                InfoMessage("Please Select macro\n");
             }
         }
 
@@ -740,8 +728,7 @@ namespace _4Term
             {
                 M3ToolStripMenuItem.BackColor = Color.Yellow;
                 M3Flag = true;
-                RichTextBox.SelectionColor = Color.IndianRed;
-                RichTextBox.AppendText("Please Select macro\n");
+                InfoMessage("Please Select macro\n");
             }
         }
 
@@ -751,8 +738,9 @@ namespace _4Term
             {
                 M4ToolStripMenuItem.BackColor = Color.Yellow;
                 M4Flag = true;
-                RichTextBox.SelectionColor = Color.IndianRed;
-                RichTextBox.AppendText("Please Select macro\n");
+                InfoMessage("Please Select macro\n");
+            
+      
             }
         }
 
@@ -762,8 +750,7 @@ namespace _4Term
             {
                 M5ToolStripMenuItem.BackColor = Color.Yellow;
                 M5Flag = true;
-                RichTextBox.SelectionColor = Color.IndianRed;
-                RichTextBox.AppendText("Please Select macro\n");
+                InfoMessage("Please Select macro\n");
             }
         }
 

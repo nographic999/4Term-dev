@@ -96,9 +96,9 @@
             // SaveOptionsButton
             // 
             this.SaveOptionsButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SaveOptionsButton.Location = new System.Drawing.Point(172, 215);
+            this.SaveOptionsButton.Location = new System.Drawing.Point(160, 195);
             this.SaveOptionsButton.Name = "SaveOptionsButton";
-            this.SaveOptionsButton.Size = new System.Drawing.Size(207, 29);
+            this.SaveOptionsButton.Size = new System.Drawing.Size(206, 29);
             this.SaveOptionsButton.TabIndex = 4;
             this.SaveOptionsButton.Text = "Save Options";
             this.SaveOptionsButton.UseVisualStyleBackColor = true;
@@ -106,6 +106,7 @@
             // 
             // BottomToolStripPanel
             // 
+            this.BottomToolStripPanel.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BottomToolStripPanel.Location = new System.Drawing.Point(0, 0);
             this.BottomToolStripPanel.Name = "BottomToolStripPanel";
             this.BottomToolStripPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -114,6 +115,7 @@
             // 
             // TopToolStripPanel
             // 
+            this.TopToolStripPanel.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TopToolStripPanel.Location = new System.Drawing.Point(0, 0);
             this.TopToolStripPanel.Name = "TopToolStripPanel";
             this.TopToolStripPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -122,6 +124,7 @@
             // 
             // RightToolStripPanel
             // 
+            this.RightToolStripPanel.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.RightToolStripPanel.Location = new System.Drawing.Point(0, 0);
             this.RightToolStripPanel.Name = "RightToolStripPanel";
             this.RightToolStripPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -130,6 +133,7 @@
             // 
             // LeftToolStripPanel
             // 
+            this.LeftToolStripPanel.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LeftToolStripPanel.Location = new System.Drawing.Point(0, 0);
             this.LeftToolStripPanel.Name = "LeftToolStripPanel";
             this.LeftToolStripPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -138,6 +142,7 @@
             // 
             // ContentPanel
             // 
+            this.ContentPanel.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ContentPanel.Size = new System.Drawing.Size(129, 57);
             // 
             // AppendGroupBox
@@ -147,7 +152,7 @@
             this.AppendGroupBox.Controls.Add(this.AppendCRRadioButton);
             this.AppendGroupBox.Controls.Add(this.AppendLFRadioButton);
             this.AppendGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AppendGroupBox.Location = new System.Drawing.Point(307, 12);
+            this.AppendGroupBox.Location = new System.Drawing.Point(294, 1);
             this.AppendGroupBox.Name = "AppendGroupBox";
             this.AppendGroupBox.Size = new System.Drawing.Size(72, 95);
             this.AppendGroupBox.TabIndex = 14;
@@ -207,7 +212,7 @@
             this.TransmitGroupBox.Controls.Add(this.TransmitRTSCheckBox);
             this.TransmitGroupBox.Controls.Add(this.TransmitDTRCheckBox);
             this.TransmitGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TransmitGroupBox.Location = new System.Drawing.Point(12, 210);
+            this.TransmitGroupBox.Location = new System.Drawing.Point(4, 189);
             this.TransmitGroupBox.Name = "TransmitGroupBox";
             this.TransmitGroupBox.Size = new System.Drawing.Size(155, 36);
             this.TransmitGroupBox.TabIndex = 15;
@@ -252,7 +257,7 @@
             // 
             this.ComPortGroupBox.Controls.Add(this.COMPortComboBox);
             this.ComPortGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ComPortGroupBox.Location = new System.Drawing.Point(12, 12);
+            this.ComPortGroupBox.Location = new System.Drawing.Point(4, 1);
             this.ComPortGroupBox.Name = "ComPortGroupBox";
             this.ComPortGroupBox.Size = new System.Drawing.Size(99, 95);
             this.ComPortGroupBox.TabIndex = 24;
@@ -277,7 +282,7 @@
             this.BaudRateGroupBox.Controls.Add(this.BaudRate1200RadioButton);
             this.BaudRateGroupBox.Controls.Add(this.BaudRate2400RadioButton);
             this.BaudRateGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BaudRateGroupBox.Location = new System.Drawing.Point(116, 12);
+            this.BaudRateGroupBox.Location = new System.Drawing.Point(105, 1);
             this.BaudRateGroupBox.Name = "BaudRateGroupBox";
             this.BaudRateGroupBox.Size = new System.Drawing.Size(187, 95);
             this.BaudRateGroupBox.TabIndex = 25;
@@ -288,7 +293,7 @@
             // 
             this.BaudRateCustomRadioButton.AutoSize = true;
             this.BaudRateCustomRadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BaudRateCustomRadioButton.Location = new System.Drawing.Point(120, 73);
+            this.BaudRateCustomRadioButton.Location = new System.Drawing.Point(123, 74);
             this.BaudRateCustomRadioButton.Name = "BaudRateCustomRadioButton";
             this.BaudRateCustomRadioButton.Size = new System.Drawing.Size(61, 17);
             this.BaudRateCustomRadioButton.TabIndex = 19;
@@ -301,7 +306,7 @@
             // 
             this.BaudRate57600RadioButton.AutoSize = true;
             this.BaudRate57600RadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BaudRate57600RadioButton.Location = new System.Drawing.Point(120, 13);
+            this.BaudRate57600RadioButton.Location = new System.Drawing.Point(123, 13);
             this.BaudRate57600RadioButton.Name = "BaudRate57600RadioButton";
             this.BaudRate57600RadioButton.Size = new System.Drawing.Size(55, 17);
             this.BaudRate57600RadioButton.TabIndex = 15;
@@ -314,7 +319,7 @@
             // 
             this.BaudRate256000RadioButton.AutoSize = true;
             this.BaudRate256000RadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BaudRate256000RadioButton.Location = new System.Drawing.Point(120, 58);
+            this.BaudRate256000RadioButton.Location = new System.Drawing.Point(123, 59);
             this.BaudRate256000RadioButton.Name = "BaudRate256000RadioButton";
             this.BaudRate256000RadioButton.Size = new System.Drawing.Size(61, 17);
             this.BaudRate256000RadioButton.TabIndex = 18;
@@ -327,7 +332,7 @@
             // 
             this.BaudRate115200RadioButton.AutoSize = true;
             this.BaudRate115200RadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BaudRate115200RadioButton.Location = new System.Drawing.Point(120, 28);
+            this.BaudRate115200RadioButton.Location = new System.Drawing.Point(123, 29);
             this.BaudRate115200RadioButton.Name = "BaudRate115200RadioButton";
             this.BaudRate115200RadioButton.Size = new System.Drawing.Size(61, 17);
             this.BaudRate115200RadioButton.TabIndex = 16;
@@ -340,7 +345,7 @@
             // 
             this.BaudRate128000RadioButton.AutoSize = true;
             this.BaudRate128000RadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BaudRate128000RadioButton.Location = new System.Drawing.Point(120, 43);
+            this.BaudRate128000RadioButton.Location = new System.Drawing.Point(123, 44);
             this.BaudRate128000RadioButton.Name = "BaudRate128000RadioButton";
             this.BaudRate128000RadioButton.Size = new System.Drawing.Size(61, 17);
             this.BaudRate128000RadioButton.TabIndex = 17;
@@ -353,7 +358,7 @@
             // 
             this.BaudRate56000RadioButton.AutoSize = true;
             this.BaudRate56000RadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BaudRate56000RadioButton.Location = new System.Drawing.Point(65, 73);
+            this.BaudRate56000RadioButton.Location = new System.Drawing.Point(65, 74);
             this.BaudRate56000RadioButton.Name = "BaudRate56000RadioButton";
             this.BaudRate56000RadioButton.Size = new System.Drawing.Size(55, 17);
             this.BaudRate56000RadioButton.TabIndex = 14;
@@ -379,7 +384,7 @@
             // 
             this.BaudRate38400RadioButton.AutoSize = true;
             this.BaudRate38400RadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BaudRate38400RadioButton.Location = new System.Drawing.Point(65, 58);
+            this.BaudRate38400RadioButton.Location = new System.Drawing.Point(65, 59);
             this.BaudRate38400RadioButton.Name = "BaudRate38400RadioButton";
             this.BaudRate38400RadioButton.Size = new System.Drawing.Size(55, 17);
             this.BaudRate38400RadioButton.TabIndex = 13;
@@ -392,7 +397,7 @@
             // 
             this.BaudRate19200RadioButton.AutoSize = true;
             this.BaudRate19200RadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BaudRate19200RadioButton.Location = new System.Drawing.Point(65, 28);
+            this.BaudRate19200RadioButton.Location = new System.Drawing.Point(65, 29);
             this.BaudRate19200RadioButton.Name = "BaudRate19200RadioButton";
             this.BaudRate19200RadioButton.Size = new System.Drawing.Size(55, 17);
             this.BaudRate19200RadioButton.TabIndex = 11;
@@ -405,7 +410,7 @@
             // 
             this.BaudRate28800RadioButton.AutoSize = true;
             this.BaudRate28800RadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BaudRate28800RadioButton.Location = new System.Drawing.Point(65, 43);
+            this.BaudRate28800RadioButton.Location = new System.Drawing.Point(65, 44);
             this.BaudRate28800RadioButton.Name = "BaudRate28800RadioButton";
             this.BaudRate28800RadioButton.Size = new System.Drawing.Size(55, 17);
             this.BaudRate28800RadioButton.TabIndex = 12;
@@ -418,7 +423,7 @@
             // 
             this.BaudRate9600RadioButton.AutoSize = true;
             this.BaudRate9600RadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BaudRate9600RadioButton.Location = new System.Drawing.Point(10, 73);
+            this.BaudRate9600RadioButton.Location = new System.Drawing.Point(10, 74);
             this.BaudRate9600RadioButton.Name = "BaudRate9600RadioButton";
             this.BaudRate9600RadioButton.Size = new System.Drawing.Size(49, 17);
             this.BaudRate9600RadioButton.TabIndex = 9;
@@ -444,7 +449,7 @@
             // 
             this.BaudRate4800RadioButton.AutoSize = true;
             this.BaudRate4800RadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BaudRate4800RadioButton.Location = new System.Drawing.Point(10, 58);
+            this.BaudRate4800RadioButton.Location = new System.Drawing.Point(10, 59);
             this.BaudRate4800RadioButton.Name = "BaudRate4800RadioButton";
             this.BaudRate4800RadioButton.Size = new System.Drawing.Size(49, 17);
             this.BaudRate4800RadioButton.TabIndex = 8;
@@ -457,7 +462,7 @@
             // 
             this.BaudRate1200RadioButton.AutoSize = true;
             this.BaudRate1200RadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BaudRate1200RadioButton.Location = new System.Drawing.Point(10, 28);
+            this.BaudRate1200RadioButton.Location = new System.Drawing.Point(10, 29);
             this.BaudRate1200RadioButton.Name = "BaudRate1200RadioButton";
             this.BaudRate1200RadioButton.Size = new System.Drawing.Size(49, 17);
             this.BaudRate1200RadioButton.TabIndex = 6;
@@ -470,7 +475,7 @@
             // 
             this.BaudRate2400RadioButton.AutoSize = true;
             this.BaudRate2400RadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BaudRate2400RadioButton.Location = new System.Drawing.Point(10, 43);
+            this.BaudRate2400RadioButton.Location = new System.Drawing.Point(10, 44);
             this.BaudRate2400RadioButton.Name = "BaudRate2400RadioButton";
             this.BaudRate2400RadioButton.Size = new System.Drawing.Size(49, 17);
             this.BaudRate2400RadioButton.TabIndex = 7;
@@ -486,7 +491,7 @@
             this.DataBitsGroupBox.Controls.Add(this.DataBits6RadioButton);
             this.DataBitsGroupBox.Controls.Add(this.DataBits5RadioButton);
             this.DataBitsGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.DataBitsGroupBox.Location = new System.Drawing.Point(12, 111);
+            this.DataBitsGroupBox.Location = new System.Drawing.Point(4, 95);
             this.DataBitsGroupBox.Name = "DataBitsGroupBox";
             this.DataBitsGroupBox.Size = new System.Drawing.Size(75, 95);
             this.DataBitsGroupBox.TabIndex = 26;
@@ -548,9 +553,9 @@
             this.HandshakingGroupBox.Controls.Add(this.HandshakingRTSCTSRadioButton);
             this.HandshakingGroupBox.Controls.Add(this.HandshakingNoneRadioButton);
             this.HandshakingGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.HandshakingGroupBox.Location = new System.Drawing.Point(252, 111);
+            this.HandshakingGroupBox.Location = new System.Drawing.Point(236, 95);
             this.HandshakingGroupBox.Name = "HandshakingGroupBox";
-            this.HandshakingGroupBox.Size = new System.Drawing.Size(127, 95);
+            this.HandshakingGroupBox.Size = new System.Drawing.Size(130, 95);
             this.HandshakingGroupBox.TabIndex = 29;
             this.HandshakingGroupBox.TabStop = false;
             this.HandshakingGroupBox.Text = "Handshaking";
@@ -559,7 +564,7 @@
             // 
             this.HandshakingRTSCTSXONXOFRadioButton.AutoSize = true;
             this.HandshakingRTSCTSXONXOFRadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.HandshakingRTSCTSXONXOFRadioButton.Location = new System.Drawing.Point(10, 59);
+            this.HandshakingRTSCTSXONXOFRadioButton.Location = new System.Drawing.Point(10, 74);
             this.HandshakingRTSCTSXONXOFRadioButton.Name = "HandshakingRTSCTSXONXOFRadioButton";
             this.HandshakingRTSCTSXONXOFRadioButton.Size = new System.Drawing.Size(115, 17);
             this.HandshakingRTSCTSXONXOFRadioButton.TabIndex = 8;
@@ -571,7 +576,7 @@
             // 
             this.HandshakingXONXOFRadioButton.AutoSize = true;
             this.HandshakingXONXOFRadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.HandshakingXONXOFRadioButton.Location = new System.Drawing.Point(10, 44);
+            this.HandshakingXONXOFRadioButton.Location = new System.Drawing.Point(10, 54);
             this.HandshakingXONXOFRadioButton.Name = "HandshakingXONXOFRadioButton";
             this.HandshakingXONXOFRadioButton.Size = new System.Drawing.Size(67, 17);
             this.HandshakingXONXOFRadioButton.TabIndex = 7;
@@ -583,7 +588,7 @@
             // 
             this.HandshakingRTSCTSRadioButton.AutoSize = true;
             this.HandshakingRTSCTSRadioButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.HandshakingRTSCTSRadioButton.Location = new System.Drawing.Point(10, 29);
+            this.HandshakingRTSCTSRadioButton.Location = new System.Drawing.Point(10, 34);
             this.HandshakingRTSCTSRadioButton.Name = "HandshakingRTSCTSRadioButton";
             this.HandshakingRTSCTSRadioButton.Size = new System.Drawing.Size(67, 17);
             this.HandshakingRTSCTSRadioButton.TabIndex = 6;
@@ -611,7 +616,7 @@
             this.ParityGroupBox.Controls.Add(this.ParityOddRadioButton);
             this.ParityGroupBox.Controls.Add(this.ParityNoneRadioButton);
             this.ParityGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ParityGroupBox.Location = new System.Drawing.Point(92, 111);
+            this.ParityGroupBox.Location = new System.Drawing.Point(81, 95);
             this.ParityGroupBox.Name = "ParityGroupBox";
             this.ParityGroupBox.Size = new System.Drawing.Size(75, 95);
             this.ParityGroupBox.TabIndex = 30;
@@ -684,7 +689,7 @@
             this.StopBitsGroupBox.Controls.Add(this.StopBits15RadioButton);
             this.StopBitsGroupBox.Controls.Add(this.StopBits1RadioButton);
             this.StopBitsGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.StopBitsGroupBox.Location = new System.Drawing.Point(172, 111);
+            this.StopBitsGroupBox.Location = new System.Drawing.Point(159, 95);
             this.StopBitsGroupBox.Name = "StopBitsGroupBox";
             this.StopBitsGroupBox.Size = new System.Drawing.Size(75, 95);
             this.StopBitsGroupBox.TabIndex = 31;
@@ -732,7 +737,7 @@
             this.CustomBRGroupBox.Controls.Add(this.CustomBRTextBox);
             this.CustomBRGroupBox.Enabled = false;
             this.CustomBRGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.CustomBRGroupBox.Location = new System.Drawing.Point(12, 61);
+            this.CustomBRGroupBox.Location = new System.Drawing.Point(4, 50);
             this.CustomBRGroupBox.Name = "CustomBRGroupBox";
             this.CustomBRGroupBox.Size = new System.Drawing.Size(99, 46);
             this.CustomBRGroupBox.TabIndex = 32;
@@ -743,6 +748,7 @@
             // CustomBRTextBox
             // 
             this.CustomBRTextBox.Enabled = false;
+            this.CustomBRTextBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.CustomBRTextBox.Location = new System.Drawing.Point(6, 14);
             this.CustomBRTextBox.Name = "CustomBRTextBox";
             this.CustomBRTextBox.Size = new System.Drawing.Size(87, 20);
@@ -753,7 +759,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(392, 254);
+            this.ClientSize = new System.Drawing.Size(369, 228);
             this.Controls.Add(this.CustomBRGroupBox);
             this.Controls.Add(this.StopBitsGroupBox);
             this.Controls.Add(this.ParityGroupBox);
