@@ -32,6 +32,11 @@ All notable changes to **4Term** will be documented in this file.
  - Updated comments for clarity and better documentation
  - Removed deprecated methods and fixed minor bugs
 
+## [1.3.0] - 2025-07-02
+
+### Added
+ - AutoUpdater
+
 ## License
 
 This project is licensed under the [MIT License](./LICENSE).
