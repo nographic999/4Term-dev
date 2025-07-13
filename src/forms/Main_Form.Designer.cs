@@ -67,6 +67,12 @@
             this.AdvancedModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExternalToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Tool0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Tool1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Tool2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Tool3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Tool4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DtrToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RtsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.M1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,7 +94,7 @@
             this.AutoConnectButton = new System.Windows.Forms.Button();
             this.SettingsButton = new System.Windows.Forms.Button();
             this.ConnectButton = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.MacrosGroupBox = new System.Windows.Forms.GroupBox();
             this.MacroButton15 = new System.Windows.Forms.Button();
             this.RadioButton6 = new System.Windows.Forms.RadioButton();
             this.MacroButton14 = new System.Windows.Forms.Button();
@@ -131,7 +137,7 @@
             this.MacroTextBox = new System.Windows.Forms.TextBox();
             this.MenuStrip.SuspendLayout();
             this.COMBox.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.MacrosGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.MacroSetPanel.SuspendLayout();
             this.MacroSetGroupBox.SuspendLayout();
@@ -145,6 +151,7 @@
             this.formatToolStripMenuItem,
             this.viewToolStripMenuItem,
             this.helpToolStripMenuItem,
+            this.ExternalToolsToolStripMenuItem,
             this.DtrToolStripMenuItem,
             this.RtsToolStripMenuItem,
             this.M1ToolStripMenuItem,
@@ -467,12 +474,64 @@
             this.AboutToolStripMenuItem.Text = "&About...";
             this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
+            // ExternalToolsToolStripMenuItem
+            // 
+            this.ExternalToolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.Tool0ToolStripMenuItem,
+            this.Tool1ToolStripMenuItem,
+            this.Tool2ToolStripMenuItem,
+            this.Tool3ToolStripMenuItem,
+            this.Tool4ToolStripMenuItem});
+            this.ExternalToolsToolStripMenuItem.Name = "ExternalToolsToolStripMenuItem";
+            this.ExternalToolsToolStripMenuItem.Size = new System.Drawing.Size(91, 20);
+            this.ExternalToolsToolStripMenuItem.Text = "External Tools";
+            // 
+            // Tool0ToolStripMenuItem
+            // 
+            this.Tool0ToolStripMenuItem.Name = "Tool0ToolStripMenuItem";
+            this.Tool0ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F8;
+            this.Tool0ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.Tool0ToolStripMenuItem.Text = "Tool0";
+            this.Tool0ToolStripMenuItem.Click += new System.EventHandler(this.Tool0ToolStripMenuItem_Click);
+            // 
+            // Tool1ToolStripMenuItem
+            // 
+            this.Tool1ToolStripMenuItem.Name = "Tool1ToolStripMenuItem";
+            this.Tool1ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F9;
+            this.Tool1ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.Tool1ToolStripMenuItem.Text = "Tool1";
+            this.Tool1ToolStripMenuItem.Click += new System.EventHandler(this.Tool1ToolStripMenuItem_Click);
+            // 
+            // Tool2ToolStripMenuItem
+            // 
+            this.Tool2ToolStripMenuItem.Name = "Tool2ToolStripMenuItem";
+            this.Tool2ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F10;
+            this.Tool2ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.Tool2ToolStripMenuItem.Text = "Tool2";
+            this.Tool2ToolStripMenuItem.Click += new System.EventHandler(this.Tool2ToolStripMenuItem_Click);
+            // 
+            // Tool3ToolStripMenuItem
+            // 
+            this.Tool3ToolStripMenuItem.Name = "Tool3ToolStripMenuItem";
+            this.Tool3ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F11;
+            this.Tool3ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.Tool3ToolStripMenuItem.Text = "Tool3";
+            this.Tool3ToolStripMenuItem.Click += new System.EventHandler(this.Tool3ToolStripMenuItem_Click);
+            // 
+            // Tool4ToolStripMenuItem
+            // 
+            this.Tool4ToolStripMenuItem.Name = "Tool4ToolStripMenuItem";
+            this.Tool4ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F12;
+            this.Tool4ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.Tool4ToolStripMenuItem.Text = "Tool4";
+            this.Tool4ToolStripMenuItem.Click += new System.EventHandler(this.Tool4ToolStripMenuItem_Click);
+            // 
             // DtrToolStripMenuItem
             // 
             this.DtrToolStripMenuItem.Enabled = false;
             this.DtrToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.DtrToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.DtrToolStripMenuItem.Margin = new System.Windows.Forms.Padding(166, 0, 0, 0);
+            this.DtrToolStripMenuItem.Margin = new System.Windows.Forms.Padding(76, 0, 0, 0);
             this.DtrToolStripMenuItem.Name = "DtrToolStripMenuItem";
             this.DtrToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F6;
             this.DtrToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -693,43 +752,43 @@
             this.ConnectButton.UseVisualStyleBackColor = true;
             this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
             // 
-            // groupBox2
+            // MacrosGroupBox
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.MacrosGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.BackColor = System.Drawing.Color.Transparent;
-            this.groupBox2.Controls.Add(this.MacroButton15);
-            this.groupBox2.Controls.Add(this.RadioButton6);
-            this.groupBox2.Controls.Add(this.MacroButton14);
-            this.groupBox2.Controls.Add(this.RadioButton7);
-            this.groupBox2.Controls.Add(this.MacroButton13);
-            this.groupBox2.Controls.Add(this.RadioButton3);
-            this.groupBox2.Controls.Add(this.MacroButton12);
-            this.groupBox2.Controls.Add(this.RadioButton4);
-            this.groupBox2.Controls.Add(this.MacroButton11);
-            this.groupBox2.Controls.Add(this.RadioButton5);
-            this.groupBox2.Controls.Add(this.MacroButton10);
-            this.groupBox2.Controls.Add(this.RadioButton0);
-            this.groupBox2.Controls.Add(this.MacroButton9);
-            this.groupBox2.Controls.Add(this.RadioButton1);
-            this.groupBox2.Controls.Add(this.MacroButton7);
-            this.groupBox2.Controls.Add(this.MacroButton8);
-            this.groupBox2.Controls.Add(this.MacroButton6);
-            this.groupBox2.Controls.Add(this.RadioButton2);
-            this.groupBox2.Controls.Add(this.MacroButton5);
-            this.groupBox2.Controls.Add(this.MacroButton0);
-            this.groupBox2.Controls.Add(this.MacroButton4);
-            this.groupBox2.Controls.Add(this.MacroButton1);
-            this.groupBox2.Controls.Add(this.MacroButton3);
-            this.groupBox2.Controls.Add(this.MacroButton2);
-            this.groupBox2.Controls.Add(this.SwapButton);
-            this.groupBox2.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(4, 404);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(694, 80);
-            this.groupBox2.TabIndex = 215;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Macros";
+            this.MacrosGroupBox.BackColor = System.Drawing.Color.Transparent;
+            this.MacrosGroupBox.Controls.Add(this.MacroButton15);
+            this.MacrosGroupBox.Controls.Add(this.RadioButton6);
+            this.MacrosGroupBox.Controls.Add(this.MacroButton14);
+            this.MacrosGroupBox.Controls.Add(this.RadioButton7);
+            this.MacrosGroupBox.Controls.Add(this.MacroButton13);
+            this.MacrosGroupBox.Controls.Add(this.RadioButton3);
+            this.MacrosGroupBox.Controls.Add(this.MacroButton12);
+            this.MacrosGroupBox.Controls.Add(this.RadioButton4);
+            this.MacrosGroupBox.Controls.Add(this.MacroButton11);
+            this.MacrosGroupBox.Controls.Add(this.RadioButton5);
+            this.MacrosGroupBox.Controls.Add(this.MacroButton10);
+            this.MacrosGroupBox.Controls.Add(this.RadioButton0);
+            this.MacrosGroupBox.Controls.Add(this.MacroButton9);
+            this.MacrosGroupBox.Controls.Add(this.RadioButton1);
+            this.MacrosGroupBox.Controls.Add(this.MacroButton7);
+            this.MacrosGroupBox.Controls.Add(this.MacroButton8);
+            this.MacrosGroupBox.Controls.Add(this.MacroButton6);
+            this.MacrosGroupBox.Controls.Add(this.RadioButton2);
+            this.MacrosGroupBox.Controls.Add(this.MacroButton5);
+            this.MacrosGroupBox.Controls.Add(this.MacroButton0);
+            this.MacrosGroupBox.Controls.Add(this.MacroButton4);
+            this.MacrosGroupBox.Controls.Add(this.MacroButton1);
+            this.MacrosGroupBox.Controls.Add(this.MacroButton3);
+            this.MacrosGroupBox.Controls.Add(this.MacroButton2);
+            this.MacrosGroupBox.Controls.Add(this.SwapButton);
+            this.MacrosGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MacrosGroupBox.Location = new System.Drawing.Point(4, 404);
+            this.MacrosGroupBox.Name = "MacrosGroupBox";
+            this.MacrosGroupBox.Size = new System.Drawing.Size(694, 80);
+            this.MacrosGroupBox.TabIndex = 215;
+            this.MacrosGroupBox.TabStop = false;
+            this.MacrosGroupBox.Text = "Macros   0 - 128";
             // 
             // MacroButton15
             // 
@@ -1126,6 +1185,7 @@
             // 
             // MacroSetPanel
             // 
+            this.MacroSetPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.MacroSetPanel.BackColor = System.Drawing.SystemColors.Control;
             this.MacroSetPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.MacroSetPanel.Controls.Add(this.MacroSetGroupBox);
@@ -1242,7 +1302,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.RichTextBox);
             this.Controls.Add(this.MenuStrip);
-            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.MacrosGroupBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.MenuStrip;
             this.Name = "Main_Form";
@@ -1253,8 +1313,8 @@
             this.MenuStrip.ResumeLayout(false);
             this.MenuStrip.PerformLayout();
             this.COMBox.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.MacrosGroupBox.ResumeLayout(false);
+            this.MacrosGroupBox.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.MacroSetPanel.ResumeLayout(false);
             this.MacroSetGroupBox.ResumeLayout(false);
@@ -1286,7 +1346,7 @@
         private System.Windows.Forms.Button AutoConnectButton;
         private System.Windows.Forms.Button SettingsButton;
         private System.Windows.Forms.Button ConnectButton;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox MacrosGroupBox;
         private System.Windows.Forms.Button MacroButton15;
         private System.Windows.Forms.RadioButton RadioButton6;
         private System.Windows.Forms.Button MacroButton14;
@@ -1366,5 +1426,11 @@
         private System.Windows.Forms.TextBox MacroTextBox;
         private System.Windows.Forms.Button ProgButton;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ToolStripMenuItem ExternalToolsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Tool0ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Tool1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Tool2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Tool3ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Tool4ToolStripMenuItem;
     }
 }

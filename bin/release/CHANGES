@@ -1,0 +1,52 @@
+# Changelog
+
+All notable changes to **4Term** will be documented in this file.
+
+## [1.0.0] - 2025-06-15
+
+### Added
+ - Initial release of **4Term**
+
+## [1.1.0] - 2025-06-17
+
+### Added
+ - DTR and RTS control in the menu strip
+ - Auto macro sending feature
+ 
+### Changed
+ - Main form layout and design
+ - Serial options form 
+ - Settings form
+ - Macro set styling
+ - XML file handling
+ - Serial port handling
+ - Settings handling
+
+## [1.2.0] - 2025-06-24
+ 
+### Changed
+ - Removed unused code and redundant comments
+ - Refactored functions for better readability and efficiency
+ - Simplified assembly attribute accessors with helper methods
+ - Improved naming conventions and consistent formatting
+ - Updated comments for clarity and better documentation
+ - Removed deprecated methods and fixed minor bugs
+
+## [1.3.0] - 2025-07-02
+
+### Added
+ - AutoUpdater
+
+## [1.3.1] - 2025-07-03
+
+### Fixed
+ - AutoUpdater reliability issues
+
+## [1.3.2] - 2025-07-10
+
+### Fixed
+ - ComboBox in SerialOptionsForm
+
+## License
+
+This project is licensed under the [MIT License](./LICENSE).

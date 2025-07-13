@@ -8,6 +8,12 @@ namespace _4Term
      * -------------------------------------------------------*/
     public class Settings
     {
+        public class Program
+        {
+            public static bool FirstStart = true;
+            public static bool CheckForUpdates = true;
+            public static bool ShowWelcomeMessage = false;
+        }
         public class Form
         {
             public static int Width = 718;
@@ -34,7 +40,15 @@ namespace _4Term
             public static (int R, int G, int B) Transmit = (255, 165, 0);
             public static (int R, int G, int B) Receive = (0, 250, 154);
         }      
-
+        
+        public class ExternalTools
+        {
+            public static string[] Tool = new string[]
+            {
+                "none0", "none1", "none2", "none3", "none4"
+            };
+        }
+        
         public class Port
         {      
             public static string PortName = "COM1";
@@ -183,6 +197,11 @@ namespace _4Term
                 Xml.LoadFileQ();
             }
 
+            /* Program section */
+            Program.FirstStart = Xml.ReadBoolParmQ("Program/FirstStart");
+            Program.CheckForUpdates = Xml.ReadBoolParmQ("Program/CheckForUpdates");
+            Program.ShowWelcomeMessage = Xml.ReadBoolParmQ("Program/ShowWelcomeMessage");
+
             /* Form section */
             Form.Width = Xml.ReadIntParmQ("Form/Width");
             Form.Height = Xml.ReadIntParmQ("Form/Height");
@@ -209,6 +228,12 @@ namespace _4Term
             Color.Receive.R = Xml.ReadIntParmQ("Receive/R");
             Color.Receive.G = Xml.ReadIntParmQ("Receive/G");
             Color.Receive.B = Xml.ReadIntParmQ("Receive/B");
+
+            /* Tool section */
+            for (int i = 0; i < ExternalTools.Tool.Length; i++)
+            {
+                ExternalTools.Tool[i] = Xml.ReadStringParmQ($"Tool/Item{i}");
+            }
 
             /* Port section */
             Port.PortName = Xml.ReadStringParmQ("Port/PortName");
@@ -254,6 +279,11 @@ namespace _4Term
             if (!Xml.LoadFileQ())
                 return;
 
+            /* Program section */
+            Xml.WriteBoolParmQ("Program/FirstStart", Program.FirstStart);
+            Xml.WriteBoolParmQ("Program/CheckForUpdates", Program.CheckForUpdates);
+            Xml.WriteBoolParmQ("Program/ShowWelcomeMessage", Program.ShowWelcomeMessage);
+
             /* Form section */
             Xml.WriteIntParmQ("Form/Width", Form.Width);
             Xml.WriteIntParmQ("Form/Height", Form.Height);
@@ -280,6 +310,12 @@ namespace _4Term
             Xml.WriteIntParmQ("Receive/R", Color.Receive.R);
             Xml.WriteIntParmQ("Receive/G", Color.Receive.G);
             Xml.WriteIntParmQ("Receive/B", Color.Receive.B);
+
+            /* Tool section */
+            for (int i = 0; i < ExternalTools.Tool.Length; i++)
+            {
+                Xml.WriteStringParmQ($"Tool/Item{i}", ExternalTools.Tool[i]);
+            }
 
             /* Port section */
             Xml.WriteStringParmQ("Port/PortName", Port.PortName);

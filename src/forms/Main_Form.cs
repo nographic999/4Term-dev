@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,6 +72,14 @@ namespace _4Term
         };
 
         /*----------------------------------------------------------
+         * Colors
+         * -------------------------------------------------------*/
+
+        Color BackgroundColor = Color.Empty;
+        Color TransmitColor = Color.Empty;
+        Color ReceiveColor = Color.Empty;
+
+        /*----------------------------------------------------------
          * Form
          * ---------------------------------------------------------
          * DEVELOPMENT STATUS
@@ -110,6 +120,11 @@ namespace _4Term
             /* Set Form size*/
             Size = new Size(Settings.Form.Width, Settings.Form.Height);
 
+            /* Initialize color settings */
+            BackgroundColor = Color.FromArgb(Settings.Color.Back.R, Settings.Color.Back.G, Settings.Color.Back.B);
+            TransmitColor = Color.FromArgb(Settings.Color.Transmit.R, Settings.Color.Transmit.G, Settings.Color.Transmit.B);
+            ReceiveColor = Color.FromArgb(Settings.Color.Receive.R, Settings.Color.Receive.G, Settings.Color.Receive.B);            
+
             /* Initialize font settings */
             FontStyle style = Enum.TryParse(Settings.RichTextBox.FontStyle, out FontStyle parsedStyle)
                 ? parsedStyle
@@ -137,6 +152,50 @@ namespace _4Term
             /* Initialize UI components */
             AssignButtonClickHandlers();
             LoadGroupContent();
+
+            const string GitHubUrl = "https://raw.githubusercontent.com/nographic999/4Term/main/";
+            const string VersionString = "4Term_1.3.1-beta_x64.7z";
+            string RemoteString = "null";
+
+            /* Check for updates */
+            if (Settings.Program.CheckForUpdates)
+            {
+                if (Net.CheckGitHubConnection())
+                {
+                    RemoteString = Net.GetRemoteVersion(GitHubUrl + "version.txt");
+                    if (VersionString != RemoteString)
+                    {
+                        // Show message box with Yes/No buttons
+                        var result = MessageBox.Show(
+                            "New version available. Do you want to update?",
+                            "Update Available",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question);
+
+                        if (result == DialogResult.Yes)
+                        {
+                            Net.DownloadFile(GitHubUrl + RemoteString, RemoteString);
+                            Net.DownloadFile(GitHubUrl + "assets/7zdec.exe", "7zdec.exe");
+                            Net.DownloadFile(GitHubUrl + "assets/setup.bat", "setup.bat");
+                            if (!Net.ExtractWith7zDecExe(RemoteString))
+                                Application.Exit();
+                            File.Delete(RemoteString);
+                            File.Delete("7zdec.exe");
+                            string batFilePath = @"setup.bat";
+
+                            ProcessStartInfo psi = new ProcessStartInfo();
+                            psi.FileName = batFilePath;
+                            psi.UseShellExecute = true; // Important for batch files
+                            psi.CreateNoWindow = false; // Show the command window if you want
+
+                            Process.Start(psi);
+
+                            // Quit the C# program immediately after starting the batch
+                            Environment.Exit(0);
+                        }
+                    }
+                }
+            }            
         }
 
         /*----------------------------------------------------------
@@ -163,7 +222,21 @@ namespace _4Term
             }
 
             /* UI-dependent initialization */
-            WelcomeMsg();            
+            if (Settings.Program.FirstStart || Settings.Program.ShowWelcomeMessage)
+                WelcomeMsg();
+            else
+            {
+                RichTextBox.Clear();
+                RichTextBox.BackColor = BackgroundColor;
+                RichTextBox.ForeColor = TransmitColor;             
+            }
+
+            /* Reset FirstStart flag and save settings on first run */
+            if (Settings.Program.FirstStart)
+            {
+                Settings.Program.FirstStart = false;
+                Settings.WriteXml();
+            }                  
         }
 
         /*----------------------------------------------------------
@@ -356,6 +429,12 @@ namespace _4Term
                 PageIndex = (PageIndex - 8 + 32) % 32;
                 MacroBank = (MacroBank - 128 + 512) % 512;
             }
+
+            if(MacroBank == 0)
+                MacrosGroupBox.Text = "Macros   " + MacroBank.ToString() + " - "+ (MacroBank + 128).ToString();
+            else
+                MacrosGroupBox.Text = "Macros " + MacroBank.ToString() + " - " + (MacroBank + 128).ToString();
+
 
             LoadGroupContent();
         }
@@ -683,10 +762,10 @@ namespace _4Term
             /* Set the selection color based on message type */
             if (type == 0)
                 /* Transmit color */
-                RichTextBox.SelectionColor = Color.FromArgb(Settings.Color.Transmit.R, Settings.Color.Transmit.G, Settings.Color.Transmit.B);
+                RichTextBox.SelectionColor = TransmitColor;
             else
                 /* Receive color */
-                RichTextBox.SelectionColor = Color.FromArgb(Settings.Color.Receive.R, Settings.Color.Receive.G, Settings.Color.Receive.B);
+                RichTextBox.SelectionColor = ReceiveColor;
 
             string buffer = "";
 
@@ -763,8 +842,8 @@ namespace _4Term
             }
             await Task.Delay(250);
             RichTextBox.Clear();
-            RichTextBox.ForeColor = Color.FromArgb(Settings.Color.Transmit.R, Settings.Color.Transmit.G, Settings.Color.Transmit.B);
-            RichTextBox.BackColor = Color.FromArgb(Settings.Color.Back.R, Settings.Color.Back.G, Settings.Color.Back.B);
+            RichTextBox.BackColor = BackgroundColor;
+            RichTextBox.ForeColor = TransmitColor;            
         }
 
         /*----------------------------------------------------------
@@ -832,7 +911,7 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void ErrorMessage(string message)
         {
-            RichTextBox.SelectionColor = Color.FromArgb(Settings.Color.Transmit.R, Settings.Color.Transmit.G, Settings.Color.Transmit.B);
+            RichTextBox.SelectionColor = TransmitColor;
             RichTextBox.AppendText("[ Error ] " + message);
         }
 
@@ -843,7 +922,7 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void InfoMessage(string message)
         {
-            RichTextBox.SelectionColor = Color.FromArgb(Settings.Color.Transmit.R, Settings.Color.Transmit.G, Settings.Color.Transmit.B);
+            RichTextBox.SelectionColor = TransmitColor;
             RichTextBox.AppendText("[ Info ] " + message);
         }        
 
@@ -874,6 +953,50 @@ namespace _4Term
         {
             if (buffer.Msg != 0xA3)
                 base.WndProc(ref buffer);
-        }      
+        }
+
+        private void Tool0ToolStripMenuItem_Click(object sender, EventArgs e) => RunTool(0);
+        private void Tool1ToolStripMenuItem_Click(object sender, EventArgs e) => RunTool(1);
+        private void Tool2ToolStripMenuItem_Click(object sender, EventArgs e) => RunTool(2);
+        private void Tool3ToolStripMenuItem_Click(object sender, EventArgs e) => RunTool(3);
+        private void Tool4ToolStripMenuItem_Click(object sender, EventArgs e) => RunTool(4);
+
+        // Shared launcher
+        public static void RunTool(int index)
+        {
+            if (index < 0 || index >= Settings.ExternalTools.Tool.Length)
+            {
+                MessageBox.Show($"Tool index {index} is out of range.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            string exeFilePath = Settings.ExternalTools.Tool[index];
+
+            if (string.IsNullOrWhiteSpace(exeFilePath) || exeFilePath == "none")
+            {
+                MessageBox.Show($"Tool {index} is not configured.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (!File.Exists(exeFilePath))
+            {
+                MessageBox.Show($"Executable not found: {exeFilePath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = exeFilePath,
+                    UseShellExecute = true,
+                    CreateNoWindow = false
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to run tool:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }

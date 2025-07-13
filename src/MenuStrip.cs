@@ -596,6 +596,11 @@ namespace _4Term
             /* Set Advanced Mode */
             SetAdvancedMode(Settings.Form.AdvancedMode);
 
+            /* Initialize color settings */
+            BackgroundColor = Color.FromArgb(Settings.Color.Back.R, Settings.Color.Back.G, Settings.Color.Back.B);
+            TransmitColor = Color.FromArgb(Settings.Color.Transmit.R, Settings.Color.Transmit.G, Settings.Color.Transmit.B);
+            ReceiveColor = Color.FromArgb(Settings.Color.Receive.R, Settings.Color.Receive.G, Settings.Color.Receive.B);
+
             /* Set RichTextBox font */
             FontStyle style = Enum.TryParse(Settings.RichTextBox.FontStyle, out FontStyle parsedStyle)
                 ? parsedStyle

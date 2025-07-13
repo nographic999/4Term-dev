@@ -95,6 +95,7 @@
       <DependentUpon>Settings_Form.cs</DependentUpon>
     </Compile>
     <Compile Include="src\Settings.cs" />
+    <Compile Include="src\Net.cs" />
     <Compile Include="src\Xml.cs" />
   </ItemGroup>
   <ItemGroup>
