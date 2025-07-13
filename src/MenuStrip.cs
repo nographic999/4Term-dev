@@ -626,6 +626,21 @@ namespace _4Term
 
             /* Set RichTextBox background color */
             RichTextBox.BackColor = Color.FromArgb(Settings.Color.Back.R, Settings.Color.Back.G, Settings.Color.Back.B);
+
+            Button[] toolButtons = new Button[]
+            {
+                Tool0Button, Tool1Button, Tool2Button, Tool3Button,
+                Tool4Button, Tool5Button, Tool6Button, Tool7Button
+            };
+
+            for (int i = 0; i < toolButtons.Length; i++)
+            {
+                toolButtons[i].Text = Settings.ExternalTools.Text[i];
+                toolButtons[i].Enabled = toolButtons[i].Visible = Settings.ExternalTools.Enabled[i];
+            }
+
+            ExternalToolPanel.Enabled = ExternalToolPanel.Visible = ExternalToolsToolStripMenuItem.Checked = Settings.Form.ExternalTools;
+            
         }
 
         /*----------------------------------------------------------
@@ -699,64 +714,6 @@ namespace _4Term
         {
             About_Form AboutForm = new About_Form();
             AboutForm.ShowDialog();
-        }
-
-        /*----------------------------------------------------------
-         * MenuStrip - DTR
-         *---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] DtrToolStripMenuItem_MouseDown
-         *---------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * DtrToolStripMenuItem_MouseDown
-         * 
-         * Toggles the DTR (Data Terminal Ready) signal setting on right-click.
-         * Updates the menu item color to indicate status and applies the setting
-         * to the serial port if open. Saves the updated settings.
-         *---------------------------------------------------------*/
-        private void DtrToolStripMenuItem_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                Settings.Port.Dtr = !Settings.Port.Dtr;
-                DtrToolStripMenuItem.BackColor = Settings.Port.Dtr ? Color.Green : SystemColors.Control;
-
-                if (Serial.Instance.IsOpen)
-                    Serial.Instance.SetDtr(Settings.Port.Dtr);
-
-                Settings.WriteXml();
-            }
-        }
-
-        /*----------------------------------------------------------
-         * MenuStrip - RTS
-         *---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓]  RtsToolStripMenuItem_MouseDown
-         *---------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * RtsToolStripMenuItem_MouseDown
-         * 
-         * Toggles the RTS (Request To Send) signal setting on right-click.
-         * Updates the menu item color to indicate status and applies the setting
-         * to the serial port if open. Saves the updated settings.
-         *---------------------------------------------------------*/
-        private void RtsToolStripMenuItem_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                Settings.Port.Rts = !Settings.Port.Rts;
-                RtsToolStripMenuItem.BackColor = Settings.Port.Rts ? Color.Green : SystemColors.Control;
-
-                if (Serial.Instance.IsOpen)
-                    Serial.Instance.SetRts(Settings.Port.Rts);
-
-                Settings.WriteXml();
-            }
         }
 
         /*----------------------------------------------------------

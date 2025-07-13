@@ -145,16 +145,32 @@ namespace _4Term
             /* Set UI control states */
             WordWrapToolStripMenuItem.Checked = Settings.RichTextBox.WordWrap;
             ToggleScrollingToolStripMenuItem.Checked = Settings.RichTextBox.Scroll;
-            DtrToolStripMenuItem.BackColor = Settings.Port.Dtr ? Color.Green : SystemColors.Control;
-            RtsToolStripMenuItem.BackColor = Settings.Port.Rts ? Color.Green : SystemColors.Control;
+            DTRButton.ForeColor = Settings.Port.Dtr ? Color.Green : SystemColors.ControlText;
+            RTSButton.ForeColor = Settings.Port.Rts ? Color.Green : SystemColors.ControlText;
             SetAdvancedMode(Settings.Form.AdvancedMode);
+            if(Settings.Form.ExternalTools != ExternalToolPanel.Enabled)
+            {
+                ExternalToolPanel.Enabled = ExternalToolPanel.Visible = ExternalToolsToolStripMenuItem.Checked = ExternalToolsToolStripMenuItem.Checked = Settings.Form.ExternalTools;
+                RichTextBox.Size = new Size(RichTextBox.Size.Width, RichTextBox.Size.Height - 34);
+            }
+            Button[] toolButtons = new Button[]
+            {
+                Tool0Button, Tool1Button, Tool2Button, Tool3Button,
+                Tool4Button, Tool5Button, Tool6Button, Tool7Button
+            };
+
+            for (int i = 0; i < toolButtons.Length; i++)
+            {
+                toolButtons[i].Text = Settings.ExternalTools.Text[i];
+                toolButtons[i].Enabled = toolButtons[i].Visible = Settings.ExternalTools.Enabled[i];
+            }
 
             /* Initialize UI components */
             AssignButtonClickHandlers();
             LoadGroupContent();
 
             const string GitHubUrl = "https://raw.githubusercontent.com/nographic999/4Term/main/";
-            const string VersionString = "4Term_1.3.1-beta_x64.7z";
+            const string VersionString = "4Term_1.4.0-beta_x64.7z";
             string RemoteString = "null";
 
             /* Check for updates */
@@ -382,8 +398,8 @@ namespace _4Term
         {
             SerialPortOptionsForm OptionsForm = new SerialPortOptionsForm();
             OptionsForm.ShowDialog();
-            DtrToolStripMenuItem.BackColor = Settings.Port.Dtr ? Color.Green : SystemColors.Control;
-            RtsToolStripMenuItem.BackColor = Settings.Port.Rts ? Color.Green : SystemColors.Control;
+            DTRButton.ForeColor = Settings.Port.Dtr ? Color.Green : SystemColors.ControlText;
+            RTSButton.ForeColor = Settings.Port.Rts ? Color.Green : SystemColors.ControlText;
         }
 
         /*----------------------------------------------------------
@@ -431,9 +447,9 @@ namespace _4Term
             }
 
             if(MacroBank == 0)
-                MacrosGroupBox.Text = "Macros   " + MacroBank.ToString() + " - "+ (MacroBank + 128).ToString();
+                MacrosGroupBox.Text = "Macros   " + MacroBank.ToString() + " - "+ (MacroBank + 127).ToString();
             else
-                MacrosGroupBox.Text = "Macros " + MacroBank.ToString() + " - " + (MacroBank + 128).ToString();
+                MacrosGroupBox.Text = "Macros " + MacroBank.ToString() + " - " + (MacroBank + 127).ToString();
 
 
             LoadGroupContent();
@@ -451,7 +467,6 @@ namespace _4Term
             if (sender is RadioButton selectedRadioButton && radioButtonMapping.TryGetValue(selectedRadioButton.Name, out int radioValue))
             {
                 CurrentRadioValue = radioValue;
-
                 LoadGroupContent();
             }
         }
@@ -800,6 +815,7 @@ namespace _4Term
         private async void WelcomeMsg()
         {
             RichTextBox.BackColor = Color.Black;
+            string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
             string[] asciiLines = new string[]
             {
                 "",
@@ -817,7 +833,7 @@ namespace _4Term
                 "        _\\///////////\\\\\\//________\\/\\\\\\_______\\//\\\\///////___\\/\\\\\\_________\\/\\\\\\__\\/\\\\\\__\\/\\\\\\_",
                 "         ___________\\/\\\\\\__________\\/\\\\\\________\\//\\\\\\\\\\\\\\\\\\\\_\\/\\\\\\_________\\/\\\\\\__\\/\\\\\\__\\/\\\\\\_",
                 "          ___________\\///___________\\///__________\\//////////__\\///__________\\///___\\///___\\///__",
-                "                                                                           Version: 1.3.2-beta x64"
+                $"                                                                           Version: {version} x64"
             };
             /* Colors to cycle through */
             Color[] colors = new Color[]
@@ -855,8 +871,6 @@ namespace _4Term
         {
             Settings.Form.AdvancedMode = AdvancedModeToolStripMenuItem.Checked = enable;
 
-            DtrToolStripMenuItem.Visible = DtrToolStripMenuItem.Enabled =
-            RtsToolStripMenuItem.Visible = RtsToolStripMenuItem.Enabled =
             M1ToolStripMenuItem.Visible = M1ToolStripMenuItem.Enabled =
             M2ToolStripMenuItem.Visible = M2ToolStripMenuItem.Enabled =
             M3ToolStripMenuItem.Visible = M3ToolStripMenuItem.Enabled =
@@ -876,6 +890,12 @@ namespace _4Term
             UndoToolStripMenuItem.Enabled = CutToolStripMenuItem.Enabled =
             CopyToolStripMenuItem.Enabled = PasteToolStripMenuItem.Enabled =
             DeleteToolStripMenuItem.Enabled = SelectAllToolStripMenuItem.Enabled = !enable;
+
+            if(Settings.Form.ExternalTools)
+                if(enable)
+                    MacroSetPanel.Location = new Point(MacroSetPanel.Location.X, MacroSetPanel.Location.Y - 38);
+                else
+                    MacroSetPanel.Location = new Point(MacroSetPanel.Location.X, MacroSetPanel.Location.Y + 38);
         }
 
         /*----------------------------------------------------------
@@ -955,14 +975,8 @@ namespace _4Term
                 base.WndProc(ref buffer);
         }
 
-        private void Tool0ToolStripMenuItem_Click(object sender, EventArgs e) => RunTool(0);
-        private void Tool1ToolStripMenuItem_Click(object sender, EventArgs e) => RunTool(1);
-        private void Tool2ToolStripMenuItem_Click(object sender, EventArgs e) => RunTool(2);
-        private void Tool3ToolStripMenuItem_Click(object sender, EventArgs e) => RunTool(3);
-        private void Tool4ToolStripMenuItem_Click(object sender, EventArgs e) => RunTool(4);
-
         // Shared launcher
-        public static void RunTool(int index)
+        public static void RunExternal(int index)
         {
             if (index < 0 || index >= Settings.ExternalTools.Tool.Length)
             {
@@ -997,6 +1011,66 @@ namespace _4Term
             {
                 MessageBox.Show($"Failed to run tool:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void Tool0Button_Click(object sender, EventArgs e) => RunExternal(0);
+        private void Tool1Button_Click(object sender, EventArgs e) => RunExternal(1);
+        private void Tool2Button_Click(object sender, EventArgs e) => RunExternal(2);
+        private void Tool3Button_Click(object sender, EventArgs e) => RunExternal(3);
+        private void Tool4Button_Click(object sender, EventArgs e) => RunExternal(4);
+        private void Tool5Button_Click(object sender, EventArgs e) => RunExternal(5);
+        private void Tool6Button_Click(object sender, EventArgs e) => RunExternal(6);
+        private void Tool7Button_Click(object sender, EventArgs e) => RunExternal(7);
+
+        private void ExternalToolsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings.Form.ExternalTools = ExternalToolPanel.Enabled = ExternalToolPanel.Visible = ExternalToolsToolStripMenuItem.Checked = !ExternalToolsToolStripMenuItem.Checked;
+            Settings.WriteXml();
+            if (Settings.Form.ExternalTools)
+            {
+                RichTextBox.Size = new Size(RichTextBox.Size.Width, RichTextBox.Size.Height - 34);
+                RichTextBox.ScrollToCaret();
+            }
+            else
+                RichTextBox.Size = new Size(RichTextBox.Size.Width, RichTextBox.Size.Height + 34);
+        }
+
+        private void MinusButton_Click(object sender, EventArgs e)
+        {
+            // Simulate left mouse button click
+            MouseEventArgs mouseArgs = new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0);
+            SwapButton_MouseDown(sender, mouseArgs);
+        }
+
+        private void PlusButton_Click(object sender, EventArgs e)
+        {
+            // Simulate right mouse button click
+            MouseEventArgs mouseArgs = new MouseEventArgs(MouseButtons.Right, 1, 0, 0, 0);
+            SwapButton_MouseDown(sender, mouseArgs);
+        }
+
+
+
+        private void DTRButton_Click(object sender, EventArgs e)
+        {
+            Settings.Port.Dtr = !Settings.Port.Dtr;
+            DTRButton.ForeColor = Settings.Port.Dtr ? Color.Green : SystemColors.ControlText;
+
+            if (Serial.Instance.IsOpen)
+                Serial.Instance.SetDtr(Settings.Port.Dtr);
+
+            Settings.WriteXml();
+        }
+
+        private void RTSButton_Click(object sender, EventArgs e)
+        {
+            Settings.Port.Rts = !Settings.Port.Rts;
+            RTSButton.ForeColor = Settings.Port.Rts ? Color.Green : SystemColors.ControlText;
+
+            if (Serial.Instance.IsOpen)
+                Serial.Instance.SetRts(Settings.Port.Rts);
+
+            Settings.WriteXml();
         }
     }
 }

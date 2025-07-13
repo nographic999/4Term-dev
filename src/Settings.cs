@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO.Ports;
+using System.Windows.Forms.VisualStyles;
 
 namespace _4Term
 {
@@ -19,6 +20,7 @@ namespace _4Term
             public static int Width = 718;
             public static int Height = 525;
             public static bool AdvancedMode = false;
+            public static bool ExternalTools = false;
         }
 
         public class RichTextBox
@@ -45,7 +47,17 @@ namespace _4Term
         {
             public static string[] Tool = new string[]
             {
-                "none0", "none1", "none2", "none3", "none4"
+                "none0", "none1", "none2", "none3", "none4", "none5", "none6", "none7"
+            };
+
+            public static string[] Text = new string[]
+            {
+                "none0", "none1", "none2", "none3", "none4", "none5", "none6", "none7"
+            };
+
+            public static bool[] Enabled = new bool[]
+            {
+                true, true, true, true, true, true, true, true
             };
         }
         
@@ -206,6 +218,7 @@ namespace _4Term
             Form.Width = Xml.ReadIntParmQ("Form/Width");
             Form.Height = Xml.ReadIntParmQ("Form/Height");
             Form.AdvancedMode = Xml.ReadBoolParmQ("Form/AdvancedMode");
+            Form.ExternalTools = Xml.ReadBoolParmQ("Form/ExternalTools");
 
             /* RichTextBox section */
             RichTextBox.Font = Xml.ReadStringParmQ("RichTextBox/Font");
@@ -233,6 +246,14 @@ namespace _4Term
             for (int i = 0; i < ExternalTools.Tool.Length; i++)
             {
                 ExternalTools.Tool[i] = Xml.ReadStringParmQ($"Tool/Item{i}");
+            }
+            for (int i = 0; i < ExternalTools.Text.Length; i++)
+            {
+                ExternalTools.Text[i] = Xml.ReadStringParmQ($"Text/Item{i}");
+            }
+            for (int i = 0; i < ExternalTools.Enabled.Length; i++)
+            {
+                ExternalTools.Enabled[i] = Xml.ReadBoolParmQ($"Enabled/Item{i}");
             }
 
             /* Port section */
@@ -288,6 +309,7 @@ namespace _4Term
             Xml.WriteIntParmQ("Form/Width", Form.Width);
             Xml.WriteIntParmQ("Form/Height", Form.Height);
             Xml.WriteBoolParmQ("Form/AdvancedMode", Form.AdvancedMode);
+            Xml.WriteBoolParmQ("Form/ExternalTools", Form.ExternalTools);
 
             /* RichTextBox section */
             Xml.WriteStringParmQ("RichTextBox/Font", RichTextBox.Font);
@@ -315,6 +337,14 @@ namespace _4Term
             for (int i = 0; i < ExternalTools.Tool.Length; i++)
             {
                 Xml.WriteStringParmQ($"Tool/Item{i}", ExternalTools.Tool[i]);
+            }
+            for (int i = 0; i < ExternalTools.Text.Length; i++)
+            {
+                Xml.WriteStringParmQ($"Text/Item{i}", ExternalTools.Text[i]);
+            }
+            for (int i = 0; i < ExternalTools.Enabled.Length; i++)
+            {
+                Xml.WriteBoolParmQ($"Enabled/Item{i}", ExternalTools.Enabled[i]);
             }
 
             /* Port section */

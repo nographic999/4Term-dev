@@ -65,16 +65,9 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.MacroModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AdvancedModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExternalToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ExternalToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Tool0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Tool1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Tool2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Tool3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Tool4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.DtrToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.RtsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.M1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.M1SetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.M1ToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
@@ -95,6 +88,8 @@
             this.SettingsButton = new System.Windows.Forms.Button();
             this.ConnectButton = new System.Windows.Forms.Button();
             this.MacrosGroupBox = new System.Windows.Forms.GroupBox();
+            this.PlusButton = new System.Windows.Forms.Button();
+            this.MinusButton = new System.Windows.Forms.Button();
             this.MacroButton15 = new System.Windows.Forms.Button();
             this.RadioButton6 = new System.Windows.Forms.RadioButton();
             this.MacroButton14 = new System.Windows.Forms.Button();
@@ -124,6 +119,8 @@
             this.ClearButton = new System.Windows.Forms.Button();
             this.ComboBox = new System.Windows.Forms.ComboBox();
             this.SendButton = new System.Windows.Forms.Button();
+            this.DTRButton = new System.Windows.Forms.Button();
+            this.RTSButton = new System.Windows.Forms.Button();
             this.RichTextBox = new System.Windows.Forms.RichTextBox();
             this.MacroSetPanel = new System.Windows.Forms.Panel();
             this.MacroSetGroupBox = new System.Windows.Forms.GroupBox();
@@ -135,12 +132,24 @@
             this.MacroTextLabel = new System.Windows.Forms.Label();
             this.MacroBox = new System.Windows.Forms.TextBox();
             this.MacroTextBox = new System.Windows.Forms.TextBox();
+            this.ExternalToolPanel = new System.Windows.Forms.Panel();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.Tool7Button = new System.Windows.Forms.Button();
+            this.Tool6Button = new System.Windows.Forms.Button();
+            this.Tool5Button = new System.Windows.Forms.Button();
+            this.Tool4Button = new System.Windows.Forms.Button();
+            this.Tool3Button = new System.Windows.Forms.Button();
+            this.Tool2Button = new System.Windows.Forms.Button();
+            this.Tool1Button = new System.Windows.Forms.Button();
+            this.Tool0Button = new System.Windows.Forms.Button();
             this.MenuStrip.SuspendLayout();
             this.COMBox.SuspendLayout();
             this.MacrosGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.MacroSetPanel.SuspendLayout();
             this.MacroSetGroupBox.SuspendLayout();
+            this.ExternalToolPanel.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // MenuStrip
@@ -151,9 +160,6 @@
             this.formatToolStripMenuItem,
             this.viewToolStripMenuItem,
             this.helpToolStripMenuItem,
-            this.ExternalToolsToolStripMenuItem,
-            this.DtrToolStripMenuItem,
-            this.RtsToolStripMenuItem,
             this.M1ToolStripMenuItem,
             this.M2ToolStripMenuItem,
             this.M3ToolStripMenuItem,
@@ -420,7 +426,8 @@
             this.ToggleScrollingToolStripMenuItem,
             this.toolStripSeparator4,
             this.MacroModeToolStripMenuItem,
-            this.AdvancedModeToolStripMenuItem});
+            this.AdvancedModeToolStripMenuItem,
+            this.ExternalToolsToolStripMenuItem});
             this.viewToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
@@ -457,6 +464,14 @@
             this.AdvancedModeToolStripMenuItem.Text = "&Advanced Mode";
             this.AdvancedModeToolStripMenuItem.Click += new System.EventHandler(this.AdvancedModeToolStripMenuItem_Click);
             // 
+            // ExternalToolsToolStripMenuItem
+            // 
+            this.ExternalToolsToolStripMenuItem.Name = "ExternalToolsToolStripMenuItem";
+            this.ExternalToolsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.T)));
+            this.ExternalToolsToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+            this.ExternalToolsToolStripMenuItem.Text = "&External Tools";
+            this.ExternalToolsToolStripMenuItem.Click += new System.EventHandler(this.ExternalToolsToolStripMenuItem_Click);
+            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -474,83 +489,6 @@
             this.AboutToolStripMenuItem.Text = "&About...";
             this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
-            // ExternalToolsToolStripMenuItem
-            // 
-            this.ExternalToolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.Tool0ToolStripMenuItem,
-            this.Tool1ToolStripMenuItem,
-            this.Tool2ToolStripMenuItem,
-            this.Tool3ToolStripMenuItem,
-            this.Tool4ToolStripMenuItem});
-            this.ExternalToolsToolStripMenuItem.Name = "ExternalToolsToolStripMenuItem";
-            this.ExternalToolsToolStripMenuItem.Size = new System.Drawing.Size(91, 20);
-            this.ExternalToolsToolStripMenuItem.Text = "External Tools";
-            // 
-            // Tool0ToolStripMenuItem
-            // 
-            this.Tool0ToolStripMenuItem.Name = "Tool0ToolStripMenuItem";
-            this.Tool0ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F8;
-            this.Tool0ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.Tool0ToolStripMenuItem.Text = "Tool0";
-            this.Tool0ToolStripMenuItem.Click += new System.EventHandler(this.Tool0ToolStripMenuItem_Click);
-            // 
-            // Tool1ToolStripMenuItem
-            // 
-            this.Tool1ToolStripMenuItem.Name = "Tool1ToolStripMenuItem";
-            this.Tool1ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F9;
-            this.Tool1ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.Tool1ToolStripMenuItem.Text = "Tool1";
-            this.Tool1ToolStripMenuItem.Click += new System.EventHandler(this.Tool1ToolStripMenuItem_Click);
-            // 
-            // Tool2ToolStripMenuItem
-            // 
-            this.Tool2ToolStripMenuItem.Name = "Tool2ToolStripMenuItem";
-            this.Tool2ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F10;
-            this.Tool2ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.Tool2ToolStripMenuItem.Text = "Tool2";
-            this.Tool2ToolStripMenuItem.Click += new System.EventHandler(this.Tool2ToolStripMenuItem_Click);
-            // 
-            // Tool3ToolStripMenuItem
-            // 
-            this.Tool3ToolStripMenuItem.Name = "Tool3ToolStripMenuItem";
-            this.Tool3ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F11;
-            this.Tool3ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.Tool3ToolStripMenuItem.Text = "Tool3";
-            this.Tool3ToolStripMenuItem.Click += new System.EventHandler(this.Tool3ToolStripMenuItem_Click);
-            // 
-            // Tool4ToolStripMenuItem
-            // 
-            this.Tool4ToolStripMenuItem.Name = "Tool4ToolStripMenuItem";
-            this.Tool4ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F12;
-            this.Tool4ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.Tool4ToolStripMenuItem.Text = "Tool4";
-            this.Tool4ToolStripMenuItem.Click += new System.EventHandler(this.Tool4ToolStripMenuItem_Click);
-            // 
-            // DtrToolStripMenuItem
-            // 
-            this.DtrToolStripMenuItem.Enabled = false;
-            this.DtrToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.DtrToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.DtrToolStripMenuItem.Margin = new System.Windows.Forms.Padding(76, 0, 0, 0);
-            this.DtrToolStripMenuItem.Name = "DtrToolStripMenuItem";
-            this.DtrToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F6;
-            this.DtrToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.DtrToolStripMenuItem.Text = "&DTR";
-            this.DtrToolStripMenuItem.Visible = false;
-            this.DtrToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DtrToolStripMenuItem_MouseDown);
-            // 
-            // RtsToolStripMenuItem
-            // 
-            this.RtsToolStripMenuItem.Enabled = false;
-            this.RtsToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RtsToolStripMenuItem.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.RtsToolStripMenuItem.Name = "RtsToolStripMenuItem";
-            this.RtsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F7;
-            this.RtsToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.RtsToolStripMenuItem.Text = "&RTS";
-            this.RtsToolStripMenuItem.Visible = false;
-            this.RtsToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RtsToolStripMenuItem_MouseDown);
-            // 
             // M1ToolStripMenuItem
             // 
             this.M1ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -558,7 +496,7 @@
             this.M1ToolStripTextBox});
             this.M1ToolStripMenuItem.Enabled = false;
             this.M1ToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M1ToolStripMenuItem.Margin = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            this.M1ToolStripMenuItem.Margin = new System.Windows.Forms.Padding(268, 0, 0, 0);
             this.M1ToolStripMenuItem.Name = "M1ToolStripMenuItem";
             this.M1ToolStripMenuItem.Size = new System.Drawing.Size(31, 20);
             this.M1ToolStripMenuItem.Text = "M1";
@@ -757,6 +695,8 @@
             this.MacrosGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.MacrosGroupBox.BackColor = System.Drawing.Color.Transparent;
+            this.MacrosGroupBox.Controls.Add(this.PlusButton);
+            this.MacrosGroupBox.Controls.Add(this.MinusButton);
             this.MacrosGroupBox.Controls.Add(this.MacroButton15);
             this.MacrosGroupBox.Controls.Add(this.RadioButton6);
             this.MacrosGroupBox.Controls.Add(this.MacroButton14);
@@ -788,7 +728,31 @@
             this.MacrosGroupBox.Size = new System.Drawing.Size(694, 80);
             this.MacrosGroupBox.TabIndex = 215;
             this.MacrosGroupBox.TabStop = false;
-            this.MacrosGroupBox.Text = "Macros   0 - 128";
+            this.MacrosGroupBox.Text = "Macros   0 - 127";
+            // 
+            // PlusButton
+            // 
+            this.PlusButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.PlusButton.Location = new System.Drawing.Point(121, 0);
+            this.PlusButton.Name = "PlusButton";
+            this.PlusButton.Size = new System.Drawing.Size(14, 13);
+            this.PlusButton.TabIndex = 241;
+            this.PlusButton.Text = "+";
+            this.PlusButton.UseCompatibleTextRendering = true;
+            this.PlusButton.UseVisualStyleBackColor = true;
+            this.PlusButton.Click += new System.EventHandler(this.PlusButton_Click);
+            // 
+            // MinusButton
+            // 
+            this.MinusButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.MinusButton.Location = new System.Drawing.Point(107, 0);
+            this.MinusButton.Name = "MinusButton";
+            this.MinusButton.Size = new System.Drawing.Size(14, 13);
+            this.MinusButton.TabIndex = 240;
+            this.MinusButton.Text = "-";
+            this.MinusButton.UseCompatibleTextRendering = true;
+            this.MinusButton.UseVisualStyleBackColor = true;
+            this.MinusButton.Click += new System.EventHandler(this.MinusButton_Click);
             // 
             // MacroButton15
             // 
@@ -1118,6 +1082,8 @@
             this.groupBox1.Controls.Add(this.ClearButton);
             this.groupBox1.Controls.Add(this.ComboBox);
             this.groupBox1.Controls.Add(this.SendButton);
+            this.groupBox1.Controls.Add(this.DTRButton);
+            this.groupBox1.Controls.Add(this.RTSButton);
             this.groupBox1.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(4, 368);
             this.groupBox1.Name = "groupBox1";
@@ -1166,6 +1132,35 @@
             this.SendButton.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.SendButton.UseVisualStyleBackColor = true;
             this.SendButton.Click += new System.EventHandler(this.SendButton_Click);
+            // 
+            // DTRButton
+            // 
+            this.DTRButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.DTRButton.BackColor = System.Drawing.Color.Transparent;
+            this.DTRButton.Font = new System.Drawing.Font("Consolas", 6F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DTRButton.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.DTRButton.Location = new System.Drawing.Point(59, 0);
+            this.DTRButton.Name = "DTRButton";
+            this.DTRButton.Size = new System.Drawing.Size(31, 14);
+            this.DTRButton.TabIndex = 212;
+            this.DTRButton.Text = "DTR";
+            this.DTRButton.UseCompatibleTextRendering = true;
+            this.DTRButton.UseVisualStyleBackColor = false;
+            this.DTRButton.Click += new System.EventHandler(this.DTRButton_Click);
+            // 
+            // RTSButton
+            // 
+            this.RTSButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.RTSButton.Font = new System.Drawing.Font("Consolas", 6F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RTSButton.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.RTSButton.Location = new System.Drawing.Point(91, 0);
+            this.RTSButton.Name = "RTSButton";
+            this.RTSButton.Size = new System.Drawing.Size(31, 14);
+            this.RTSButton.TabIndex = 245;
+            this.RTSButton.Text = "RTS";
+            this.RTSButton.UseCompatibleTextRendering = true;
+            this.RTSButton.UseVisualStyleBackColor = true;
+            this.RTSButton.Click += new System.EventHandler(this.RTSButton_Click);
             // 
             // RichTextBox
             // 
@@ -1292,11 +1287,132 @@
             this.MacroTextBox.Size = new System.Drawing.Size(184, 20);
             this.MacroTextBox.TabIndex = 256;
             // 
+            // ExternalToolPanel
+            // 
+            this.ExternalToolPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ExternalToolPanel.Controls.Add(this.groupBox2);
+            this.ExternalToolPanel.Enabled = false;
+            this.ExternalToolPanel.Location = new System.Drawing.Point(0, 335);
+            this.ExternalToolPanel.Name = "ExternalToolPanel";
+            this.ExternalToolPanel.Size = new System.Drawing.Size(702, 34);
+            this.ExternalToolPanel.TabIndex = 242;
+            this.ExternalToolPanel.Visible = false;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.Tool7Button);
+            this.groupBox2.Controls.Add(this.Tool6Button);
+            this.groupBox2.Controls.Add(this.Tool5Button);
+            this.groupBox2.Controls.Add(this.Tool4Button);
+            this.groupBox2.Controls.Add(this.Tool3Button);
+            this.groupBox2.Controls.Add(this.Tool2Button);
+            this.groupBox2.Controls.Add(this.Tool1Button);
+            this.groupBox2.Controls.Add(this.Tool0Button);
+            this.groupBox2.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox2.Location = new System.Drawing.Point(4, 1);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(694, 34);
+            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "External Tools";
+            // 
+            // Tool7Button
+            // 
+            this.Tool7Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Tool7Button.Location = new System.Drawing.Point(613, 11);
+            this.Tool7Button.Name = "Tool7Button";
+            this.Tool7Button.Size = new System.Drawing.Size(78, 20);
+            this.Tool7Button.TabIndex = 258;
+            this.Tool7Button.Text = "7";
+            this.Tool7Button.UseVisualStyleBackColor = true;
+            this.Tool7Button.Click += new System.EventHandler(this.Tool7Button_Click);
+            // 
+            // Tool6Button
+            // 
+            this.Tool6Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Tool6Button.Location = new System.Drawing.Point(526, 11);
+            this.Tool6Button.Name = "Tool6Button";
+            this.Tool6Button.Size = new System.Drawing.Size(78, 20);
+            this.Tool6Button.TabIndex = 257;
+            this.Tool6Button.Text = "6";
+            this.Tool6Button.UseVisualStyleBackColor = true;
+            this.Tool6Button.Click += new System.EventHandler(this.Tool6Button_Click);
+            // 
+            // Tool5Button
+            // 
+            this.Tool5Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Tool5Button.Location = new System.Drawing.Point(439, 11);
+            this.Tool5Button.Name = "Tool5Button";
+            this.Tool5Button.Size = new System.Drawing.Size(78, 20);
+            this.Tool5Button.TabIndex = 256;
+            this.Tool5Button.Text = "5";
+            this.Tool5Button.UseVisualStyleBackColor = true;
+            this.Tool5Button.Click += new System.EventHandler(this.Tool5Button_Click);
+            // 
+            // Tool4Button
+            // 
+            this.Tool4Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Tool4Button.Location = new System.Drawing.Point(352, 11);
+            this.Tool4Button.Name = "Tool4Button";
+            this.Tool4Button.Size = new System.Drawing.Size(78, 20);
+            this.Tool4Button.TabIndex = 255;
+            this.Tool4Button.Text = "4";
+            this.Tool4Button.UseVisualStyleBackColor = true;
+            this.Tool4Button.Click += new System.EventHandler(this.Tool4Button_Click);
+            // 
+            // Tool3Button
+            // 
+            this.Tool3Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Tool3Button.Location = new System.Drawing.Point(265, 11);
+            this.Tool3Button.Name = "Tool3Button";
+            this.Tool3Button.Size = new System.Drawing.Size(78, 20);
+            this.Tool3Button.TabIndex = 254;
+            this.Tool3Button.Text = "3";
+            this.Tool3Button.UseVisualStyleBackColor = true;
+            this.Tool3Button.Click += new System.EventHandler(this.Tool3Button_Click);
+            // 
+            // Tool2Button
+            // 
+            this.Tool2Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Tool2Button.Location = new System.Drawing.Point(178, 11);
+            this.Tool2Button.Name = "Tool2Button";
+            this.Tool2Button.Size = new System.Drawing.Size(78, 20);
+            this.Tool2Button.TabIndex = 253;
+            this.Tool2Button.Text = "2";
+            this.Tool2Button.UseVisualStyleBackColor = true;
+            this.Tool2Button.Click += new System.EventHandler(this.Tool2Button_Click);
+            // 
+            // Tool1Button
+            // 
+            this.Tool1Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Tool1Button.Location = new System.Drawing.Point(91, 11);
+            this.Tool1Button.Name = "Tool1Button";
+            this.Tool1Button.Size = new System.Drawing.Size(78, 20);
+            this.Tool1Button.TabIndex = 252;
+            this.Tool1Button.Text = "1";
+            this.Tool1Button.UseVisualStyleBackColor = true;
+            this.Tool1Button.Click += new System.EventHandler(this.Tool1Button_Click);
+            // 
+            // Tool0Button
+            // 
+            this.Tool0Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Tool0Button.Location = new System.Drawing.Point(4, 11);
+            this.Tool0Button.Name = "Tool0Button";
+            this.Tool0Button.Size = new System.Drawing.Size(78, 20);
+            this.Tool0Button.TabIndex = 251;
+            this.Tool0Button.Text = "0";
+            this.Tool0Button.UseVisualStyleBackColor = true;
+            this.Tool0Button.Click += new System.EventHandler(this.Tool0Button_Click);
+            // 
             // Main_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(702, 486);
+            this.Controls.Add(this.ExternalToolPanel);
             this.Controls.Add(this.MacroSetPanel);
             this.Controls.Add(this.COMBox);
             this.Controls.Add(this.groupBox1);
@@ -1319,6 +1435,8 @@
             this.MacroSetPanel.ResumeLayout(false);
             this.MacroSetGroupBox.ResumeLayout(false);
             this.MacroSetGroupBox.PerformLayout();
+            this.ExternalToolPanel.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1397,8 +1515,6 @@
         private System.Windows.Forms.ToolStripMenuItem ScanCOMsToolStripMenuItem;
         private System.Windows.Forms.RichTextBox RichTextBox;
         private System.Windows.Forms.Button SwapButton;
-        private System.Windows.Forms.ToolStripMenuItem DtrToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem RtsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem M1ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem M2ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem M3ToolStripMenuItem;
@@ -1426,11 +1542,20 @@
         private System.Windows.Forms.TextBox MacroTextBox;
         private System.Windows.Forms.Button ProgButton;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Panel ExternalToolPanel;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button Tool7Button;
+        private System.Windows.Forms.Button Tool6Button;
+        private System.Windows.Forms.Button Tool5Button;
+        private System.Windows.Forms.Button Tool4Button;
+        private System.Windows.Forms.Button Tool3Button;
+        private System.Windows.Forms.Button Tool2Button;
+        private System.Windows.Forms.Button Tool1Button;
+        private System.Windows.Forms.Button Tool0Button;
         private System.Windows.Forms.ToolStripMenuItem ExternalToolsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem Tool0ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem Tool1ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem Tool2ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem Tool3ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem Tool4ToolStripMenuItem;
+        private System.Windows.Forms.Button MinusButton;
+        private System.Windows.Forms.Button PlusButton;
+        private System.Windows.Forms.Button DTRButton;
+        private System.Windows.Forms.Button RTSButton;
     }
 }
