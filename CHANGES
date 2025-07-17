@@ -47,6 +47,22 @@ All notable changes to **4Term** will be documented in this file.
 ### Fixed
  - ComboBox in SerialOptionsForm
 
+## [1.4.0] - 2025-07-17
+
+### Added
+ - Built-in update functionality integrated directly into the application for seamless update management
+ - Support for external tools to enhance functionality and extend features
+
+### Changed
+ - Updated project to target .NET Framework 4.8.1
+ - Updated .gitignore
+ - Settings form
+ - Main form layout and design
+ - Settings handling
+ 
+### Removed
+ - AutoUpdater
+
 ## License
 
 This project is licensed under the [MIT License](./LICENSE).

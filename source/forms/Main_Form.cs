@@ -815,7 +815,8 @@ namespace _4Term
         private async void WelcomeMsg()
         {
             RichTextBox.BackColor = Color.Black;
-            string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+            string archSuffix = Environment.Is64BitProcess ? " x64" : " x86";
+            string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3) + archSuffix;
             string[] asciiLines = new string[]
             {
                 "",
@@ -833,7 +834,7 @@ namespace _4Term
                 "        _\\///////////\\\\\\//________\\/\\\\\\_______\\//\\\\///////___\\/\\\\\\_________\\/\\\\\\__\\/\\\\\\__\\/\\\\\\_",
                 "         ___________\\/\\\\\\__________\\/\\\\\\________\\//\\\\\\\\\\\\\\\\\\\\_\\/\\\\\\_________\\/\\\\\\__\\/\\\\\\__\\/\\\\\\_",
                 "          ___________\\///___________\\///__________\\//////////__\\///__________\\///___\\///___\\///__",
-                $"                                                                           Version: {version} x64"
+                $"                                                                           Version: {version}"
             };
             /* Colors to cycle through */
             Color[] colors = new Color[]

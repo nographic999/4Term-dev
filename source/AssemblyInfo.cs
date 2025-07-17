@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
     "and logging RS232 communication. It's especially useful for capturing and analyzing data from serial devices.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("NoGraphic999")]
-[assembly: AssemblyProduct("4Term x64")]
+[assembly: AssemblyProduct("4Term")]
 [assembly: AssemblyCopyright("Copyright © 2025. All Rights Reserved.")]
 [assembly: AssemblyMetadata("License", "MIT License © 2025 NoGraphic999")]
 [assembly: AssemblyTrademark("")]
