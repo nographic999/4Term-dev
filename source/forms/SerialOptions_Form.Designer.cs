@@ -252,6 +252,8 @@
             this.COMPortComboBox.Name = "COMPortComboBox";
             this.COMPortComboBox.Size = new System.Drawing.Size(87, 21);
             this.COMPortComboBox.TabIndex = 12;
+            this.COMPortComboBox.DropDown += new System.EventHandler(this.COMPortComboBox_DropDown);
+            this.COMPortComboBox.DropDownClosed += new System.EventHandler(this.COMPortComboBox_DropDownClosed);
             this.COMPortComboBox.Click += new System.EventHandler(this.COMPortComboBox_Click);
             // 
             // ComPortGroupBox

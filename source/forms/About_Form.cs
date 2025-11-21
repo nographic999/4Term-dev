@@ -45,13 +45,8 @@ namespace _4Term
         #endregion
 
         /*----------------------------------------------------------
-        * Form
-        * ---------------------------------------------------------
-        * DEVELOPMENT STATUS
-        *
-        * [✓] About_Form(constructor)
-        * [✓] CloseButton_Click
-        *---------------------------------------------------------*/
+         * Class Functions
+         * -------------------------------------------------------*/
 
         /*----------------------------------------------------------
          * About_Form
@@ -70,7 +65,7 @@ namespace _4Term
 
             this.Text = $"About {AssemblyTitle}";
             this.labelProductName.Text = AssemblyProduct;
-            this.labelVersion.Text = $"Version {AssemblyVersion}";
+            this.labelVersion.Text = $"Version {AssemblyVersion.Substring(0, AssemblyVersion.LastIndexOf("."))}";
             this.labelCopyright.Text = AssemblyCopyright;
             this.labelCompanyName.Text = AssemblyCompany;
             this.textBoxDescription.Text = AssemblyDescription;
@@ -83,14 +78,6 @@ namespace _4Term
          * Closes the About form when the Close button is clicked
          *---------------------------------------------------------*/
         private void CloseButton_Click(object sender, EventArgs e) => Close();
-
-        /*----------------------------------------------------------
-         * Helper Functions
-         * ---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         * 
-         * [✓] WndProc
-         *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
         * WndProc

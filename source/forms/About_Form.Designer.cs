@@ -45,9 +45,9 @@ namespace _4Term
             pictureBox1.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
             pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            pictureBox1.Location = new System.Drawing.Point(315, 12);
+            pictureBox1.Location = new System.Drawing.Point(285, 12);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new System.Drawing.Size(64, 64);
+            pictureBox1.Size = new System.Drawing.Size(94, 94);
             pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 29;
             pictureBox1.TabStop = false;
@@ -56,7 +56,7 @@ namespace _4Term
             // 
             this.CloseButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.CloseButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.CloseButton.Location = new System.Drawing.Point(307, 193);
+            this.CloseButton.Location = new System.Drawing.Point(307, 172);
             this.CloseButton.Name = "CloseButton";
             this.CloseButton.Size = new System.Drawing.Size(75, 23);
             this.CloseButton.TabIndex = 25;
@@ -73,7 +73,7 @@ namespace _4Term
             this.textBoxDescription.Name = "textBoxDescription";
             this.textBoxDescription.ReadOnly = true;
             this.textBoxDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxDescription.Size = new System.Drawing.Size(364, 78);
+            this.textBoxDescription.Size = new System.Drawing.Size(364, 57);
             this.textBoxDescription.TabIndex = 26;
             this.textBoxDescription.TabStop = false;
             this.textBoxDescription.Text = "Description";
@@ -142,7 +142,7 @@ namespace _4Term
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(394, 223);
+            this.ClientSize = new System.Drawing.Size(394, 203);
             this.Controls.Add(this.labelMetadata);
             this.Controls.Add(pictureBox1);
             this.Controls.Add(this.labelCompanyName);

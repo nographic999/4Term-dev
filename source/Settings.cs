@@ -1,18 +1,17 @@
 ﻿using System;
 using System.IO.Ports;
-using System.Windows.Forms.VisualStyles;
 
 namespace _4Term
 {
-    /*----------------------------------------------------------
-     * Class variables
-     * -------------------------------------------------------*/
     public class Settings
     {
+	    /*----------------------------------------------------------
+	     * Class variables
+	     * -------------------------------------------------------*/
+
         public class Program
         {
             public static bool FirstStart = true;
-            public static bool CheckForUpdates = true;
             public static bool ShowWelcomeMessage = false;
         }
         public class Form
@@ -38,28 +37,10 @@ namespace _4Term
 
         public class Color
         {
-            public static (int R, int G, int B) Back = (0, 0, 0);
-            public static (int R, int G, int B) Transmit = (255, 165, 0);
-            public static (int R, int G, int B) Receive = (0, 250, 154);
+            public static (int R, int G, int B) Back = (30, 30, 30);
+            public static (int R, int G, int B) Transmit = (194, 30, 86);
+            public static (int R, int G, int B) Receive = (152, 255, 204);
         }      
-        
-        public class ExternalTools
-        {
-            public static string[] Tool = new string[]
-            {
-                "none0", "none1", "none2", "none3", "none4", "none5", "none6", "none7"
-            };
-
-            public static string[] Text = new string[]
-            {
-                "none0", "none1", "none2", "none3", "none4", "none5", "none6", "none7"
-            };
-
-            public static bool[] Enabled = new bool[]
-            {
-                true, true, true, true, true, true, true, true
-            };
-        }
         
         public class Port
         {      
@@ -85,108 +66,22 @@ namespace _4Term
 
         public class Page
         {
-            public static string[] Text = new string[]
-            {
-                /* pages 0-7 */
-                "page0", "page1", "page2", "page3", "page4", "page5", "page6", "page7",
-
-                /* pages 8-15 */
-                "page8", "page9", "page10","page11", "page12", "page13", "page14", "page15",
-
-                /* pages 16-23 */
-                "page16", "page17", "page18", "page19", "page20", "page21", "page22", "page23",
-
-                /* pages 24-31 */
-                "page24", "page25", "page26", "page27", "page28", "page29", "page30", "page31"
-            };
+            public static string[] Text = new string[16]; // set 16 to 32 for 4 pages
         }
 
         public class MacroText
         {
-            public static string[] Text = new string[]
-            {
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page0  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page1  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page2  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page3  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page4  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page5  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page6  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page7  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page8  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page9  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page10 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page11 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page12 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page13 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page14 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page15 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page16 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page17 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page18 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page19 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page20 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page21 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page22 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page23 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page24 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page25 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page26 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page27 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page28 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page29 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page30 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""      /* page31 */
-            };
+            public static string[] Text = new string[256]; // set 256 to 512 for 4 pages
         }
 
         public class MacroCommand
         {
-            public static string[] Text = new string[]
-            {
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page0  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page1  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page2  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page3  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page4  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page5  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page6  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page7  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page8  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page9  */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page10 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page11 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page12 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page13 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page14 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page15 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page16 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page17 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page18 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page19 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page20 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page21 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page22 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page23 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page24 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page25 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page26 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page27 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page28 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page29 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     /* page30 */
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""      /* page31 */
-            };
+            public static string[] Text = new string[256]; // set 256 to 512 for 4 pages
         }
 
         /*----------------------------------------------------------
          * Class Functions
-         * ---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         * 
-         * [✓] ReadXml
-         * [✓] WriteXml
-         *---------------------------------------------------------*/
+         * -------------------------------------------------------*/
 
         /*----------------------------------------------------------
          * ReadXml
@@ -194,95 +89,80 @@ namespace _4Term
          * Loads application settings from the XML configuration file.
          * Initializes UI dimensions, font styles, serial port settings,
          * color themes, and macro definitions.
-         * Returns immediately if the file cannot be loaded.
+         * Exits if file creation fails.
          *---------------------------------------------------------*/
         public static void ReadXml()
         {
-            /* Load xml file */
-            if (!Xml.LoadFileQ())
+            /* Load XML file */
+            if (!Xml.LoadFile())
             {
-                if (!Xml.CreateNewQ())
+                if (!Xml.CreateNew())
                 {
                     Environment.Exit(1);
                 }
                 WriteXml();
-                Xml.LoadFileQ();
+                Xml.LoadFile();
             }
 
             /* Program section */
-            Program.FirstStart = Xml.ReadBoolParmQ("Program/FirstStart");
-            Program.CheckForUpdates = Xml.ReadBoolParmQ("Program/CheckForUpdates");
-            Program.ShowWelcomeMessage = Xml.ReadBoolParmQ("Program/ShowWelcomeMessage");
+            Program.FirstStart = Xml.ReadBoolParm("Program/FirstStart");
+            Program.ShowWelcomeMessage = Xml.ReadBoolParm("Program/ShowWelcomeMessage");
 
             /* Form section */
-            Form.Width = Xml.ReadIntParmQ("Form/Width");
-            Form.Height = Xml.ReadIntParmQ("Form/Height");
-            Form.AdvancedMode = Xml.ReadBoolParmQ("Form/AdvancedMode");
-            Form.ExternalTools = Xml.ReadBoolParmQ("Form/ExternalTools");
+            Form.Width = Xml.ReadIntParm("Form/Width");
+            Form.Height = Xml.ReadIntParm("Form/Height");
+            Form.AdvancedMode = Xml.ReadBoolParm("Form/AdvancedMode");
+            Form.ExternalTools = Xml.ReadBoolParm("Form/ExternalTools");
 
             /* RichTextBox section */
-            RichTextBox.Font = Xml.ReadStringParmQ("RichTextBox/Font");
-            RichTextBox.FontStyle = Xml.ReadStringParmQ("RichTextBox/FontStyle");
-            RichTextBox.Size = Xml.ReadIntParmQ("RichTextBox/Size");
-            RichTextBox.Strikeout = Xml.ReadBoolParmQ("RichTextBox/Strikeout");
-            RichTextBox.Underline = Xml.ReadBoolParmQ("RichTextBox/Underline");
-            RichTextBox.WordWrap = Xml.ReadBoolParmQ("RichTextBox/WordWrap");
-            RichTextBox.Scroll = Xml.ReadBoolParmQ("RichTextBox/Scroll");
-            RichTextBox.HexOutput = Xml.ReadBoolParmQ("RichTextBox/HexOutput");
-            RichTextBox.LocalEcho = Xml.ReadBoolParmQ("RichTextBox/LocalEcho");            
+            RichTextBox.Font = Xml.ReadStringParm("RichTextBox/Font");
+            RichTextBox.FontStyle = Xml.ReadStringParm("RichTextBox/FontStyle");
+            RichTextBox.Size = Xml.ReadIntParm("RichTextBox/Size");
+            RichTextBox.Strikeout = Xml.ReadBoolParm("RichTextBox/Strikeout");
+            RichTextBox.Underline = Xml.ReadBoolParm("RichTextBox/Underline");
+            RichTextBox.WordWrap = Xml.ReadBoolParm("RichTextBox/WordWrap");
+            RichTextBox.Scroll = Xml.ReadBoolParm("RichTextBox/Scroll");
+            RichTextBox.HexOutput = Xml.ReadBoolParm("RichTextBox/HexOutput");
+            RichTextBox.LocalEcho = Xml.ReadBoolParm("RichTextBox/LocalEcho");            
 
             /* Color section */
-            Color.Back.R = Xml.ReadIntParmQ("Back/R");
-            Color.Back.G = Xml.ReadIntParmQ("Back/G");
-            Color.Back.B = Xml.ReadIntParmQ("Back/B");
-            Color.Transmit.R = Xml.ReadIntParmQ("Transmit/R");
-            Color.Transmit.G = Xml.ReadIntParmQ("Transmit/G");
-            Color.Transmit.B = Xml.ReadIntParmQ("Transmit/B");
-            Color.Receive.R = Xml.ReadIntParmQ("Receive/R");
-            Color.Receive.G = Xml.ReadIntParmQ("Receive/G");
-            Color.Receive.B = Xml.ReadIntParmQ("Receive/B");
-
-            /* Tool section */
-            for (int i = 0; i < ExternalTools.Tool.Length; i++)
-            {
-                ExternalTools.Tool[i] = Xml.ReadStringParmQ($"Tool/Item{i}");
-            }
-            for (int i = 0; i < ExternalTools.Text.Length; i++)
-            {
-                ExternalTools.Text[i] = Xml.ReadStringParmQ($"Text/Item{i}");
-            }
-            for (int i = 0; i < ExternalTools.Enabled.Length; i++)
-            {
-                ExternalTools.Enabled[i] = Xml.ReadBoolParmQ($"Enabled/Item{i}");
-            }
+            Color.Back.R = Xml.ReadIntParm("Back/R");
+            Color.Back.G = Xml.ReadIntParm("Back/G");
+            Color.Back.B = Xml.ReadIntParm("Back/B");
+            Color.Transmit.R = Xml.ReadIntParm("Transmit/R");
+            Color.Transmit.G = Xml.ReadIntParm("Transmit/G");
+            Color.Transmit.B = Xml.ReadIntParm("Transmit/B");
+            Color.Receive.R = Xml.ReadIntParm("Receive/R");
+            Color.Receive.G = Xml.ReadIntParm("Receive/G");
+            Color.Receive.B = Xml.ReadIntParm("Receive/B");
 
             /* Port section */
-            Port.PortName = Xml.ReadStringParmQ("Port/PortName");
-            Port.BaudRate = Xml.ReadIntParmQ("Port/BaudRate");
-            Port.DataBits = Xml.ReadIntParmQ("Port/DataBits");
-            Port.Parity = (Parity)Enum.Parse(typeof(Parity), Xml.ReadStringParmQ("Port/Parity"));
-            Port.StopBits = (StopBits)Enum.Parse(typeof(StopBits), Xml.ReadStringParmQ("Port/StopBits"));
-            Port.Handshake = (Handshake)Enum.Parse(typeof(Handshake), Xml.ReadStringParmQ("Port/Handshake"));
-            Port.Append = (Port.AppendType)Enum.Parse(typeof(Port.AppendType), Xml.ReadStringParmQ("Port/AppendToSend"));
-            Port.Dtr = Xml.ReadBoolParmQ("Port/Dtr");
-            Port.Rts = Xml.ReadBoolParmQ("Port/Rts");
+            Port.PortName = Xml.ReadStringParm("Port/PortName");
+            Port.BaudRate = Xml.ReadIntParm("Port/BaudRate");
+            Port.DataBits = Xml.ReadIntParm("Port/DataBits");
+            Port.Parity = (Parity)Enum.Parse(typeof(Parity), Xml.ReadStringParm("Port/Parity"));
+            Port.StopBits = (StopBits)Enum.Parse(typeof(StopBits), Xml.ReadStringParm("Port/StopBits"));
+            Port.Handshake = (Handshake)Enum.Parse(typeof(Handshake), Xml.ReadStringParm("Port/Handshake"));
+            Port.Append = (Port.AppendType)Enum.Parse(typeof(Port.AppendType), Xml.ReadStringParm("Port/AppendToSend"));
+            Port.Dtr = Xml.ReadBoolParm("Port/Dtr");
+            Port.Rts = Xml.ReadBoolParm("Port/Rts");
 
             /* Page section */
             for (int i = 0; i < Page.Text.Length; i++)
             {
-                Page.Text[i] = Xml.ReadStringParmQ($"Page/Item{i}");
+                Page.Text[i] = Xml.ReadStringParm($"Page/Item{i}");
             }
 
             /* MacroText section */
             for (int i = 0; i < MacroText.Text.Length; i++)
             {
-                MacroText.Text[i] = Xml.ReadStringParmQ($"MacroText/Item{i}");
+                MacroText.Text[i] = Xml.ReadStringParm($"MacroText/Item{i}");
             }
 
             /* MacroCommand section */
             for (int i = 0; i < MacroCommand.Text.Length; i++)
             {
-                MacroCommand.Text[i] = Xml.ReadStringParmQ($"MacroCommand/Item{i}");
+                MacroCommand.Text[i] = Xml.ReadStringParm($"MacroCommand/Item{i}");
             }
         }
 
@@ -292,92 +172,77 @@ namespace _4Term
          * Saves current application settings to the XML configuration file.
          * Persists UI dimensions, font styles, color settings, port configurations,
          * and all macro-related text and commands.
-         * Returns immediately if the file cannot be loaded.
+         * Exits early if the file cannot be loaded.
          *---------------------------------------------------------*/
         public static void WriteXml()
         {
-            /* Load xml file */
-            if (!Xml.LoadFileQ())
+            /* Load XML file */
+            if (!Xml.LoadFile())
                 return;
 
             /* Program section */
-            Xml.WriteBoolParmQ("Program/FirstStart", Program.FirstStart);
-            Xml.WriteBoolParmQ("Program/CheckForUpdates", Program.CheckForUpdates);
-            Xml.WriteBoolParmQ("Program/ShowWelcomeMessage", Program.ShowWelcomeMessage);
+            Xml.WriteBoolParm("Program/FirstStart", Program.FirstStart);
+            Xml.WriteBoolParm("Program/ShowWelcomeMessage", Program.ShowWelcomeMessage);
 
             /* Form section */
-            Xml.WriteIntParmQ("Form/Width", Form.Width);
-            Xml.WriteIntParmQ("Form/Height", Form.Height);
-            Xml.WriteBoolParmQ("Form/AdvancedMode", Form.AdvancedMode);
-            Xml.WriteBoolParmQ("Form/ExternalTools", Form.ExternalTools);
+            Xml.WriteIntParm("Form/Width", Form.Width);
+            Xml.WriteIntParm("Form/Height", Form.Height);
+            Xml.WriteBoolParm("Form/AdvancedMode", Form.AdvancedMode);
+            Xml.WriteBoolParm("Form/ExternalTools", Form.ExternalTools);
 
             /* RichTextBox section */
-            Xml.WriteStringParmQ("RichTextBox/Font", RichTextBox.Font);
-            Xml.WriteStringParmQ("RichTextBox/FontStyle", RichTextBox.FontStyle);
-            Xml.WriteIntParmQ("RichTextBox/Size", RichTextBox.Size);
-            Xml.WriteBoolParmQ("RichTextBox/Strikeout", RichTextBox.Strikeout);
-            Xml.WriteBoolParmQ("RichTextBox/Underline", RichTextBox.Underline);
-            Xml.WriteBoolParmQ("RichTextBox/WordWrap", RichTextBox.WordWrap);
-            Xml.WriteBoolParmQ("RichTextBox/Scroll", RichTextBox.Scroll);
-            Xml.WriteBoolParmQ("RichTextBox/HexOutput", RichTextBox.HexOutput);
-            Xml.WriteBoolParmQ("RichTextBox/LocalEcho", RichTextBox.LocalEcho);
+            Xml.WriteStringParm("RichTextBox/Font", RichTextBox.Font);
+            Xml.WriteStringParm("RichTextBox/FontStyle", RichTextBox.FontStyle);
+            Xml.WriteIntParm("RichTextBox/Size", RichTextBox.Size);
+            Xml.WriteBoolParm("RichTextBox/Strikeout", RichTextBox.Strikeout);
+            Xml.WriteBoolParm("RichTextBox/Underline", RichTextBox.Underline);
+            Xml.WriteBoolParm("RichTextBox/WordWrap", RichTextBox.WordWrap);
+            Xml.WriteBoolParm("RichTextBox/Scroll", RichTextBox.Scroll);
+            Xml.WriteBoolParm("RichTextBox/HexOutput", RichTextBox.HexOutput);
+            Xml.WriteBoolParm("RichTextBox/LocalEcho", RichTextBox.LocalEcho);
             
             /* Color section */
-            Xml.WriteIntParmQ("Back/R", Color.Back.R);
-            Xml.WriteIntParmQ("Back/G", Color.Back.G);
-            Xml.WriteIntParmQ("Back/B", Color.Back.B);
-            Xml.WriteIntParmQ("Transmit/R", Color.Transmit.R);
-            Xml.WriteIntParmQ("Transmit/G", Color.Transmit.G);
-            Xml.WriteIntParmQ("Transmit/B", Color.Transmit.B);
-            Xml.WriteIntParmQ("Receive/R", Color.Receive.R);
-            Xml.WriteIntParmQ("Receive/G", Color.Receive.G);
-            Xml.WriteIntParmQ("Receive/B", Color.Receive.B);
-
-            /* Tool section */
-            for (int i = 0; i < ExternalTools.Tool.Length; i++)
-            {
-                Xml.WriteStringParmQ($"Tool/Item{i}", ExternalTools.Tool[i]);
-            }
-            for (int i = 0; i < ExternalTools.Text.Length; i++)
-            {
-                Xml.WriteStringParmQ($"Text/Item{i}", ExternalTools.Text[i]);
-            }
-            for (int i = 0; i < ExternalTools.Enabled.Length; i++)
-            {
-                Xml.WriteBoolParmQ($"Enabled/Item{i}", ExternalTools.Enabled[i]);
-            }
+            Xml.WriteIntParm("Back/R", Color.Back.R);
+            Xml.WriteIntParm("Back/G", Color.Back.G);
+            Xml.WriteIntParm("Back/B", Color.Back.B);
+            Xml.WriteIntParm("Transmit/R", Color.Transmit.R);
+            Xml.WriteIntParm("Transmit/G", Color.Transmit.G);
+            Xml.WriteIntParm("Transmit/B", Color.Transmit.B);
+            Xml.WriteIntParm("Receive/R", Color.Receive.R);
+            Xml.WriteIntParm("Receive/G", Color.Receive.G);
+            Xml.WriteIntParm("Receive/B", Color.Receive.B);
 
             /* Port section */
-            Xml.WriteStringParmQ("Port/PortName", Port.PortName);
-            Xml.WriteIntParmQ("Port/BaudRate", Port.BaudRate);
-            Xml.WriteIntParmQ("Port/DataBits", Port.DataBits);
-            Xml.WriteStringParmQ("Port/Parity", Port.Parity.ToString());
-            Xml.WriteStringParmQ("Port/StopBits", Port.StopBits.ToString());
-            Xml.WriteStringParmQ("Port/Handshake", Port.Handshake.ToString());
-            Xml.WriteStringParmQ("Port/AppendToSend", Port.Append.ToString());
-            Xml.WriteBoolParmQ("Port/Dtr", Port.Dtr);
-            Xml.WriteBoolParmQ("Port/Rts", Port.Rts);
+            Xml.WriteStringParm("Port/PortName", Port.PortName);
+            Xml.WriteIntParm("Port/BaudRate", Port.BaudRate);
+            Xml.WriteIntParm("Port/DataBits", Port.DataBits);
+            Xml.WriteStringParm("Port/Parity", Port.Parity.ToString());
+            Xml.WriteStringParm("Port/StopBits", Port.StopBits.ToString());
+            Xml.WriteStringParm("Port/Handshake", Port.Handshake.ToString());
+            Xml.WriteStringParm("Port/AppendToSend", Port.Append.ToString());
+            Xml.WriteBoolParm("Port/Dtr", Port.Dtr);
+            Xml.WriteBoolParm("Port/Rts", Port.Rts);
 
             /* Page section */
             for (int i = 0; i < Page.Text.Length; i++)
             {
-                Xml.WriteStringParmQ($"Page/Item{i}", Page.Text[i]);
+                Xml.WriteStringParm($"Page/Item{i}", Page.Text[i]);
             }
 
             /* MacroText section */
             for (int i = 0; i < MacroText.Text.Length; i++)
             {
-                Xml.WriteStringParmQ($"MacroText/Item{i}", MacroText.Text[i]);
+                Xml.WriteStringParm($"MacroText/Item{i}", MacroText.Text[i]);
             }
 
             /* MacroCommand section */
             for (int i = 0; i < MacroCommand.Text.Length; i++)
             {
-                Xml.WriteStringParmQ($"MacroCommand/Item{i}", MacroCommand.Text[i]);
+                Xml.WriteStringParm($"MacroCommand/Item{i}", MacroCommand.Text[i]);
             }
 
             /* Save and close */
-            Xml.CloseFileQ();
+            Xml.CloseFile();
         }
     }
 }

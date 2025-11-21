@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,15 +78,8 @@ namespace _4Term
         Color ReceiveColor = Color.Empty;
 
         /*----------------------------------------------------------
-         * Form
-         * ---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] Main_Form(constructor)
-         * [✓] Main_Form_Load
-         * [✓] Main_Form_Shown
-         * [✓] Main_Form_FormClosing
-         *---------------------------------------------------------*/
+         * Class Functions
+         * -------------------------------------------------------*/
 
         /*----------------------------------------------------------
          * Main_Form
@@ -114,7 +105,7 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void Main_Form_Load(object sender, EventArgs e)
         {
-            /* Load settings and configure UI */
+            /* Load settings */
             Settings.ReadXml();
 
             /* Set Form size*/
@@ -148,70 +139,10 @@ namespace _4Term
             DTRButton.ForeColor = Settings.Port.Dtr ? Color.Green : SystemColors.ControlText;
             RTSButton.ForeColor = Settings.Port.Rts ? Color.Green : SystemColors.ControlText;
             SetAdvancedMode(Settings.Form.AdvancedMode);
-            if(Settings.Form.ExternalTools != ExternalToolPanel.Enabled)
-            {
-                ExternalToolPanel.Enabled = ExternalToolPanel.Visible = ExternalToolsToolStripMenuItem.Checked = ExternalToolsToolStripMenuItem.Checked = Settings.Form.ExternalTools;
-                RichTextBox.Size = new Size(RichTextBox.Size.Width, RichTextBox.Size.Height - 34);
-            }
-            Button[] toolButtons = new Button[]
-            {
-                Tool0Button, Tool1Button, Tool2Button, Tool3Button,
-                Tool4Button, Tool5Button, Tool6Button, Tool7Button
-            };
-
-            for (int i = 0; i < toolButtons.Length; i++)
-            {
-                toolButtons[i].Text = Settings.ExternalTools.Text[i];
-                toolButtons[i].Enabled = toolButtons[i].Visible = Settings.ExternalTools.Enabled[i];
-            }
 
             /* Initialize UI components */
             AssignButtonClickHandlers();
-            LoadGroupContent();
-
-            const string GitHubUrl = "https://raw.githubusercontent.com/nographic999/4Term/main/";
-            const string VersionString = "4Term_1.4.0-beta_x64.7z";
-            string RemoteString = "null";
-
-            /* Check for updates */
-            if (Settings.Program.CheckForUpdates)
-            {
-                if (Net.CheckGitHubConnection())
-                {
-                    RemoteString = Net.GetRemoteVersion(GitHubUrl + "version.txt");
-                    if (VersionString != RemoteString)
-                    {
-                        // Show message box with Yes/No buttons
-                        var result = MessageBox.Show(
-                            "New version available. Do you want to update?",
-                            "Update Available",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Question);
-
-                        if (result == DialogResult.Yes)
-                        {
-                            Net.DownloadFile(GitHubUrl + RemoteString, RemoteString);
-                            Net.DownloadFile(GitHubUrl + "assets/7zdec.exe", "7zdec.exe");
-                            Net.DownloadFile(GitHubUrl + "assets/setup.bat", "setup.bat");
-                            if (!Net.ExtractWith7zDecExe(RemoteString))
-                                Application.Exit();
-                            File.Delete(RemoteString);
-                            File.Delete("7zdec.exe");
-                            string batFilePath = @"setup.bat";
-
-                            ProcessStartInfo psi = new ProcessStartInfo();
-                            psi.FileName = batFilePath;
-                            psi.UseShellExecute = true; // Important for batch files
-                            psi.CreateNoWindow = false; // Show the command window if you want
-
-                            Process.Start(psi);
-
-                            // Quit the C# program immediately after starting the batch
-                            Environment.Exit(0);
-                        }
-                    }
-                }
-            }            
+            LoadGroupContent();               
         }
 
         /*----------------------------------------------------------
@@ -269,23 +200,12 @@ namespace _4Term
         }
 
         /*----------------------------------------------------------
-         * Buttons
-         * ---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] CloseButton_Click
-         * [✓] AlienButton_Click
-         * [~] SendButton_Click - needs optimization
-         * [✓] ClearButton_Click
-         * [✓] OptionsButton_Click
-         * [✓] AutoConnectButton_Click
-         * [✓] ConnectButton_Click
-         * [✓] SwapButton_MouseDown
-         * [✓] RadioButton_Click
-         * [~] MacroButton_Click - needs optimization
-         * [✓] MacroButton_MouseDown
-         *---------------------------------------------------------*/
-
+         * CloseButton_Click
+         * 
+         * Handles toggling of macro editing mode when the Close button
+         * is clicked. Updates the UI and internal flags to reflect
+         * whether macros are in editing mode.
+        *---------------------------------------------------------*/
         private void CloseButton_Click(object sender, EventArgs e)
         {
             MacroEditingFlag = !MacroEditingFlag;
@@ -430,20 +350,19 @@ namespace _4Term
          * 
          * Handles circular navigation through button/page groups
          *---------------------------------------------------------*/
-
         private void SwapButton_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
                 /* Left click: navigate forward */
-                PageIndex = (PageIndex + 8) % 32;
-                MacroBank = (MacroBank + 128) % 512;
+                PageIndex = (PageIndex + 8) % 16; //set 16 to 32 for 4 pages
+                MacroBank = (MacroBank + 128) % 256;// set 256 to 512 for 4 pages
             }
             else if (e.Button == MouseButtons.Left)
             {
                 /* Right click: navigate backward */
-                PageIndex = (PageIndex - 8 + 32) % 32;
-                MacroBank = (MacroBank - 128 + 512) % 512;
+                PageIndex = (PageIndex - 8 + 16) % 16; // set 16 and 16 to 32 and 32 for 4 pages
+                MacroBank = (MacroBank - 128 + 256) % 256; // set 256 and 256 to 512 and 512 for 4 pages
             }
 
             if(MacroBank == 0)
@@ -460,7 +379,6 @@ namespace _4Term
          * 
          * Handles radio button selection for macro button navigation
          *---------------------------------------------------------*/
-
         private void RadioButton_Click(object sender, EventArgs e)
         {
             /* Safely cast sender to RadioButton and get mapped value */
@@ -548,13 +466,69 @@ namespace _4Term
         }
 
         /*----------------------------------------------------------
+         * MinusButton_Click
+         * 
+         * Simulates a left-click on the Swap button to navigate
+         * macros/pages backward. Internally calls SwapButton_MouseDown.
+        *---------------------------------------------------------*/
+        private void MinusButton_Click(object sender, EventArgs e)
+        {
+            MouseEventArgs mouseArgs = new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0);
+            SwapButton_MouseDown(sender, mouseArgs);
+        }
+
+        /*----------------------------------------------------------
+         * PlusButton_Click
+         * 
+         * Simulates a right-click on the Swap button to navigate
+         * macros/pages forward. Internally calls SwapButton_MouseDown.
+        *---------------------------------------------------------*/
+        private void PlusButton_Click(object sender, EventArgs e)
+        {
+            MouseEventArgs mouseArgs = new MouseEventArgs(MouseButtons.Right, 1, 0, 0, 0);
+            SwapButton_MouseDown(sender, mouseArgs);
+        }
+
+        /*----------------------------------------------------------
+         * DTRButton_Click
+         * 
+         * Toggles the DTR (Data Terminal Ready) line for the serial
+         * port. Updates button color to reflect state and saves
+         * the setting to XML. Applies change immediately if port
+         * is open.
+        *---------------------------------------------------------*/
+        private void DTRButton_Click(object sender, EventArgs e)
+        {
+            Settings.Port.Dtr = !Settings.Port.Dtr;
+            DTRButton.ForeColor = Settings.Port.Dtr ? Color.Green : SystemColors.ControlText;
+
+            if (Serial.Instance.IsOpen)
+                Serial.Instance.SetDtr(Settings.Port.Dtr);
+
+            Settings.WriteXml();
+        }
+
+        /*----------------------------------------------------------
+         * RTSButton_Click
+         * 
+         * Toggles the RTS (Request To Send) line for the serial
+         * port. Updates button color to reflect state and saves
+         * the setting to XML. Applies change immediately if port
+         * is open.
+        *---------------------------------------------------------*/
+        private void RTSButton_Click(object sender, EventArgs e)
+        {
+            Settings.Port.Rts = !Settings.Port.Rts;
+            RTSButton.ForeColor = Settings.Port.Rts ? Color.Green : SystemColors.ControlText;
+
+            if (Serial.Instance.IsOpen)
+                Serial.Instance.SetRts(Settings.Port.Rts);
+
+            Settings.WriteXml();
+        }
+
+        /*----------------------------------------------------------
          * ComboBox
-         * ---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] ComboBox_Enter
-         * [✓] ComboBox_KeyDown
-         * [✓] ComboBox_Leave
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -610,11 +584,6 @@ namespace _4Term
 
         /*----------------------------------------------------------
          * Events
-         * ---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] ChangeStatus
-         * [✓] DataReceive
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -651,11 +620,6 @@ namespace _4Term
 
         /*----------------------------------------------------------
          * Timers
-         * ---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] ReconnectTick
-         * [✓] MGenericTick
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -699,20 +663,6 @@ namespace _4Term
 
         /*----------------------------------------------------------
          * Helper Functions
-         * ---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         * 
-         * [✓] AssignButtonClickHandlers
-         * [✓] LoadGroupContent
-         * [✓] AddLine
-         * [✓] WelcomeMsg
-         * [✓] SetAdvancedMode
-         * [✓] SetMacroSetMode
-         * [~] MacroTick  - needs optimization
-         * [✓] ErrorMessage
-         * [✓] InfoMessage
-         * [✓] SetMacro
-         * [✓] WndProc
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -814,7 +764,7 @@ namespace _4Term
         * *---------------------------------------------------------*/
         private async void WelcomeMsg()
         {
-            RichTextBox.BackColor = Color.Black;
+            RichTextBox.BackColor = Color.FromArgb(30, 30, 30);
             string archSuffix = Environment.Is64BitProcess ? " x64" : " x86";
             string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3) + archSuffix;
             string[] asciiLines = new string[]
@@ -839,16 +789,16 @@ namespace _4Term
             /* Colors to cycle through */
             Color[] colors = new Color[]
             {
-                Color.Firebrick,       // deep red
-                Color.DarkOrange,      // rich orange
-                Color.Gold,            // warm yellow
-                Color.MediumSeaGreen,  // muted green
-                Color.SteelBlue,       // soft blue-gray
-                Color.MediumSlateBlue, // cool purple-blue
-                Color.Tomato,          // bright red-orange
-                Color.MediumTurquoise, // vibrant teal
-                Color.SandyBrown,      // light brown-orange
-                Color.MediumVioletRed  // purple-pink
+                Color.FromArgb(255, 20, 147),   // Neon Pink
+                Color.FromArgb(0, 255, 255),    // Cyan Glow
+                Color.FromArgb(255, 0, 255),    // Magenta Neon
+                Color.FromArgb(57, 255, 20),    // Electric Green
+                Color.FromArgb(255, 255, 0),    // Acid Yellow
+                Color.FromArgb(0, 128, 255),    // Cyber Blue
+                Color.FromArgb(255, 105, 180),  // Hot Neon Rose
+                Color.FromArgb(255, 0, 127),    // Deep Neon Pink
+                Color.FromArgb(0, 255, 127),    // Mint Neon
+                Color.FromArgb(255, 51, 51)     // Laser Red
             };
             RichTextBox.Clear();
             for (int i = 0; i < asciiLines.Length; i++)
@@ -974,104 +924,6 @@ namespace _4Term
         {
             if (buffer.Msg != 0xA3)
                 base.WndProc(ref buffer);
-        }
-
-        // Shared launcher
-        public static void RunExternal(int index)
-        {
-            if (index < 0 || index >= Settings.ExternalTools.Tool.Length)
-            {
-                MessageBox.Show($"Tool index {index} is out of range.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            string exeFilePath = Settings.ExternalTools.Tool[index];
-
-            if (string.IsNullOrWhiteSpace(exeFilePath) || exeFilePath == "none")
-            {
-                MessageBox.Show($"Tool {index} is not configured.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            if (!File.Exists(exeFilePath))
-            {
-                MessageBox.Show($"Executable not found: {exeFilePath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            try
-            {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = exeFilePath,
-                    UseShellExecute = true,
-                    CreateNoWindow = false
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to run tool:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void Tool0Button_Click(object sender, EventArgs e) => RunExternal(0);
-        private void Tool1Button_Click(object sender, EventArgs e) => RunExternal(1);
-        private void Tool2Button_Click(object sender, EventArgs e) => RunExternal(2);
-        private void Tool3Button_Click(object sender, EventArgs e) => RunExternal(3);
-        private void Tool4Button_Click(object sender, EventArgs e) => RunExternal(4);
-        private void Tool5Button_Click(object sender, EventArgs e) => RunExternal(5);
-        private void Tool6Button_Click(object sender, EventArgs e) => RunExternal(6);
-        private void Tool7Button_Click(object sender, EventArgs e) => RunExternal(7);
-
-        private void ExternalToolsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings.Form.ExternalTools = ExternalToolPanel.Enabled = ExternalToolPanel.Visible = ExternalToolsToolStripMenuItem.Checked = !ExternalToolsToolStripMenuItem.Checked;
-            Settings.WriteXml();
-            if (Settings.Form.ExternalTools)
-            {
-                RichTextBox.Size = new Size(RichTextBox.Size.Width, RichTextBox.Size.Height - 34);
-                RichTextBox.ScrollToCaret();
-            }
-            else
-                RichTextBox.Size = new Size(RichTextBox.Size.Width, RichTextBox.Size.Height + 34);
-        }
-
-        private void MinusButton_Click(object sender, EventArgs e)
-        {
-            // Simulate left mouse button click
-            MouseEventArgs mouseArgs = new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0);
-            SwapButton_MouseDown(sender, mouseArgs);
-        }
-
-        private void PlusButton_Click(object sender, EventArgs e)
-        {
-            // Simulate right mouse button click
-            MouseEventArgs mouseArgs = new MouseEventArgs(MouseButtons.Right, 1, 0, 0, 0);
-            SwapButton_MouseDown(sender, mouseArgs);
-        }
-
-
-
-        private void DTRButton_Click(object sender, EventArgs e)
-        {
-            Settings.Port.Dtr = !Settings.Port.Dtr;
-            DTRButton.ForeColor = Settings.Port.Dtr ? Color.Green : SystemColors.ControlText;
-
-            if (Serial.Instance.IsOpen)
-                Serial.Instance.SetDtr(Settings.Port.Dtr);
-
-            Settings.WriteXml();
-        }
-
-        private void RTSButton_Click(object sender, EventArgs e)
-        {
-            Settings.Port.Rts = !Settings.Port.Rts;
-            RTSButton.ForeColor = Settings.Port.Rts ? Color.Green : SystemColors.ControlText;
-
-            if (Serial.Instance.IsOpen)
-                Serial.Instance.SetRts(Settings.Port.Rts);
-
-            Settings.WriteXml();
         }
     }
 }

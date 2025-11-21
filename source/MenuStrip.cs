@@ -13,26 +13,12 @@ namespace _4Term
 {
     public partial class Main_Form : Form
     {
+	    /*----------------------------------------------------------
+         * Class Functions
+         * -------------------------------------------------------*/
+	
         /*----------------------------------------------------------
          * MenuStrip - File
-         * ---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] NewPortStripMenuItem_Click
-         * [✓] PortOptionsToolStripMenuItem_Click
-         * [✓] ScanCOMsToolStripMenuItem_Click
-         * [✓] NewWindowToolStripMenuItem_Click
-         * ---------------------------------------------------------
-         * [✓] ConnectDisconnectToolStripMenuItem_Click
-         * [✓] AutoConnectToolStripMenuItem_Click
-         * ---------------------------------------------------------
-         * [✓] OpenToolStripMenuItem_Click
-         * [✓] SaveToolStripMenuItem_Click
-         * [✓] SaveAsToolStripMenuItem_Click
-         * ---------------------------------------------------------
-         * [✓] OpenConfigXmlToolStripMenuItem_Click
-         * ---------------------------------------------------------
-         * [✓] ExitToolStripMenuItem_Click
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -428,9 +414,9 @@ namespace _4Term
                 }
 
                 /* Validate config file existence */
-                if (!File.Exists(Xml.FileNameq))
+                if (!File.Exists(Xml.FileName))
                 {
-                    MessageBox.Show($"Configuration file not found: {Xml.FileNameq}",
+                    MessageBox.Show($"Configuration file not found: {Xml.FileName}",
                                   "File Missing",
                                   MessageBoxButtons.OK,
                                   MessageBoxIcon.Warning);
@@ -438,7 +424,7 @@ namespace _4Term
                 }
 
                 /* Check file size(limit to 1MB for XML) */
-                FileInfo configFile = new FileInfo(Xml.FileNameq);
+                FileInfo configFile = new FileInfo(Xml.FileName);
                 if (configFile.Length > 1024 * 1024)  // 1MB limit
                 {
                     MessageBox.Show("Configuration file exceeds maximum size (1MB)",
@@ -452,8 +438,8 @@ namespace _4Term
                 RichTextBox.Clear();
 
                 /* Read with explicit UTF-8 encoding and error handling */
-                RichTextBox.Text = File.ReadAllText(Xml.FileNameq, Encoding.UTF8);
-                FilePath = Xml.FileNameq;
+                RichTextBox.Text = File.ReadAllText(Xml.FileName, Encoding.UTF8);
+                FilePath = Xml.FileName;
             }
             catch (Exception ex)
             {
@@ -478,19 +464,6 @@ namespace _4Term
 
         /*----------------------------------------------------------
          * MenuStrip - Edit
-         *---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] UndoToolStripMenuItem_Click
-         * ---------------------------------------------------------
-         * [✓] CutToolStripMenuItem_Click
-         * [✓] CopyToolStripMenuItem_Click
-         * [✓] PasteToolStripMenuItem_Click
-         * [✓] DeleteToolStripMenuItem_Click
-         * ---------------------------------------------------------
-         * [✓] SelectAllToolStripMenuItem_Click
-         * ---------------------------------------------------------
-         * [✓] ClearToolStripMenuItem_Click
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -559,11 +532,6 @@ namespace _4Term
 
         /*----------------------------------------------------------
          * MenuStrip - Format
-         *---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] WordWrapToolStripMenuItem_Click
-         * [✓] SettingsToolStripMenuItem_Click
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -591,7 +559,7 @@ namespace _4Term
             
 
             /* Set Form size*/
-            Size = new Size(Settings.Form.Width, Settings.Form.Height);
+            //Size = new Size(Settings.Form.Width, Settings.Form.Height);
 
             /* Set Advanced Mode */
             SetAdvancedMode(Settings.Form.AdvancedMode);
@@ -625,32 +593,11 @@ namespace _4Term
             ToggleScrollingToolStripMenuItem.Checked = Settings.RichTextBox.Scroll;
 
             /* Set RichTextBox background color */
-            RichTextBox.BackColor = Color.FromArgb(Settings.Color.Back.R, Settings.Color.Back.G, Settings.Color.Back.B);
-
-            Button[] toolButtons = new Button[]
-            {
-                Tool0Button, Tool1Button, Tool2Button, Tool3Button,
-                Tool4Button, Tool5Button, Tool6Button, Tool7Button
-            };
-
-            for (int i = 0; i < toolButtons.Length; i++)
-            {
-                toolButtons[i].Text = Settings.ExternalTools.Text[i];
-                toolButtons[i].Enabled = toolButtons[i].Visible = Settings.ExternalTools.Enabled[i];
-            }
-
-            ExternalToolPanel.Enabled = ExternalToolPanel.Visible = ExternalToolsToolStripMenuItem.Checked = Settings.Form.ExternalTools;
-            
+            RichTextBox.BackColor = Color.FromArgb(Settings.Color.Back.R, Settings.Color.Back.G, Settings.Color.Back.B);        
         }
 
         /*----------------------------------------------------------
          * MenuStrip - View
-         *---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] ToggleScrollingToolStripMenuItem_Click
-         * [✓] MacroModeToolStripMenuItem_Click
-         * [✓] AdvancedModeToolStripMenuItem_Click
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -698,10 +645,6 @@ namespace _4Term
 
         /*----------------------------------------------------------
          * MenuStrip - Help
-         *---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] AboutToolStripMenuItem_Click
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------
@@ -718,138 +661,42 @@ namespace _4Term
 
         /*----------------------------------------------------------
          * MenuStrip - M1
-         *---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] M1ToolStripMenuItem_MouseDown
-         * [✓] M1SetToolStripMenuItem_Click
          *---------------------------------------------------------*/
 
-        /*----------------------------------------------------------
-         * M1ToolStripMenuItem_MouseDown
-         * 
-         * Handles right-click events on the M1 macro menu item,
-         * toggling the macro timer based on user input interval.
-         *---------------------------------------------------------*/
         private void M1ToolStripMenuItem_MouseDown(object sender, MouseEventArgs e) => HandleMacroMouseDown(0, M1ToolStripMenuItem, M1ToolStripTextBox, e);
-
-        /*----------------------------------------------------------
-         * M1SetToolStripMenuItem_Click
-         * 
-         * Sets the M1 macro configuration when the set menu item
-         * is clicked by delegating to the SetMMacro helper method.
-         *---------------------------------------------------------*/
         private void M1SetToolStripMenuItem_Click(object sender, EventArgs e) => SetMMacro(0, M1ToolStripMenuItem);
 
         /*----------------------------------------------------------
          * MenuStrip - M2
-         *---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] M2ToolStripMenuItem_MouseDown
-         * [✓] M2SetToolStripMenuItem_Click
-         *---------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * M2ToolStripMenuItem_MouseDown
-         * 
-         * Handles right-click events on the M2 macro menu item,
-         * toggling the macro timer based on user input interval.
          *---------------------------------------------------------*/
         private void M2ToolStripMenuItem_MouseDown(object sender, MouseEventArgs e) => HandleMacroMouseDown(1, M2ToolStripMenuItem, M2ToolStripTextBox, e);
-
-        /*----------------------------------------------------------
-         * M2SetToolStripMenuItem_Click
-         * 
-         * Sets the M2 macro configuration when the set menu item
-         * is clicked by delegating to the SetMMacro helper method.
-         *---------------------------------------------------------*/
         private void M2SetToolStripMenuItem_Click(object sender, EventArgs e) => SetMMacro(1, M2ToolStripMenuItem);
 
         /*----------------------------------------------------------
          * MenuStrip - M3
-         *---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] M3ToolStripMenuItem_MouseDown
-         * [✓] M3SetToolStripMenuItem_Click
          *---------------------------------------------------------*/
 
-        /*----------------------------------------------------------
-         * M3ToolStripMenuItem_MouseDown
-         * 
-         * Handles right-click events on the M3 macro menu item,
-         * toggling the macro timer based on user input interval.
-         *---------------------------------------------------------*/
         private void M3ToolStripMenuItem_MouseDown(object sender, MouseEventArgs e) => HandleMacroMouseDown(2, M3ToolStripMenuItem, M3ToolStripTextBox, e);
-
-        /*----------------------------------------------------------
-         * M3SetToolStripMenuItem_Click
-         * 
-         * Sets the M3 macro configuration when the set menu item
-         * is clicked by delegating to the SetMMacro helper method.
-         *---------------------------------------------------------*/
         private void M3SetToolStripMenuItem_Click(object sender, EventArgs e) => SetMMacro(2, M3ToolStripMenuItem);
 
 
         /*----------------------------------------------------------
          * MenuStrip - M4
-         *---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] M4ToolStripMenuItem_MouseDown
-         * [✓] M4SetToolStripMenuItem_Click
          *---------------------------------------------------------*/
 
-        /*----------------------------------------------------------
-         * M4ToolStripMenuItem_MouseDown
-         * 
-         * Handles right-click events on the M4 macro menu item,
-         * toggling the macro timer based on user input interval.
-         *---------------------------------------------------------*/
         private void M4ToolStripMenuItem_MouseDown(object sender, MouseEventArgs e) => HandleMacroMouseDown(3, M4ToolStripMenuItem, M4ToolStripTextBox, e);
-
-        /*----------------------------------------------------------
-         * M4SetToolStripMenuItem_Click
-         * 
-         * Sets the M4 macro configuration when the set menu item
-         * is clicked by delegating to the SetMMacro helper method.
-         *---------------------------------------------------------*/
         private void M4SetToolStripMenuItem_Click(object sender, EventArgs e) => SetMMacro(3, M4ToolStripMenuItem);
 
 
         /*----------------------------------------------------------
          * MenuStrip - M5
-         *---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         *
-         * [✓] M5ToolStripMenuItem_MouseDown
-         * [✓] M5SetToolStripMenuItem_Click
          *---------------------------------------------------------*/
 
-        /*----------------------------------------------------------
-         * M5ToolStripMenuItem_MouseDown
-         * 
-         * Handles right-click events on the M5 macro menu item,
-         * toggling the macro timer based on user input interval.
-         *---------------------------------------------------------*/
         private void M5ToolStripMenuItem_MouseDown(object sender, MouseEventArgs e) => HandleMacroMouseDown(4, M5ToolStripMenuItem, M5ToolStripTextBox, e);
-
-        /*----------------------------------------------------------
-         * M5SetToolStripMenuItem_Click
-         * 
-         * Sets the M5 macro configuration when the set menu item
-         * is clicked by delegating to the SetMMacro helper method.
-         *---------------------------------------------------------*/
         private void M5SetToolStripMenuItem_Click(object sender, EventArgs e) => SetMMacro(4, M5ToolStripMenuItem);
 
         /*----------------------------------------------------------
          * Helper Functions
-         * ---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         * 
-         * [✓] SetMMacro
-         * [✓] HandleMacroMouseDown
          *---------------------------------------------------------*/
 
         /*----------------------------------------------------------

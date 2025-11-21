@@ -65,7 +65,6 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.MacroModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AdvancedModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ExternalToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.M1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -132,24 +131,12 @@
             this.MacroTextLabel = new System.Windows.Forms.Label();
             this.MacroBox = new System.Windows.Forms.TextBox();
             this.MacroTextBox = new System.Windows.Forms.TextBox();
-            this.ExternalToolPanel = new System.Windows.Forms.Panel();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.Tool7Button = new System.Windows.Forms.Button();
-            this.Tool6Button = new System.Windows.Forms.Button();
-            this.Tool5Button = new System.Windows.Forms.Button();
-            this.Tool4Button = new System.Windows.Forms.Button();
-            this.Tool3Button = new System.Windows.Forms.Button();
-            this.Tool2Button = new System.Windows.Forms.Button();
-            this.Tool1Button = new System.Windows.Forms.Button();
-            this.Tool0Button = new System.Windows.Forms.Button();
             this.MenuStrip.SuspendLayout();
             this.COMBox.SuspendLayout();
             this.MacrosGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.MacroSetPanel.SuspendLayout();
             this.MacroSetGroupBox.SuspendLayout();
-            this.ExternalToolPanel.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // MenuStrip
@@ -426,8 +413,7 @@
             this.ToggleScrollingToolStripMenuItem,
             this.toolStripSeparator4,
             this.MacroModeToolStripMenuItem,
-            this.AdvancedModeToolStripMenuItem,
-            this.ExternalToolsToolStripMenuItem});
+            this.AdvancedModeToolStripMenuItem});
             this.viewToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
@@ -464,14 +450,6 @@
             this.AdvancedModeToolStripMenuItem.Text = "&Advanced Mode";
             this.AdvancedModeToolStripMenuItem.Click += new System.EventHandler(this.AdvancedModeToolStripMenuItem_Click);
             // 
-            // ExternalToolsToolStripMenuItem
-            // 
-            this.ExternalToolsToolStripMenuItem.Name = "ExternalToolsToolStripMenuItem";
-            this.ExternalToolsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.T)));
-            this.ExternalToolsToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
-            this.ExternalToolsToolStripMenuItem.Text = "&External Tools";
-            this.ExternalToolsToolStripMenuItem.Click += new System.EventHandler(this.ExternalToolsToolStripMenuItem_Click);
-            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -485,7 +463,7 @@
             // 
             this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
             this.AboutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.H)));
-            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.AboutToolStripMenuItem.Text = "&About...";
             this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
@@ -733,9 +711,10 @@
             // PlusButton
             // 
             this.PlusButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.PlusButton.Location = new System.Drawing.Point(121, 0);
+            this.PlusButton.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PlusButton.Location = new System.Drawing.Point(139, 1);
             this.PlusButton.Name = "PlusButton";
-            this.PlusButton.Size = new System.Drawing.Size(14, 13);
+            this.PlusButton.Size = new System.Drawing.Size(31, 13);
             this.PlusButton.TabIndex = 241;
             this.PlusButton.Text = "+";
             this.PlusButton.UseCompatibleTextRendering = true;
@@ -745,9 +724,10 @@
             // MinusButton
             // 
             this.MinusButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.MinusButton.Location = new System.Drawing.Point(107, 0);
+            this.MinusButton.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MinusButton.Location = new System.Drawing.Point(107, 1);
             this.MinusButton.Name = "MinusButton";
-            this.MinusButton.Size = new System.Drawing.Size(14, 13);
+            this.MinusButton.Size = new System.Drawing.Size(31, 13);
             this.MinusButton.TabIndex = 240;
             this.MinusButton.Text = "-";
             this.MinusButton.UseCompatibleTextRendering = true;
@@ -1287,132 +1267,11 @@
             this.MacroTextBox.Size = new System.Drawing.Size(184, 20);
             this.MacroTextBox.TabIndex = 256;
             // 
-            // ExternalToolPanel
-            // 
-            this.ExternalToolPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ExternalToolPanel.Controls.Add(this.groupBox2);
-            this.ExternalToolPanel.Enabled = false;
-            this.ExternalToolPanel.Location = new System.Drawing.Point(0, 335);
-            this.ExternalToolPanel.Name = "ExternalToolPanel";
-            this.ExternalToolPanel.Size = new System.Drawing.Size(702, 34);
-            this.ExternalToolPanel.TabIndex = 242;
-            this.ExternalToolPanel.Visible = false;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.Tool7Button);
-            this.groupBox2.Controls.Add(this.Tool6Button);
-            this.groupBox2.Controls.Add(this.Tool5Button);
-            this.groupBox2.Controls.Add(this.Tool4Button);
-            this.groupBox2.Controls.Add(this.Tool3Button);
-            this.groupBox2.Controls.Add(this.Tool2Button);
-            this.groupBox2.Controls.Add(this.Tool1Button);
-            this.groupBox2.Controls.Add(this.Tool0Button);
-            this.groupBox2.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(4, 1);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(694, 34);
-            this.groupBox2.TabIndex = 1;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "External Tools";
-            // 
-            // Tool7Button
-            // 
-            this.Tool7Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Tool7Button.Location = new System.Drawing.Point(613, 11);
-            this.Tool7Button.Name = "Tool7Button";
-            this.Tool7Button.Size = new System.Drawing.Size(78, 20);
-            this.Tool7Button.TabIndex = 258;
-            this.Tool7Button.Text = "7";
-            this.Tool7Button.UseVisualStyleBackColor = true;
-            this.Tool7Button.Click += new System.EventHandler(this.Tool7Button_Click);
-            // 
-            // Tool6Button
-            // 
-            this.Tool6Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Tool6Button.Location = new System.Drawing.Point(526, 11);
-            this.Tool6Button.Name = "Tool6Button";
-            this.Tool6Button.Size = new System.Drawing.Size(78, 20);
-            this.Tool6Button.TabIndex = 257;
-            this.Tool6Button.Text = "6";
-            this.Tool6Button.UseVisualStyleBackColor = true;
-            this.Tool6Button.Click += new System.EventHandler(this.Tool6Button_Click);
-            // 
-            // Tool5Button
-            // 
-            this.Tool5Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Tool5Button.Location = new System.Drawing.Point(439, 11);
-            this.Tool5Button.Name = "Tool5Button";
-            this.Tool5Button.Size = new System.Drawing.Size(78, 20);
-            this.Tool5Button.TabIndex = 256;
-            this.Tool5Button.Text = "5";
-            this.Tool5Button.UseVisualStyleBackColor = true;
-            this.Tool5Button.Click += new System.EventHandler(this.Tool5Button_Click);
-            // 
-            // Tool4Button
-            // 
-            this.Tool4Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Tool4Button.Location = new System.Drawing.Point(352, 11);
-            this.Tool4Button.Name = "Tool4Button";
-            this.Tool4Button.Size = new System.Drawing.Size(78, 20);
-            this.Tool4Button.TabIndex = 255;
-            this.Tool4Button.Text = "4";
-            this.Tool4Button.UseVisualStyleBackColor = true;
-            this.Tool4Button.Click += new System.EventHandler(this.Tool4Button_Click);
-            // 
-            // Tool3Button
-            // 
-            this.Tool3Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Tool3Button.Location = new System.Drawing.Point(265, 11);
-            this.Tool3Button.Name = "Tool3Button";
-            this.Tool3Button.Size = new System.Drawing.Size(78, 20);
-            this.Tool3Button.TabIndex = 254;
-            this.Tool3Button.Text = "3";
-            this.Tool3Button.UseVisualStyleBackColor = true;
-            this.Tool3Button.Click += new System.EventHandler(this.Tool3Button_Click);
-            // 
-            // Tool2Button
-            // 
-            this.Tool2Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Tool2Button.Location = new System.Drawing.Point(178, 11);
-            this.Tool2Button.Name = "Tool2Button";
-            this.Tool2Button.Size = new System.Drawing.Size(78, 20);
-            this.Tool2Button.TabIndex = 253;
-            this.Tool2Button.Text = "2";
-            this.Tool2Button.UseVisualStyleBackColor = true;
-            this.Tool2Button.Click += new System.EventHandler(this.Tool2Button_Click);
-            // 
-            // Tool1Button
-            // 
-            this.Tool1Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Tool1Button.Location = new System.Drawing.Point(91, 11);
-            this.Tool1Button.Name = "Tool1Button";
-            this.Tool1Button.Size = new System.Drawing.Size(78, 20);
-            this.Tool1Button.TabIndex = 252;
-            this.Tool1Button.Text = "1";
-            this.Tool1Button.UseVisualStyleBackColor = true;
-            this.Tool1Button.Click += new System.EventHandler(this.Tool1Button_Click);
-            // 
-            // Tool0Button
-            // 
-            this.Tool0Button.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Tool0Button.Location = new System.Drawing.Point(4, 11);
-            this.Tool0Button.Name = "Tool0Button";
-            this.Tool0Button.Size = new System.Drawing.Size(78, 20);
-            this.Tool0Button.TabIndex = 251;
-            this.Tool0Button.Text = "0";
-            this.Tool0Button.UseVisualStyleBackColor = true;
-            this.Tool0Button.Click += new System.EventHandler(this.Tool0Button_Click);
-            // 
             // Main_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(702, 486);
-            this.Controls.Add(this.ExternalToolPanel);
             this.Controls.Add(this.MacroSetPanel);
             this.Controls.Add(this.COMBox);
             this.Controls.Add(this.groupBox1);
@@ -1435,8 +1294,6 @@
             this.MacroSetPanel.ResumeLayout(false);
             this.MacroSetGroupBox.ResumeLayout(false);
             this.MacroSetGroupBox.PerformLayout();
-            this.ExternalToolPanel.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1513,7 +1370,6 @@
         private System.Windows.Forms.ToolStripMenuItem ConnectDisconnectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AutoConnectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ScanCOMsToolStripMenuItem;
-        private System.Windows.Forms.RichTextBox RichTextBox;
         private System.Windows.Forms.Button SwapButton;
         private System.Windows.Forms.ToolStripMenuItem M1ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem M2ToolStripMenuItem;
@@ -1542,20 +1398,10 @@
         private System.Windows.Forms.TextBox MacroTextBox;
         private System.Windows.Forms.Button ProgButton;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Panel ExternalToolPanel;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button Tool7Button;
-        private System.Windows.Forms.Button Tool6Button;
-        private System.Windows.Forms.Button Tool5Button;
-        private System.Windows.Forms.Button Tool4Button;
-        private System.Windows.Forms.Button Tool3Button;
-        private System.Windows.Forms.Button Tool2Button;
-        private System.Windows.Forms.Button Tool1Button;
-        private System.Windows.Forms.Button Tool0Button;
-        private System.Windows.Forms.ToolStripMenuItem ExternalToolsToolStripMenuItem;
         private System.Windows.Forms.Button MinusButton;
         private System.Windows.Forms.Button PlusButton;
         private System.Windows.Forms.Button DTRButton;
         private System.Windows.Forms.Button RTSButton;
+        private System.Windows.Forms.RichTextBox RichTextBox;
     }
 }

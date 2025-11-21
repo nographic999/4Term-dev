@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
-using System.IO.Ports;
-using System.Windows.Forms;
 using System.Xml;
+using System.Windows.Forms;
 
 namespace _4Term
 {
@@ -12,262 +10,29 @@ namespace _4Term
          * Class variables
          * -------------------------------------------------------*/
 
-        /* Path to the XML configuration file for quick method. */
-        public static string FileNameq = "config.xml";
+        /* XML configuration filename */
+        public static string FileName = "config.xml";
 
-        /* Loaded XML document instance for quick method. */
+        /* Loaded XML document instance */
         public static System.Xml.XmlDocument XmlFile = null;
 
-        /* Root element of the loaded XML document for quick method. */
+        /* Root element of the loaded XML document */
         public static System.Xml.XmlElement RootElement = null;
 
         /*----------------------------------------------------------
-         * Form
-         * ---------------------------------------------------------
-         * DEVELOPMENT STATUS
-         * 
-         * ---------------------------------------------------------
-         * Standard method
-         * ---------------------------------------------------------
-         * 
-         * [✓] ReadBoolParameter
-         * [✓] ReadIntParameter
-         * [✓] ReadStringParameter
-         * [✓] WriteBoolParameter
-         * [✓] WriteIntParameter
-         * [✓] WriteStringParameter
-         * ---------------------------------------------------------
-         * Quick method (file loaded into memory)
-         * ---------------------------------------------------------
-         * 
-         * [✓] CreateNewQ
-         * [✓] LoadFileQ
-         * [✓] ReadBoolParmQ
-         * [✓] ReadIntParmQ
-         * [✓] ReadStringParmQ
-         * [✓] WriteBoolParmQ
-         * [✓] WriteIntParmQ
-         * [✓] WriteStringParmQ
-         * [✓] CloseFileQ
-         *---------------------------------------------------------*/
+         * Class Functions
+         * -------------------------------------------------------*/
 
         /*----------------------------------------------------------
-         * ReadBoolParameter
-         * 
-         * Reads a bool from XML file at given XPath.
-         * Returns false if not found or invalid.
-         *---------------------------------------------------------*/
-        public static bool ReadBoolParameter(string filename, string xpath)
-        {
-            /* Chech if file exists */
-            if (!System.IO.File.Exists(filename))
-                return false;
-
-            /* Load Xml file */
-            var XmlFile = new System.Xml.XmlDocument();
-            XmlFile.Load(filename);
-
-            /* Get the root element of the XML document */
-            var root = XmlFile.DocumentElement;
-
-            /* Find the boolean node */
-            var BoolNode = root.SelectSingleNode(xpath);
-            if (BoolNode != null && bool.TryParse(BoolNode.InnerText, out bool result))
-            {
-                return result;
-            }
-
-            /* Return false if node not found or value is not a valid bool */
-            return false;
-        }
-
-        /*----------------------------------------------------------
-         * ReadIntParameter
-         * 
-         * Reads an int from XML file at given XPath.
-         * Returns -1 if not found or invalid.
-         *---------------------------------------------------------*/
-        public static int ReadIntParameter(string filename, string xpath)
-        {
-            /* Chech if file exists */
-            if (!System.IO.File.Exists(filename))
-                return -1;
-
-            /* Load Xml file */
-            var XmlFile = new System.Xml.XmlDocument();
-            XmlFile.Load(filename);
-
-            /* Get the root element of the XML document */
-            var root = XmlFile.DocumentElement;
-
-            var IntNode = root.SelectSingleNode(xpath);
-            if (IntNode != null && int.TryParse(IntNode.InnerText, out int result))
-            {
-                return result;
-            }
-
-            /* Return -1 if node not found or value is not a valid int */
-            return -1;
-        }
-
-
-        /*----------------------------------------------------------
-         * ReadStringParameter
-         * 
-         * Reads a string from XML file at given XPath.
-         * Returns null if not found.
-         *---------------------------------------------------------*/
-        public static string ReadStringParameter(string filename, string xpath)
-        {
-            /* Check if file exists */
-            if (!System.IO.File.Exists(filename))
-                return null;
-
-            /* Load XML file */
-            var XmlFile = new System.Xml.XmlDocument();
-            XmlFile.Load(filename);
-
-            /* Get the root element of the XML document */
-            var root = XmlFile.DocumentElement;
-
-            /* Select the node based on XPath */
-            var StringNode = root.SelectSingleNode(xpath);
-
-            /* Return the node's inner text if node exists, else null */
-            if (StringNode != null)
-            {
-                return StringNode.InnerText;
-            }
-
-            /* Return null if node not found */
-            return null;
-        }
-
-        /*----------------------------------------------------------
-         * WriteBoolParameter
-         * 
-         * Writes a bool to XML file node at given XPath.
-         * Returns true if successful.
-         *---------------------------------------------------------*/
-        public static bool WriteBoolParameter(string filename, string xpath, bool value)
-        {
-            /* Check if file exists */
-            if (!System.IO.File.Exists(filename))
-                return false;
-
-            /* Load XML file */
-            var XmlFile = new System.Xml.XmlDocument();
-            XmlFile.Load(filename);
-
-            /* Get the root element of the XML document */
-            var root = XmlFile.DocumentElement;
-
-            /* Find the boolean node */
-            var BoolNode = root.SelectSingleNode(xpath);
-
-            if (BoolNode != null)
-            {
-                /* Update the node's inner text with the boolean value as a lowercase string */
-                BoolNode.InnerText = value.ToString().ToLower();
-
-                /* Save the changes back to the file */
-                XmlFile.Save(filename);
-
-                /* Return true to indicate success */
-                return true;
-            }
-
-            /* Return false if the specified node was not found */
-            return true;
-        }
-
-
-        /*----------------------------------------------------------
-         * WriteIntParameter
-         * 
-         * Writes an int to XML file node at given XPath.
-         * Returns true if successful.
-         *---------------------------------------------------------*/
-        public static bool WriteIntParameter(string filename, string xpath, int value)
-        {
-            /* Check if file exists */
-            if (!System.IO.File.Exists(filename))
-                return false;
-
-            /* Load XML file */
-            var XmlFile = new System.Xml.XmlDocument();
-            XmlFile.Load(filename);
-
-            /* Get the root element of the XML document */
-            var root = XmlFile.DocumentElement;
-
-            /* Find the integer node */
-            var IntNode = root.SelectSingleNode(xpath);
-
-            if (IntNode != null)
-            {
-                /* Update the node's inner text with the integer value */
-                IntNode.InnerText = value.ToString();
-
-                /* Save the changes back to the file */
-                XmlFile.Save(filename);
-
-                /* Return true to indicate success */
-                return true;
-            }
-
-            /* Return false if the specified node was not found */
-            return false;
-        }
-
-        /*----------------------------------------------------------
-         * WriteStringParameter
-         * 
-         * Writes a string to XML file node at given XPath.
-         * Returns true if successful.
-         *---------------------------------------------------------*/
-        public static bool WriteStringParameter(string filename, string xpath, string value)
-        {
-            /* Check if file exists */
-            if (!System.IO.File.Exists(filename))
-                return false;
-
-            /* Load XML file */
-            var XmlFile = new System.Xml.XmlDocument();
-            XmlFile.Load(filename);
-
-            /* Get the root element of the XML document */
-            var root = XmlFile.DocumentElement;
-
-            /* Find the string node */
-            var StringNode = root.SelectSingleNode(xpath);
-
-            if (StringNode != null)
-            {
-                /* Update the node's inner text with the string value */
-                StringNode.InnerText = value;
-
-                /* Save the changes back to the file */
-                XmlFile.Save(filename);
-
-                /* Return true to indicate success */
-                return true;
-            }
-
-            /* Return false if the specified node was not found */
-            return false;
-        }
-
-        /*----------------------------------------------------------
-         * CreateNewQ
+         * CreateNew
          *
          * Prompts the user to create a new XML configuration file
          * if it doesn't exist. Returns true if the file was created.
          *---------------------------------------------------------*/
-        public static bool CreateNewQ()
+        public static bool CreateNew()
         {
             /* Check if file exists */
-            if (System.IO.File.Exists(FileNameq))
+            if (System.IO.File.Exists(FileName))
                 return true;
 
             /* Show message box */
@@ -292,7 +57,7 @@ namespace _4Term
                     XmlFile.AppendChild(root);
 
                     /* Save the XML document */
-                    XmlFile.Save(FileNameq);
+                    XmlFile.Save(FileName);
 
                     RootElement = root;
                     return true;
@@ -307,20 +72,20 @@ namespace _4Term
         }
 
         /*----------------------------------------------------------
-         * LoadFileQ
+         * LoadFile
          * 
          * Loads XML file into memory.
          * Returns true if successful.
          *---------------------------------------------------------*/
-        public static bool LoadFileQ()
+        public static bool LoadFile()
         {
             /* Check if file exists */
-            if (!System.IO.File.Exists(FileNameq))
+            if (!System.IO.File.Exists(FileName))
                 return false;
 
             /* Load XML file into the class-level XmlFile */
             XmlFile = new System.Xml.XmlDocument();
-            XmlFile.Load(FileNameq);
+            XmlFile.Load(FileName);
 
             /* Optionally, you can verify the root element exists */
             RootElement = XmlFile.DocumentElement;
@@ -332,12 +97,12 @@ namespace _4Term
         }
 
         /*----------------------------------------------------------
-         * ReadBoolParmQ
+         * ReadBoolParm
          * 
          * Reads a bool from loaded XML at XPath.
          * Returns false if not found or invalid.
          *---------------------------------------------------------*/
-        public static bool ReadBoolParmQ(string xpath)
+        public static bool ReadBoolParm(string xpath)
         {
             /* Find the boolean node */
             var BoolNode = RootElement.SelectSingleNode(xpath);
@@ -351,12 +116,12 @@ namespace _4Term
         }
 
         /*----------------------------------------------------------
-         * ReadIntParmQ
+         * ReadIntParm
          * 
          * Reads an int from loaded XML at XPath.
          * Returns -1 if not found or invalid.
          *---------------------------------------------------------*/
-        public static int ReadIntParmQ(string xpath)
+        public static int ReadIntParm(string xpath)
         {
             /* Find the integer node */
             var IntNode = RootElement.SelectSingleNode(xpath);
@@ -370,12 +135,12 @@ namespace _4Term
         }
 
         /*----------------------------------------------------------
-         * ReadStringParmQ
+         * ReadStringParm
          * 
          * Reads a string from loaded XML at XPath.
          * Returns null if not found.
          *---------------------------------------------------------*/
-        public static string ReadStringParmQ(string xpath)
+        public static string ReadStringParm(string xpath)
         {
             /* Find the string node */
             var StringNode = RootElement.SelectSingleNode(xpath);
@@ -389,12 +154,12 @@ namespace _4Term
         }
 
         /*----------------------------------------------------------
-         * WriteBoolParmQ
+         * WriteBoolParm
          * 
          * Writes a bool to loaded XML node at XPath.
          * Returns true if successful.
          *---------------------------------------------------------*/
-        public static bool WriteBoolParmQ(string xpath, bool value)
+        public static bool WriteBoolParm(string xpath, bool value)
         {
             /* Split the XPath into individual node names */
             string[] parts = xpath.Split('/');
@@ -427,12 +192,12 @@ namespace _4Term
 
 
         /*----------------------------------------------------------
-         * WriteIntParmQ
+         * WriteIntParm
          * 
          * Writes an int to loaded XML node at XPath.
          * Returns true if successful.
          *---------------------------------------------------------*/
-        public static bool WriteIntParmQ(string xpath, int value)
+        public static bool WriteIntParm(string xpath, int value)
         {
             /* Split the XPath into individual node names */
             string[] parts = xpath.Split('/');
@@ -465,12 +230,12 @@ namespace _4Term
 
 
         /*----------------------------------------------------------
-         * WriteStringParmQ
+         * WriteStringParm
          * 
          * Writes a string to loaded XML node at XPath.
          * Returns true if successful.
          *---------------------------------------------------------*/
-        public static bool WriteStringParmQ(string xpath, string value)
+        public static bool WriteStringParm(string xpath, string value)
         {
             /* Split the XPath into individual node names */
             string[] parts = xpath.Split('/');
@@ -502,16 +267,27 @@ namespace _4Term
         }
 
         /*----------------------------------------------------------
-         * CloseFileQ
-         * 
-         * Saves and clears loaded XML from memory.
-         *---------------------------------------------------------*/
-        public static void CloseFileQ()
-        {
-            /* Clear the cached XmlDocument to release references */
-            XmlFile.Save(FileNameq);
-            XmlFile = null;
-            RootElement = null;
-        }
+	 * CloseFile
+	 *
+	 * Saves the current XML document to disk and then clears it
+	 * from memory to release resources.
+	 *---------------------------------------------------------*/
+	public static void CloseFile()
+	{
+	    // Save the XML file using XmlWriter with custom settings
+	    using (var writer = System.Xml.XmlWriter.Create(FileName, new System.Xml.XmlWriterSettings
+	    {
+		Indent = true,
+		OmitXmlDeclaration = false,
+		NewLineHandling = NewLineHandling.None
+	    }))
+		  {
+		      XmlFile.Save(writer);
+		  }
+
+	    // Clear references from memory
+	    XmlFile = null;
+	    RootElement = null;
+	}
     }
 }
