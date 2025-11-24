@@ -136,11 +136,12 @@ namespace _4Term
             /* Set UI control states */
             WordWrapToolStripMenuItem.Checked = Settings.RichTextBox.WordWrap;
             ToggleScrollingToolStripMenuItem.Checked = Settings.RichTextBox.Scroll;
-            DTRButton.ForeColor = Settings.Port.Dtr ? Color.Green : SystemColors.ControlText;
-            RTSButton.ForeColor = Settings.Port.Rts ? Color.Green : SystemColors.ControlText;
+            DTRPictureBox.BackColor = Settings.Port.Dtr ? Color.Green : Color.Transparent;
+            RTSPictureBox.BackColor = Settings.Port.Rts ? Color.Green : Color.Transparent;
             SetAdvancedMode(Settings.Form.AdvancedMode);
 
             /* Initialize UI components */
+            UpdateAppendButtons();
             AssignButtonClickHandlers();
             LoadGroupContent();               
         }
@@ -318,8 +319,9 @@ namespace _4Term
         {
             SerialPortOptionsForm OptionsForm = new SerialPortOptionsForm();
             OptionsForm.ShowDialog();
-            DTRButton.ForeColor = Settings.Port.Dtr ? Color.Green : SystemColors.ControlText;
-            RTSButton.ForeColor = Settings.Port.Rts ? Color.Green : SystemColors.ControlText;
+            DTRPictureBox.BackColor = Settings.Port.Dtr ? Color.Green : Color.Transparent;
+            RTSPictureBox.BackColor = Settings.Port.Rts ? Color.Green : Color.Transparent;
+            UpdateAppendButtons();
         }
 
         /*----------------------------------------------------------
@@ -331,6 +333,7 @@ namespace _4Term
         {
             AutoConnectTimer.Enabled = !AutoConnectTimer.Enabled;
             AutoConnectButton.ForeColor = AutoConnectTimer.Enabled ? Color.Red : Color.Black;
+            AutoConnectPictureBox.BackColor = AutoConnectTimer.Enabled ? Color.Green : Color.Transparent;
         }
 
         /*----------------------------------------------------------
@@ -343,6 +346,10 @@ namespace _4Term
             if (Port.IsOpen) Port.Close(); else Port.Open();
             ConnectButton.Text = Port.IsOpen ? "Disconnect" : "Connect";
             ConnectButton.ForeColor = Port.IsOpen ? Color.Red : Color.Green;
+            SerialPictureBox.BackColor = Port.IsOpen ? Color.Green : Color.Transparent;
+            AutoConnectTimer.Enabled = false;
+            AutoConnectButton.ForeColor = Color.Black;
+            AutoConnectPictureBox.BackColor = Color.Transparent;
         }
 
         /*----------------------------------------------------------
@@ -499,8 +506,9 @@ namespace _4Term
         *---------------------------------------------------------*/
         private void DTRButton_Click(object sender, EventArgs e)
         {
+
             Settings.Port.Dtr = !Settings.Port.Dtr;
-            DTRButton.ForeColor = Settings.Port.Dtr ? Color.Green : SystemColors.ControlText;
+            DTRPictureBox.BackColor = Settings.Port.Dtr ? Color.Green : Color.Transparent;
 
             if (Serial.Instance.IsOpen)
                 Serial.Instance.SetDtr(Settings.Port.Dtr);
@@ -519,7 +527,7 @@ namespace _4Term
         private void RTSButton_Click(object sender, EventArgs e)
         {
             Settings.Port.Rts = !Settings.Port.Rts;
-            RTSButton.ForeColor = Settings.Port.Rts ? Color.Green : SystemColors.ControlText;
+            RTSPictureBox.BackColor = Settings.Port.Rts ? Color.Green : Color.Transparent;
 
             if (Serial.Instance.IsOpen)
                 Serial.Instance.SetRts(Settings.Port.Rts);
@@ -600,6 +608,7 @@ namespace _4Term
             }
             ConnectButton.Text = Port.IsOpen ? "Disconnect" : "Connect";
             ConnectButton.ForeColor = Port.IsOpen ? Color.Red : Color.Green;
+            SerialPictureBox.BackColor = Port.IsOpen ? Color.Green : Color.Transparent;
             Text = buffer;
         }
 
@@ -631,6 +640,8 @@ namespace _4Term
         {
             ConnectButton.Text = Port.IsOpen ? "Disconnect" : "Connect";
             ConnectButton.ForeColor = Port.IsOpen ? Color.Red : Color.Green;
+            SerialPictureBox.BackColor = Port.IsOpen ? Color.Green : Color.Transparent;
+            AutoConnectPictureBox.BackColor = AutoConnectPictureBox.BackColor == Color.Transparent ? Color.Green : Color.Transparent;
             if (!Port.IsOpen) Port.Open();
         }
 
@@ -725,37 +736,42 @@ namespace _4Term
         private void AddLine(string line, int type)
         {
             /* Set the selection color based on message type */
-            if (type == 0)
-                /* Transmit color */
-                RichTextBox.SelectionColor = TransmitColor;
-            else
-                /* Receive color */
-                RichTextBox.SelectionColor = ReceiveColor;
+            RichTextBox.SelectionColor = type == 0 ? TransmitColor : ReceiveColor;
 
             string buffer = "";
 
-            /* Check if HexOutput is enabled */
             if (Settings.RichTextBox.HexOutput)
             {
-                /* Convert the line to bytes and format as a hex string */
                 byte[] lineBytes = Encoding.UTF8.GetBytes(line + buffer);
                 string lineAsString = BitConverter.ToString(lineBytes).Replace("-", " ");
-
-                /* Append the hex-formatted line to the RichTextBox */
                 RichTextBox.AppendText($" [{lineAsString}]");
             }
-
             else
-                /* Append the plain text line to the RichTextBox */
+            {
                 RichTextBox.AppendText(line + buffer);
+            }
 
-            /* Scroll to the latest line if auto-scroll is enabled */
+            // Blink TX or RX indicator
+            PictureBox targetBox = (type == 0) ? TXPictureBox : RXPictureBox;
+
+            targetBox.BackColor = Color.Green;
+
+            var pulseTimer = new System.Windows.Forms.Timer { Interval = 60 };
+            pulseTimer.Tick += (s, e) =>
+            {
+                targetBox.BackColor = Color.Transparent;
+                pulseTimer.Stop();
+                pulseTimer.Dispose();
+            };
+            pulseTimer.Start();
+
             if (Settings.RichTextBox.Scroll)
             {
                 RichTextBox.SelectionStart = RichTextBox.Text.Length;
                 RichTextBox.ScrollToCaret();
             }
         }
+
 
         /*----------------------------------------------------------
         * WelcomeMsg
@@ -924,6 +940,59 @@ namespace _4Term
         {
             if (buffer.Msg != 0xA3)
                 base.WndProc(ref buffer);
+        }
+
+        private void NonePictureBox_Click(object sender, EventArgs e)
+        {
+            Settings.Port.Append = Settings.Port.AppendType.AppendNothing;
+            UpdateAppendButtons();
+        }
+
+        private void CRPictureBox_Click(object sender, EventArgs e)
+        {
+            Settings.Port.Append = Settings.Port.AppendType.AppendCR;
+            UpdateAppendButtons();
+        }
+
+        private void LFPictureBox_Click(object sender, EventArgs e)
+        {
+            Settings.Port.Append = Settings.Port.AppendType.AppendLF;
+            UpdateAppendButtons();
+        }
+
+        private void CRLFPictureBox_Click(object sender, EventArgs e)
+        {
+            Settings.Port.Append = Settings.Port.AppendType.AppendCRLF;
+            UpdateAppendButtons();
+        }
+
+        private void UpdateAppendButtons()
+        {
+            NonePictureBox.BackColor =
+            CRPictureBox.BackColor =
+            LFPictureBox.BackColor =
+            CRLFPictureBox.BackColor = Color.Transparent;
+
+            PictureBox active = null;
+
+            switch (Settings.Port.Append)
+            {
+                case Settings.Port.AppendType.AppendNothing:
+                    active = NonePictureBox;
+                    break;
+                case Settings.Port.AppendType.AppendCR:
+                    active = CRPictureBox;
+                    break;
+                case Settings.Port.AppendType.AppendLF:
+                    active = LFPictureBox;
+                    break;
+                case Settings.Port.AppendType.AppendCRLF:
+                    active = CRLFPictureBox;
+                    break;
+            }
+
+            if (active != null)
+                active.BackColor = Color.Green;
         }
     }
 }

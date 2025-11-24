@@ -217,7 +217,7 @@
             this.TransmitGroupBox.Size = new System.Drawing.Size(155, 36);
             this.TransmitGroupBox.TabIndex = 15;
             this.TransmitGroupBox.TabStop = false;
-            this.TransmitGroupBox.Text = "Transmit";
+            this.TransmitGroupBox.Text = "Hardware control";
             // 
             // TransmitRTSCheckBox
             // 

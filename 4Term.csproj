@@ -80,7 +80,6 @@
     <None Include="LICENSE" />
     <None Include="packages.config" />
     <None Include="README.md" />
-    <None Include="version.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\icon.png" />

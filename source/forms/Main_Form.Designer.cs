@@ -83,6 +83,12 @@
             this.M5SetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.M5ToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
             this.COMBox = new System.Windows.Forms.GroupBox();
+            this.TXPictureBox = new System.Windows.Forms.PictureBox();
+            this.RXPictureBox = new System.Windows.Forms.PictureBox();
+            this.AutoConnectPictureBox = new System.Windows.Forms.PictureBox();
+            this.RTSPictureBox = new System.Windows.Forms.PictureBox();
+            this.DTRPictureBox = new System.Windows.Forms.PictureBox();
+            this.SerialPictureBox = new System.Windows.Forms.PictureBox();
             this.AutoConnectButton = new System.Windows.Forms.Button();
             this.SettingsButton = new System.Windows.Forms.Button();
             this.ConnectButton = new System.Windows.Forms.Button();
@@ -115,11 +121,13 @@
             this.MacroButton2 = new System.Windows.Forms.Button();
             this.SwapButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.NonePictureBox = new System.Windows.Forms.PictureBox();
+            this.CRPictureBox = new System.Windows.Forms.PictureBox();
+            this.LFPictureBox = new System.Windows.Forms.PictureBox();
+            this.CRLFPictureBox = new System.Windows.Forms.PictureBox();
             this.ClearButton = new System.Windows.Forms.Button();
             this.ComboBox = new System.Windows.Forms.ComboBox();
             this.SendButton = new System.Windows.Forms.Button();
-            this.DTRButton = new System.Windows.Forms.Button();
-            this.RTSButton = new System.Windows.Forms.Button();
             this.RichTextBox = new System.Windows.Forms.RichTextBox();
             this.MacroSetPanel = new System.Windows.Forms.Panel();
             this.MacroSetGroupBox = new System.Windows.Forms.GroupBox();
@@ -133,8 +141,18 @@
             this.MacroTextBox = new System.Windows.Forms.TextBox();
             this.MenuStrip.SuspendLayout();
             this.COMBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TXPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RXPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AutoConnectPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RTSPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DTRPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SerialPictureBox)).BeginInit();
             this.MacrosGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NonePictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CRPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LFPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CRLFPictureBox)).BeginInit();
             this.MacroSetPanel.SuspendLayout();
             this.MacroSetGroupBox.SuspendLayout();
             this.SuspendLayout();
@@ -463,7 +481,7 @@
             // 
             this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
             this.AboutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.H)));
-            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.AboutToolStripMenuItem.Text = "&About...";
             this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
@@ -616,6 +634,12 @@
             // COMBox
             // 
             this.COMBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.COMBox.Controls.Add(this.TXPictureBox);
+            this.COMBox.Controls.Add(this.RXPictureBox);
+            this.COMBox.Controls.Add(this.AutoConnectPictureBox);
+            this.COMBox.Controls.Add(this.RTSPictureBox);
+            this.COMBox.Controls.Add(this.DTRPictureBox);
+            this.COMBox.Controls.Add(this.SerialPictureBox);
             this.COMBox.Controls.Add(this.AutoConnectButton);
             this.COMBox.Controls.Add(this.SettingsButton);
             this.COMBox.Controls.Add(this.ConnectButton);
@@ -625,7 +649,69 @@
             this.COMBox.Size = new System.Drawing.Size(256, 38);
             this.COMBox.TabIndex = 216;
             this.COMBox.TabStop = false;
-            this.COMBox.Text = "Serial";
+            this.COMBox.Text = "Serial        RX   TX      DTR     RTS";
+            // 
+            // TXPictureBox
+            // 
+            this.TXPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.TXPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TXPictureBox.Location = new System.Drawing.Point(138, 1);
+            this.TXPictureBox.Name = "TXPictureBox";
+            this.TXPictureBox.Size = new System.Drawing.Size(10, 10);
+            this.TXPictureBox.TabIndex = 252;
+            this.TXPictureBox.TabStop = false;
+            // 
+            // RXPictureBox
+            // 
+            this.RXPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.RXPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.RXPictureBox.Location = new System.Drawing.Point(107, 1);
+            this.RXPictureBox.Name = "RXPictureBox";
+            this.RXPictureBox.Size = new System.Drawing.Size(10, 10);
+            this.RXPictureBox.TabIndex = 251;
+            this.RXPictureBox.TabStop = false;
+            // 
+            // AutoConnectPictureBox
+            // 
+            this.AutoConnectPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.AutoConnectPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.AutoConnectPictureBox.Location = new System.Drawing.Point(64, 1);
+            this.AutoConnectPictureBox.Name = "AutoConnectPictureBox";
+            this.AutoConnectPictureBox.Size = new System.Drawing.Size(10, 10);
+            this.AutoConnectPictureBox.TabIndex = 250;
+            this.AutoConnectPictureBox.TabStop = false;
+            // 
+            // RTSPictureBox
+            // 
+            this.RTSPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.RTSPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.RTSPictureBox.Location = new System.Drawing.Point(240, 1);
+            this.RTSPictureBox.Name = "RTSPictureBox";
+            this.RTSPictureBox.Size = new System.Drawing.Size(10, 10);
+            this.RTSPictureBox.TabIndex = 249;
+            this.RTSPictureBox.TabStop = false;
+            this.RTSPictureBox.Click += new System.EventHandler(this.RTSButton_Click);
+            // 
+            // DTRPictureBox
+            // 
+            this.DTRPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.DTRPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.DTRPictureBox.Location = new System.Drawing.Point(192, 1);
+            this.DTRPictureBox.Name = "DTRPictureBox";
+            this.DTRPictureBox.Size = new System.Drawing.Size(10, 10);
+            this.DTRPictureBox.TabIndex = 248;
+            this.DTRPictureBox.TabStop = false;
+            this.DTRPictureBox.Click += new System.EventHandler(this.DTRButton_Click);
+            // 
+            // SerialPictureBox
+            // 
+            this.SerialPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.SerialPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.SerialPictureBox.Location = new System.Drawing.Point(48, 1);
+            this.SerialPictureBox.Name = "SerialPictureBox";
+            this.SerialPictureBox.Size = new System.Drawing.Size(10, 10);
+            this.SerialPictureBox.TabIndex = 242;
+            this.SerialPictureBox.TabStop = false;
             // 
             // AutoConnectButton
             // 
@@ -657,7 +743,7 @@
             // 
             this.ConnectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ConnectButton.BackColor = System.Drawing.SystemColors.Control;
-            this.ConnectButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ConnectButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ConnectButton.ForeColor = System.Drawing.Color.Green;
             this.ConnectButton.Location = new System.Drawing.Point(171, 12);
             this.ConnectButton.Name = "ConnectButton";
@@ -716,7 +802,7 @@
             this.PlusButton.Name = "PlusButton";
             this.PlusButton.Size = new System.Drawing.Size(31, 13);
             this.PlusButton.TabIndex = 241;
-            this.PlusButton.Text = "+";
+            this.PlusButton.Text = ">";
             this.PlusButton.UseCompatibleTextRendering = true;
             this.PlusButton.UseVisualStyleBackColor = true;
             this.PlusButton.Click += new System.EventHandler(this.PlusButton_Click);
@@ -729,7 +815,7 @@
             this.MinusButton.Name = "MinusButton";
             this.MinusButton.Size = new System.Drawing.Size(31, 13);
             this.MinusButton.TabIndex = 240;
-            this.MinusButton.Text = "-";
+            this.MinusButton.Text = "<";
             this.MinusButton.UseCompatibleTextRendering = true;
             this.MinusButton.UseVisualStyleBackColor = true;
             this.MinusButton.Click += new System.EventHandler(this.MinusButton_Click);
@@ -1059,18 +1145,64 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.BackColor = System.Drawing.Color.Transparent;
+            this.groupBox1.Controls.Add(this.NonePictureBox);
+            this.groupBox1.Controls.Add(this.CRPictureBox);
+            this.groupBox1.Controls.Add(this.LFPictureBox);
+            this.groupBox1.Controls.Add(this.CRLFPictureBox);
             this.groupBox1.Controls.Add(this.ClearButton);
             this.groupBox1.Controls.Add(this.ComboBox);
             this.groupBox1.Controls.Add(this.SendButton);
-            this.groupBox1.Controls.Add(this.DTRButton);
-            this.groupBox1.Controls.Add(this.RTSButton);
             this.groupBox1.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(4, 368);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(434, 38);
             this.groupBox1.TabIndex = 214;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Transmit";
+            this.groupBox1.Text = "Transmit                                NONE      CR      LF    CRLF";
+            // 
+            // NonePictureBox
+            // 
+            this.NonePictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.NonePictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.NonePictureBox.Location = new System.Drawing.Point(276, 1);
+            this.NonePictureBox.Name = "NonePictureBox";
+            this.NonePictureBox.Size = new System.Drawing.Size(10, 10);
+            this.NonePictureBox.TabIndex = 252;
+            this.NonePictureBox.TabStop = false;
+            this.NonePictureBox.Click += new System.EventHandler(this.NonePictureBox_Click);
+            // 
+            // CRPictureBox
+            // 
+            this.CRPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.CRPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.CRPictureBox.Location = new System.Drawing.Point(324, 1);
+            this.CRPictureBox.Name = "CRPictureBox";
+            this.CRPictureBox.Size = new System.Drawing.Size(10, 10);
+            this.CRPictureBox.TabIndex = 251;
+            this.CRPictureBox.TabStop = false;
+            this.CRPictureBox.Click += new System.EventHandler(this.CRPictureBox_Click);
+            // 
+            // LFPictureBox
+            // 
+            this.LFPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.LFPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.LFPictureBox.Location = new System.Drawing.Point(372, 1);
+            this.LFPictureBox.Name = "LFPictureBox";
+            this.LFPictureBox.Size = new System.Drawing.Size(10, 10);
+            this.LFPictureBox.TabIndex = 243;
+            this.LFPictureBox.TabStop = false;
+            this.LFPictureBox.Click += new System.EventHandler(this.LFPictureBox_Click);
+            // 
+            // CRLFPictureBox
+            // 
+            this.CRLFPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.CRLFPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.CRLFPictureBox.Location = new System.Drawing.Point(420, 1);
+            this.CRLFPictureBox.Name = "CRLFPictureBox";
+            this.CRLFPictureBox.Size = new System.Drawing.Size(10, 10);
+            this.CRLFPictureBox.TabIndex = 250;
+            this.CRLFPictureBox.TabStop = false;
+            this.CRLFPictureBox.Click += new System.EventHandler(this.CRLFPictureBox_Click);
             // 
             // ClearButton
             // 
@@ -1112,35 +1244,6 @@
             this.SendButton.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.SendButton.UseVisualStyleBackColor = true;
             this.SendButton.Click += new System.EventHandler(this.SendButton_Click);
-            // 
-            // DTRButton
-            // 
-            this.DTRButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.DTRButton.BackColor = System.Drawing.Color.Transparent;
-            this.DTRButton.Font = new System.Drawing.Font("Consolas", 6F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.DTRButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.DTRButton.Location = new System.Drawing.Point(59, 0);
-            this.DTRButton.Name = "DTRButton";
-            this.DTRButton.Size = new System.Drawing.Size(31, 14);
-            this.DTRButton.TabIndex = 212;
-            this.DTRButton.Text = "DTR";
-            this.DTRButton.UseCompatibleTextRendering = true;
-            this.DTRButton.UseVisualStyleBackColor = false;
-            this.DTRButton.Click += new System.EventHandler(this.DTRButton_Click);
-            // 
-            // RTSButton
-            // 
-            this.RTSButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.RTSButton.Font = new System.Drawing.Font("Consolas", 6F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RTSButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.RTSButton.Location = new System.Drawing.Point(91, 0);
-            this.RTSButton.Name = "RTSButton";
-            this.RTSButton.Size = new System.Drawing.Size(31, 14);
-            this.RTSButton.TabIndex = 245;
-            this.RTSButton.Text = "RTS";
-            this.RTSButton.UseCompatibleTextRendering = true;
-            this.RTSButton.UseVisualStyleBackColor = true;
-            this.RTSButton.Click += new System.EventHandler(this.RTSButton_Click);
             // 
             // RichTextBox
             // 
@@ -1288,9 +1391,19 @@
             this.MenuStrip.ResumeLayout(false);
             this.MenuStrip.PerformLayout();
             this.COMBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.TXPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RXPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AutoConnectPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RTSPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DTRPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SerialPictureBox)).EndInit();
             this.MacrosGroupBox.ResumeLayout(false);
             this.MacrosGroupBox.PerformLayout();
             this.groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.NonePictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CRPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LFPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CRLFPictureBox)).EndInit();
             this.MacroSetPanel.ResumeLayout(false);
             this.MacroSetGroupBox.ResumeLayout(false);
             this.MacroSetGroupBox.PerformLayout();
@@ -1370,7 +1483,6 @@
         private System.Windows.Forms.ToolStripMenuItem ConnectDisconnectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AutoConnectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ScanCOMsToolStripMenuItem;
-        private System.Windows.Forms.Button SwapButton;
         private System.Windows.Forms.ToolStripMenuItem M1ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem M2ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem M3ToolStripMenuItem;
@@ -1400,8 +1512,17 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button MinusButton;
         private System.Windows.Forms.Button PlusButton;
-        private System.Windows.Forms.Button DTRButton;
-        private System.Windows.Forms.Button RTSButton;
         private System.Windows.Forms.RichTextBox RichTextBox;
+        private System.Windows.Forms.PictureBox SerialPictureBox;
+        private System.Windows.Forms.PictureBox RTSPictureBox;
+        private System.Windows.Forms.PictureBox DTRPictureBox;
+        private System.Windows.Forms.PictureBox NonePictureBox;
+        private System.Windows.Forms.PictureBox CRPictureBox;
+        private System.Windows.Forms.PictureBox LFPictureBox;
+        private System.Windows.Forms.PictureBox CRLFPictureBox;
+        private System.Windows.Forms.PictureBox AutoConnectPictureBox;
+        private System.Windows.Forms.Button SwapButton;
+        private System.Windows.Forms.PictureBox RXPictureBox;
+        private System.Windows.Forms.PictureBox TXPictureBox;
     }
 }
