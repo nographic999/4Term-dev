@@ -11,13 +11,13 @@ namespace _4Term
          * -------------------------------------------------------*/
 
         /* Maximum wait time for read/write operations*/
-        private const int ReadWriteTimeout = 50;
+        private const int ReadWriteTimeout = 10;
 
         /* Sleep duration when port is unavailable */
         private const int LoopPreventDelay = 100;
 
         /* Pause after read timeouts */
-        private const int TimeoutDelay = 10;
+        private const int TimeoutDelay = 50;
 
         /*----------------------------------------------------------
          * Class variables
@@ -161,6 +161,10 @@ namespace _4Term
                         {
                             /* Notify subscribers of new data */
                             DataReceived?.Invoke(serialIn);                            
+                        }
+                        else
+                        {
+                            Thread.Sleep(TimeoutDelay);
                         }
                     }
 
