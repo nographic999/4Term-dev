@@ -12,8 +12,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("NoGraphic999")]
 [assembly: AssemblyProduct("4Term")]
-[assembly: AssemblyCopyright("Copyright © 2025. All Rights Reserved.")]
-[assembly: AssemblyMetadata("License", "MIT License © 2025 NoGraphic999")]
+[assembly: AssemblyCopyright("Copyright © 2025-2026. All Rights Reserved.")]
+[assembly: AssemblyMetadata("License", "MIT License © 2025-2026 NoGraphic999")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -37,5 +37,5 @@ using System.Runtime.InteropServices;
  *      Build Number
  *      Revision
  *---------------------------------------------------------*/
-[assembly: AssemblyVersion("1.5.1.0")]
-[assembly: AssemblyFileVersion("1.5.1.0")]
+[assembly: AssemblyVersion("1.5.4.0")]
+[assembly: AssemblyFileVersion("1.5.4.0")]

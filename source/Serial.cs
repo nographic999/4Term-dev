@@ -164,7 +164,7 @@ namespace _4Term
                         }
                         else
                         {
-                            Thread.Sleep(TimeoutDelay);
+                            Thread.Sleep(Settings.Port.EmptyLoopDelay);
                         }
                     }
 

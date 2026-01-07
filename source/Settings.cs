@@ -52,6 +52,7 @@ namespace _4Term
             public static System.IO.Ports.Handshake Handshake = System.IO.Ports.Handshake.None;
             public static bool Dtr = false;
             public static bool Rts = false;
+            public static int EmptyLoopDelay = 1;
 
             public enum AppendType
             {
@@ -146,6 +147,7 @@ namespace _4Term
             Port.Append = (Port.AppendType)Enum.Parse(typeof(Port.AppendType), Xml.ReadStringParm("Port/AppendToSend"));
             Port.Dtr = Xml.ReadBoolParm("Port/Dtr");
             Port.Rts = Xml.ReadBoolParm("Port/Rts");
+            Port.EmptyLoopDelay = Xml.ReadIntParm("Port/EmptyLoopDelay");
 
             /* Page section */
             for (int i = 0; i < Page.Text.Length; i++)
@@ -222,6 +224,7 @@ namespace _4Term
             Xml.WriteStringParm("Port/AppendToSend", Port.Append.ToString());
             Xml.WriteBoolParm("Port/Dtr", Port.Dtr);
             Xml.WriteBoolParm("Port/Rts", Port.Rts);
+            Xml.WriteIntParm("Port/EmptyLoopDelay", Port.EmptyLoopDelay);
 
             /* Page section */
             for (int i = 0; i < Page.Text.Length; i++)

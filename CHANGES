@@ -65,21 +65,30 @@ All notable changes to **4Term** will be documented in this file.
 
 ## [1.5.0] - 2025-11-21
 
-## Removed
+### Removed
  - Application update capability due to security concerns and to improve application safety
  - Unused functions in XML handling code
  - Unstable external tools feature
 
-## Changed
+### Changed
  - Increased size of the Minus button
  - Increased size of the Plus button
  - Improved and reorganised the Settings form layout and code
  - COM port selection logic refactored to support dynamic updates without closing the dropdown
  - Macro navigation updated to support 256 commands across 2 pages instead of 512 commands across 4 pages
  
-## Fixed
+### Fixed
  - XML saving now uses <ItemX></ItemX> for empty elements to ensure proper structure
  - Main form no longer resizes after the Settings form is closed
+
+## [1.5.4] - 2026-07-01
+
+### Added
+ - Added a loop prevent delay to avoid high CPU usage when no serial data is available.
+
+### Changed
+ - Bolded program name and version in About Form.
+ - Added experimental script loading.
 
 ## License
 

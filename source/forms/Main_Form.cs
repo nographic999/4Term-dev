@@ -1,4 +1,5 @@
 ﻿using System;
+
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -6,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using System.IO;
+using System.Threading.Tasks;  // for Task.Delay
 
 namespace _4Term
 {
@@ -261,6 +264,99 @@ namespace _4Term
             LoadGroupContent();
         }
 
+        private async void LoadScript(string filePath)
+        {
+            // Check if the file exists
+            if (!File.Exists(filePath))
+            {
+                InfoMessage($"Script file not found: {filePath}\n");
+                return;
+            }
+
+            try
+            {
+                // Open the file for reading
+                using (var reader = new StreamReader(filePath))
+                {
+                    string line;
+                    while ((line = await reader.ReadLineAsync()) != null)
+                    {
+                        string trimmed = line.Trim();
+
+                        // Skip empty lines
+                        if (string.IsNullOrEmpty(trimmed))
+                            continue;
+
+                        char code = trimmed[0]; // first character: C or D
+
+                        switch (code)
+                        {
+                            case 'C':
+                                // Only process if there's a space after 'C'
+                                if (trimmed.Length > 2 && trimmed[1] == ' ')
+                                {
+                                    string buffer = trimmed.Substring(2); // command after 'C '
+
+                                    if (Port.IsOpen && !string.IsNullOrEmpty(buffer))
+                                    {
+                                        // Send using the existing SendButton_Click logic
+                                        string lineEnding = Port.Send(buffer);
+
+                                        // Add command to ComboBox history
+                                        if (!ComboBox.Items.Contains(buffer))
+                                            ComboBox.Items.Add(buffer);
+
+                                        // Local echo
+                                        if (Settings.RichTextBox.LocalEcho)
+                                            AddLine(buffer + lineEnding, 0);
+
+                                        ComboBox.Focus();
+                                    }
+                                    else
+                                    {
+                                        InfoMessage("The serial port is not open. Cannot send command from script.\n");
+                                    }
+                                }
+                                else
+                                {
+                                    InfoMessage($"Invalid command format (must be 'C <command>'): {trimmed}\n");
+                                }
+                                break;
+
+                            case 'D':
+                                // Only process if there's a space after 'D'
+                                if (trimmed.Length > 2 && trimmed[1] == ' ')
+                                {
+                                    string delayText = trimmed.Substring(2); // everything after 'D '
+                                    if (int.TryParse(delayText, out int delayMs))
+                                    {
+                                        await Task.Delay(delayMs);
+                                    }
+                                    else
+                                    {
+                                        InfoMessage($"Invalid delay in script: {trimmed}\n");
+                                    }
+                                }
+                                else
+                                {
+                                    InfoMessage($"Invalid delay format (must be 'D <ms>'): {trimmed}\n");
+                                }
+                                break;
+
+                            default:
+                                InfoMessage($"Unknown script code '{code}' in line: {trimmed}\n");
+                                break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                InfoMessage($"Error reading script file: {ex.Message}\n");
+            }
+        }
+
+
         /*----------------------------------------------------------
          * SendButton_Click
          * 
@@ -269,38 +365,112 @@ namespace _4Term
          *---------------------------------------------------------*/
         private void SendButton_Click(object sender, EventArgs e)
         {
-            /* Check if port is open */
-            if (Port.IsOpen)
+            /* Get the command from the ComboBox */
+            string buffer = ComboBox.Text;
+
+            /* COMMANDS */
+            if (!string.IsNullOrEmpty(buffer) && buffer[0] == '>')
             {
-                /* Get the command from the ComboBox */
-                string buffer = ComboBox.Text;
-
-                /* Proceed only if the command is not empty */
-                if (!string.IsNullOrEmpty(buffer))
+                AddLine(buffer + "\n", 1);
+                if (buffer == ">help")
                 {
-                    /* Send the command and get the appended line ending */
-                    string lineEnding = Port.Send(buffer);
-
-                    /* Add the command to ComboBox history if not already there */
-                    if(!ComboBox.Items.Contains(buffer))
-                    {
-                        ComboBox.Items.Add(buffer);
-                    }
-
-                    /* If local echo is enabled, display the sent command */
-                    if (Settings.RichTextBox.LocalEcho)
-                    {
-                        AddLine(buffer + lineEnding, 0);
-                    }
-
-                    /* Refocus the ComboBox for quick user input */
-                    ComboBox.Focus();
+                    AddLine(
+                            ">q       - Quit application\n" +
+                            ">cls     - Clear RichTextBox\n" +
+                            ">welcome - Show welcome message\n" +
+                            ">l       - List available COM ports\n" +
+                            ">c       - Connect to selected COM port\n" +
+                            ">a       - Auto-connect to available COM port\n" +
+                            ">load    - Load and run a script file\n" +
+                            ">help    - Show this help message\n", 1
+                        );
                 }
-            }
+                else if (buffer.StartsWith(">load"))
+                {
+                    // Ensure there's a space and a filename
+                    if (buffer.Length > 6 && buffer[5] == ' ')
+                    {
+                        string scriptFile = buffer.Substring(6).Trim(); // get everything after ">load "
+                        if (!string.IsNullOrEmpty(scriptFile))
+                        {
+                            LoadScript(scriptFile); // call your async LoadScript method
+                        }
+                        else
+                        {
+                            AddLine("Usage: >load <scriptFile>\n", 1);
+                        }
+                    }
+                    else
+                    {
+                        AddLine("Usage: >load <scriptFile>\n", 1);
+                    }
+                }
+                else if (buffer == ">q")
+                {
+                    this.Close();
+                }
+                else if (buffer == ">cls")
+                {
+                    RichTextBox.Clear();
+                }
+                else if (buffer == ">welcome")
+                {
+                    WelcomeMsg();
+                }
+                else if (buffer == ">l")
+                {
+                    ScanCOMsToolStripMenuItem_Click(this, EventArgs.Empty);
+                }
+                else if (buffer == ">c")
+                {
+                    if (buffer.Length > 3 && buffer[3] == 'C')  
+                    {
+                        // do something
+                    }
+                    else
+                        ConnectButton_Click(this, EventArgs.Empty);
+                }
+                else if (buffer == ">a")
+                {
+                    AutoConnectButton_Click(this, EventArgs.Empty);
+                }
 
+
+                /* Refocus the ComboBox for quick user input */
+                ComboBox.Focus();
+            }
             else
-                /* Inform the user if the serial port is not open */
-                InfoMessage("The serial port is not open. Please open a port before sending the macro.\n");       
+            {
+                /* Check if port is open */
+                if (Port.IsOpen)
+                {
+                    /* Proceed only if the command is not empty */
+                    if (!string.IsNullOrEmpty(buffer))
+                    {
+                        /* Send the command and get the appended line ending */
+                        string lineEnding = Port.Send(buffer);
+
+                        /* Add the command to ComboBox history if not already there */
+                        if (!ComboBox.Items.Contains(buffer))
+                        {
+                            ComboBox.Items.Add(buffer);
+                        }
+
+                        /* If local echo is enabled, display the sent command */
+                        if (Settings.RichTextBox.LocalEcho)
+                        {
+                            AddLine(buffer + lineEnding, 0);
+                        }
+
+                        /* Refocus the ComboBox for quick user input */
+                        ComboBox.Focus();
+                    }
+                }
+
+                else
+                    /* Inform the user if the serial port is not open */
+                    InfoMessage("The serial port is not open. Please open a port before sending the macro.\n");
+            }             
         }
 
         /*----------------------------------------------------------
@@ -416,14 +586,31 @@ namespace _4Term
                     /* Send the command only if it's not empty */
                     if (!string.IsNullOrEmpty(command))
                     {
-                        string lineEnding = Port.Send(command);
-
-                        if (Settings.RichTextBox.LocalEcho)
+                        // --- NEW: Handle >load commands ---
+                        if (command.StartsWith(">load"))
                         {
-                            AddLine(command + lineEnding, 0);
+                            // Call the existing LoadScript method
+                            string scriptFile = command.Length > 6 ? command.Substring(6).Trim() : "";
+                            if (!string.IsNullOrEmpty(scriptFile))
+                            {
+                                LoadScript(scriptFile);
+                            }
+                            else
+                            {
+                                AddLine("Usage: >load <scriptFile>\n", 1);
+                            }
                         }
+                        else
+                        {
+                            string lineEnding = Port.Send(command);
 
-                        await Task.Delay(50);
+                            if (Settings.RichTextBox.LocalEcho)
+                            {
+                                AddLine(command + lineEnding, 0);
+                            }
+
+                            await Task.Delay(50);
+                        }                         
                     }
 
                     else
@@ -800,7 +987,7 @@ namespace _4Term
                 "        _\\///////////\\\\\\//________\\/\\\\\\_______\\//\\\\///////___\\/\\\\\\_________\\/\\\\\\__\\/\\\\\\__\\/\\\\\\_",
                 "         ___________\\/\\\\\\__________\\/\\\\\\________\\//\\\\\\\\\\\\\\\\\\\\_\\/\\\\\\_________\\/\\\\\\__\\/\\\\\\__\\/\\\\\\_",
                 "          ___________\\///___________\\///__________\\//////////__\\///__________\\///___\\///___\\///__",
-                $"                                                                           Version: {version}"
+                $"                                                                  Version: Quick & Dirty {version}"
             };
             /* Colors to cycle through */
             Color[] colors = new Color[]
