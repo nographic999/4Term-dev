@@ -1,14 +1,11 @@
 ﻿using System;
-
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using System.IO;
-using System.Threading.Tasks;  // for Task.Delay
 
 namespace _4Term
 {
@@ -270,12 +267,12 @@ namespace _4Term
             if (!File.Exists(filePath))
             {
                 InfoMessage($"Script file not found: {filePath}\n");
+                AddLine($"Script file not found: {filePath}\n", 1);
                 return;
             }
 
             try
             {
-                // Open the file for reading
                 using (var reader = new StreamReader(filePath))
                 {
                     string line;
@@ -287,64 +284,224 @@ namespace _4Term
                         if (string.IsNullOrEmpty(trimmed))
                             continue;
 
-                        char code = trimmed[0]; // first character: C or D
+                        char code = trimmed[0]; // first character: C, D, R, S, E, F
 
                         switch (code)
                         {
-                            case 'C':
-                                // Only process if there's a space after 'C'
+                            case 'S':
+                                RichTextBox.Clear();
+                                break;
+
+                            case 'E':
                                 if (trimmed.Length > 2 && trimmed[1] == ' ')
                                 {
-                                    string buffer = trimmed.Substring(2); // command after 'C '
+                                    string message = trimmed.Substring(2);
+                                    AddLine(message + "\n", 1);
+                                }
+                                else
+                                {
+                                    AddLine("Invalid echo format (must be 'E <message>')\n", 1);
+                                }
+                                break;
 
+                            case 'F':
+                                {
+                                    if (trimmed.Length > 2 && trimmed[1] == ' ')
+                                    {
+                                        string content = trimmed.Substring(2).Trim();
+
+                                        // Expect format: <word><message>
+                                        int firstLt = content.IndexOf('<');
+                                        int firstGt = content.IndexOf('>');
+
+                                        if (firstLt >= 0 && firstGt > firstLt)
+                                        {
+                                            string wordToFind = content.Substring(firstLt + 1, firstGt - firstLt - 1);
+
+                                            // Check for optional message
+                                            int secondLt = content.IndexOf('<', firstGt + 1);
+                                            int secondGt = content.IndexOf('>', firstGt + 1);
+                                            string message = "Found"; // default message
+
+                                            if (secondLt >= 0 && secondGt > secondLt)
+                                            {
+                                                message = content.Substring(secondLt + 1, secondGt - secondLt - 1);
+                                            }
+
+                                            // Search in all RichTextBox lines
+                                            string[] richLines = RichTextBox.Lines;
+                                            bool found = false;
+
+                                            foreach (string richLine in richLines)
+                                            {
+                                                if (richLine.Contains(wordToFind))
+                                                {
+                                                    found = true;
+                                                    break;
+                                                }
+                                            }
+
+                                            if (found)
+                                                AddLine(message + "\n", 1);
+                                            else
+                                                AddLine($"'{wordToFind}' not found.\n", 1);
+                                        }
+                                        else
+                                        {
+                                            AddLine("Invalid find format (must be 'F <word><message>')\n", 1);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        AddLine("Invalid find format (must be 'F <word><message>')\n", 1);
+                                    }
+                                }
+                                break;
+
+
+                            case 'C':
+                                if (trimmed.Length > 2 && trimmed[1] == ' ')
+                                {
+                                    string buffer = trimmed.Substring(2);
                                     if (Port.IsOpen && !string.IsNullOrEmpty(buffer))
                                     {
-                                        // Send using the existing SendButton_Click logic
                                         string lineEnding = Port.Send(buffer);
 
-                                        // Add command to ComboBox history
                                         if (!ComboBox.Items.Contains(buffer))
                                             ComboBox.Items.Add(buffer);
-
-                                        // Local echo
-                                        if (Settings.RichTextBox.LocalEcho)
-                                            AddLine(buffer + lineEnding, 0);
 
                                         ComboBox.Focus();
                                     }
                                     else
                                     {
-                                        InfoMessage("The serial port is not open. Cannot send command from script.\n");
+                                        string msg = "The serial port is not open. Cannot send command from script.\n";
+                                        InfoMessage(msg);
+                                        AddLine(msg, 1);
                                     }
                                 }
                                 else
                                 {
-                                    InfoMessage($"Invalid command format (must be 'C <command>'): {trimmed}\n");
+                                    string msg = $"Invalid command format (must be 'C <command>'): {trimmed}\n";
+                                    InfoMessage(msg);
+                                    AddLine(msg, 1);
                                 }
                                 break;
 
                             case 'D':
-                                // Only process if there's a space after 'D'
                                 if (trimmed.Length > 2 && trimmed[1] == ' ')
                                 {
-                                    string delayText = trimmed.Substring(2); // everything after 'D '
+                                    string delayText = trimmed.Substring(2);
                                     if (int.TryParse(delayText, out int delayMs))
                                     {
                                         await Task.Delay(delayMs);
                                     }
                                     else
                                     {
-                                        InfoMessage($"Invalid delay in script: {trimmed}\n");
+                                        string msg = $"Invalid delay in script: {trimmed}\n";
+                                        InfoMessage(msg);
+                                        AddLine(msg, 1);
                                     }
                                 }
                                 else
                                 {
-                                    InfoMessage($"Invalid delay format (must be 'D <ms>'): {trimmed}\n");
+                                    string msg = $"Invalid delay format (must be 'D <ms>'): {trimmed}\n";
+                                    InfoMessage(msg);
+                                    AddLine(msg, 1);
+                                }
+                                break;
+
+                            case 'R':
+                                {
+                                    int spaceIndex = trimmed.IndexOf(' ');
+                                    if (spaceIndex > 1)
+                                    {
+                                        string repeatStr = trimmed.Substring(1, spaceIndex - 1);
+                                        string rest = trimmed.Substring(spaceIndex + 1).Trim();
+
+                                        if (int.TryParse(repeatStr, out int repeatCount))
+                                        {
+                                            if (repeatCount < 1 || repeatCount > 99)
+                                            {
+                                                string msg = $"Repeat count must be between 1 and 99: {trimmed}\n";
+                                                InfoMessage(msg);
+                                                AddLine(msg, 1); // only show error
+                                                break;
+                                            }
+
+                                            // Check for optional delay at the start
+                                            int delayMs = 0;
+                                            string command = rest;
+
+                                            if (rest.StartsWith("D"))
+                                            {
+                                                int delaySpace = rest.IndexOf(' ');
+                                                if (delaySpace > 1)
+                                                {
+                                                    string delayStr = rest.Substring(1, delaySpace - 1);
+                                                    command = rest.Substring(delaySpace + 1);
+
+                                                    if (!int.TryParse(delayStr, out delayMs))
+                                                    {
+                                                        string msg = $"Invalid delay in repeat command: {trimmed}\n";
+                                                        InfoMessage(msg);
+                                                        AddLine(msg, 1); // only show error
+                                                        break;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    string msg = $"Invalid delay format in repeat command: {trimmed}\n";
+                                                    InfoMessage(msg);
+                                                    AddLine(msg, 1); // only show error
+                                                    break;
+                                                }
+                                            }
+
+                                            // Execute repeat loop silently
+                                            for (int i = 0; i < repeatCount; i++)
+                                            {
+                                                if (delayMs > 0)
+                                                    await Task.Delay(delayMs);
+
+                                                if (Port.IsOpen && !string.IsNullOrEmpty(command))
+                                                {
+                                                    string lineEnding = Port.Send(command);
+
+                                                    if (!ComboBox.Items.Contains(command))
+                                                        ComboBox.Items.Add(command);
+
+                                                    // Removed echo: do not call AddLine for normal execution
+                                                    ComboBox.Focus();
+                                                }
+                                                else
+                                                {
+                                                    string msg = "The serial port is not open. Cannot send command from script.\n";
+                                                    InfoMessage(msg);
+                                                    AddLine(msg, 1); // only show error
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            string msg = $"Invalid repeat number in script: {trimmed}\n";
+                                            InfoMessage(msg);
+                                            AddLine(msg, 1); // only show error
+                                        }
+                                    }
+                                    else
+                                    {
+                                        string msg = $"Invalid repeat format (must be 'R<num> <command>'): {trimmed}\n";
+                                        InfoMessage(msg);
+                                        AddLine(msg, 1); // only show error
+                                    }
                                 }
                                 break;
 
                             default:
-                                InfoMessage($"Unknown script code '{code}' in line: {trimmed}\n");
+                                string unknownMsg = $"Unknown script code '{code}' in line: {trimmed}\n";
+                                InfoMessage(unknownMsg);
+                                AddLine(unknownMsg, 1);
                                 break;
                         }
                     }
@@ -352,9 +509,13 @@ namespace _4Term
             }
             catch (Exception ex)
             {
-                InfoMessage($"Error reading script file: {ex.Message}\n");
+                string msg = $"Error reading script file: {ex.Message}\n";
+                InfoMessage(msg);
+                AddLine(msg, 1);
             }
         }
+
+
 
 
         /*----------------------------------------------------------
