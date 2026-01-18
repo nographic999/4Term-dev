@@ -81,12 +81,14 @@ All notable changes to **4Term** will be documented in this file.
  - XML saving now uses <ItemX></ItemX> for empty elements to ensure proper structure
  - Main form no longer resizes after the Settings form is closed
 
-## [1.5.4] - 2026-07-01
+## [1.5.6] - 2026-01-18
 
 ### Added
- - Added a loop prevent delay to avoid high CPU usage when no serial data is available.
+ - SwapButton now can be hidden.
 
 ### Changed
+ - Returned old welcome message colors.
+ - Removed a loop prevent delay.
  - Bolded program name and version in About Form.
  - Added experimental script loading.
 

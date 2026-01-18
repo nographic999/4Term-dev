@@ -161,10 +161,6 @@ namespace _4Term
                             /* Notify subscribers of new data */
                             DataReceived?.Invoke(serialIn);                            
                         }
-                        else
-                        {
-                            Thread.Sleep(Settings.Port.EmptyLoopDelay);
-                        }
                     }
 
                     /* Handles serial port timeout exceptions during read operations. */

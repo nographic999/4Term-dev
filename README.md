@@ -10,15 +10,15 @@ It's especially useful for capturing, analyzing, and debugging data from serial 
 ## Download
 
 **Latest Release**  
-**Version:** `1.5.0`  
+**Version:** `1.5.6`  
 **Architecture:** `x64`  
-**Binary:** [Download 4Term 1.5.0 x64.7z](./4Term_1.5.0_x64.7z)
+**Binary:** [Download 4Term 1.5.6 x64.7z](./4Term_1.5.6_x64.7z)
 
 ---
 
 ## License
 
-MIT License © 2025 NoGraphic999  
+MIT License © 2025-2026 NoGraphic999  
 See the [LICENSE](LICENSE) file for details.
 
 ---

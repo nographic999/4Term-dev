@@ -1,5 +1,4 @@
-﻿using System;
-using System.Xml;
+﻿using System.Xml;
 using System.Windows.Forms;
 
 namespace _4Term
@@ -190,7 +189,6 @@ namespace _4Term
             return true;
         }
 
-
         /*----------------------------------------------------------
          * WriteIntParm
          * 
@@ -227,7 +225,6 @@ namespace _4Term
             /* Indicate success */
             return true;
         }
-
 
         /*----------------------------------------------------------
          * WriteStringParm
@@ -266,28 +263,28 @@ namespace _4Term
             return true;
         }
 
-        /*----------------------------------------------------------
-	 * CloseFile
-	 *
-	 * Saves the current XML document to disk and then clears it
-	 * from memory to release resources.
-	 *---------------------------------------------------------*/
-	public static void CloseFile()
-	{
-	    // Save the XML file using XmlWriter with custom settings
-	    using (var writer = System.Xml.XmlWriter.Create(FileName, new System.Xml.XmlWriterSettings
+         /*----------------------------------------------------------
+	     * CloseFile
+	     *
+	     * Saves the current XML document to disk and then clears it
+	     * from memory to release resources.
+	     *---------------------------------------------------------*/
+	    public static void CloseFile()
 	    {
-		Indent = true,
-		OmitXmlDeclaration = false,
-		NewLineHandling = NewLineHandling.None
-	    }))
-		  {
-		      XmlFile.Save(writer);
-		  }
+	        // Save the XML file using XmlWriter with custom settings
+	        using (var writer = System.Xml.XmlWriter.Create(FileName, new System.Xml.XmlWriterSettings
+	        {
+		    Indent = true,
+		    OmitXmlDeclaration = false,
+		    NewLineHandling = NewLineHandling.None
+	        }))
+		      {
+		          XmlFile.Save(writer);
+		      }
 
-	    // Clear references from memory
-	    XmlFile = null;
-	    RootElement = null;
-	}
+	        // Clear references from memory
+	        XmlFile = null;
+	        RootElement = null;
+	    }
     }
 }

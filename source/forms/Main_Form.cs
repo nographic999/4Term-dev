@@ -139,6 +139,7 @@ namespace _4Term
             DTRPictureBox.BackColor = Settings.Port.Dtr ? Color.Green : Color.Transparent;
             RTSPictureBox.BackColor = Settings.Port.Rts ? Color.Green : Color.Transparent;
             SetAdvancedMode(Settings.Form.AdvancedMode);
+            SwapButton.Visible = SwapButton.Enabled = Settings.Program.IsSwapButtonVisible;
 
             /* Initialize UI components */
             UpdateAppendButtons();
@@ -1148,21 +1149,21 @@ namespace _4Term
                 "        _\\///////////\\\\\\//________\\/\\\\\\_______\\//\\\\///////___\\/\\\\\\_________\\/\\\\\\__\\/\\\\\\__\\/\\\\\\_",
                 "         ___________\\/\\\\\\__________\\/\\\\\\________\\//\\\\\\\\\\\\\\\\\\\\_\\/\\\\\\_________\\/\\\\\\__\\/\\\\\\__\\/\\\\\\_",
                 "          ___________\\///___________\\///__________\\//////////__\\///__________\\///___\\///___\\///__",
-                $"                                                                  Version: Quick & Dirty {version}"
+                $"                                                                   Version: EXPERIMENTAL {version}"
             };
             /* Colors to cycle through */
             Color[] colors = new Color[]
             {
-                Color.FromArgb(255, 20, 147),   // Neon Pink
-                Color.FromArgb(0, 255, 255),    // Cyan Glow
-                Color.FromArgb(255, 0, 255),    // Magenta Neon
-                Color.FromArgb(57, 255, 20),    // Electric Green
-                Color.FromArgb(255, 255, 0),    // Acid Yellow
-                Color.FromArgb(0, 128, 255),    // Cyber Blue
-                Color.FromArgb(255, 105, 180),  // Hot Neon Rose
-                Color.FromArgb(255, 0, 127),    // Deep Neon Pink
-                Color.FromArgb(0, 255, 127),    // Mint Neon
-                Color.FromArgb(255, 51, 51)     // Laser Red
+                Color.Firebrick,       // deep red
+                Color.DarkOrange,      // rich orange
+                Color.Gold,            // warm yellow
+                Color.MediumSeaGreen,  // muted green
+                Color.SteelBlue,       // soft blue-gray
+                Color.MediumSlateBlue, // cool purple-blue
+                Color.Tomato,          // bright red-orange
+                Color.MediumTurquoise, // vibrant teal
+                Color.SandyBrown,      // light brown-orange
+                Color.MediumVioletRed  // purple-pink
             };
             RichTextBox.Clear();
             for (int i = 0; i < asciiLines.Length; i++)
@@ -1174,7 +1175,6 @@ namespace _4Term
             await Task.Delay(250);
             RichTextBox.Clear();
             RichTextBox.BackColor = BackgroundColor;
-            RichTextBox.ForeColor = TransmitColor;            
         }
 
         /*----------------------------------------------------------
