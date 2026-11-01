@@ -1,11 +1,14 @@
-﻿using System.Reflection;
+﻿/* AssemblyInfo.cs -- name, version and copyright information compiled into
+   4Term.exe.
+
+   Copyright (C) 2025-2026 NoGraphic999.  This file is part of 4Term, released
+   under the MIT License; see the LICENSE file for details.  */
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 
-/*----------------------------------------------------------
- * General Information about an assembly is controlled through 
- * the following set of attributes. Change these attribute values 
- * to modify the information associated with an assembly.
- *---------------------------------------------------------*/
+/* General information about the assembly.  Windows shows it in the file
+   properties, and the About dialog displays it.  */
 [assembly: AssemblyTitle("4Term")]
 [assembly: AssemblyDescription("4Term is an advanced serial port terminal designed for monitoring " +
     "and logging RS232 communication. It's especially useful for capturing and analyzing data from serial devices.")]
@@ -17,25 +20,15 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-/*----------------------------------------------------------
- * Setting ComVisible to false makes the types in this assembly 
- * not visible to COM components. If you need to access a type in 
- * this assembly from COM, set the ComVisible attribute to true on that type.
- *---------------------------------------------------------*/
+/* Keep the types in this assembly invisible to COM components.  To use a type
+   from COM, set ComVisible to true on that type.  */
 [assembly: ComVisible(false)]
 
-/*----------------------------------------------------------
- * The following GUID is for the ID of the typelib if this project 
- * is exposed to COM.
- *---------------------------------------------------------*/
+/* ID of the type library if this project is exposed to COM.  */
 [assembly: Guid("a670265d-fa1e-48c3-8a28-d10385157868")]
 
-/*----------------------------------------------------------
- * Version information for an assembly consists of the following four values:
- *      Major Version
- *      Minor Version 
- *      Build Number
- *      Revision
- *---------------------------------------------------------*/
-[assembly: AssemblyVersion("1.5.6.0")]
-[assembly: AssemblyFileVersion("1.5.6.0")]
+/* Version number: major.minor.build.revision.  The About dialog and the
+   welcome message show it as About_Form.ShownVersion does: "2.0", or
+   "2.0.1" once there is a build number.  */
+[assembly: AssemblyVersion("2.0.0.0")]
+[assembly: AssemblyFileVersion("2.0.0.0")]

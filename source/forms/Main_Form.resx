@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -121,17 +121,6 @@
     <value>17, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="ProgButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vAAADrwBlbxySQAAASdJREFUWEfVlYEOgyAMRP10P80/c6lLzfVoS1FZ5iWXLAV6D2S6LC/XHjhTbzwU
-        h+y74zWHwHo0x9XRmEOwxnZOI/rdlbtz2Kmps2mO9hvSsXjbtsPYcF1X4wiCgIekoacUQoHQPQjnRLpA
-        BgDD7bTvmAIU7kZJTVAGIKqcwmWAXriocgo/AYhOYSRcNAwgyh7D+wDATS0CmQIAYV7NaAqAV5sN0ITg
-        HYjCRbcB5P+LH5oRCAy/+h4wC/nIGYCdvQPKALxA7H16PRCt8waqAE1w5giK+yS1Rk3IE5a+eq+wxuGi
-        ZvFdRz1DgOjmXrF39DTmaghCQyLz/AqA6HxmmbFhdCE5mOamapqxPZBeOMx5RCFI5OruR1UCmRWOMiDs
-        2eEocxfA/6kP0azLnXsPmMUAAAAASUVORK5CYII=
-</value>
-  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAYAAAAAAAEAIADO2wAAZgAAAICAAAABACAAKAgBADTcAABAQAAAAQAgAChCAABc5AEAMDAAAAEA

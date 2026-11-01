@@ -1,4 +1,10 @@
-﻿using System;
+﻿/* SerialOptions_Form.cs -- the serial options dialog: port, baud rate, data
+   format, handshaking, line ending and the DTR and RTS lines.
+
+   Copyright (C) 2025-2026 NoGraphic999.  This file is part of 4Term, released
+   under the MIT License; see the LICENSE file for details.  */
+
+using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
@@ -7,115 +13,120 @@ using System.Windows.Forms;
 
 namespace _4Term
 {
+    /* The serial options dialog.  */
     public partial class SerialPortOptionsForm : Form
     {
-        /*----------------------------------------------------------
-         * Class variables
-         * -------------------------------------------------------*/
-
+        /* Refreshes the port list while it is open.  */
         private Timer comPortMonitorTimer;
+        /* Port names at the last check.  */
         private string[] lastKnownPorts = Array.Empty<string>();
 
-        /*----------------------------------------------------------
-         * Class Functions
-         * -------------------------------------------------------*/
+        /* The radio button groups and the setting value of each button.  */
+        private readonly Choice<int> BaudRateChoice;
+        private readonly Choice<int> DataBitsChoice;
+        private readonly Choice<Parity> ParityChoice;
+        private readonly Choice<StopBits> StopBitsChoice;
+        private readonly Choice<Handshake> HandshakeChoice;
+        private readonly Choice<Settings.Port.AppendType> AppendChoice;
 
-        /*----------------------------------------------------------
-         * SerialPortOptionsForm (Constructor)
-         * 
-         * Initializes serial port configuration form components and loads 
-         * saved settings into the UI controls.
-        *---------------------------------------------------------*/
+        /* A group of radio buttons, each standing for one setting value.  */
+        private sealed class Choice<T>
+        {
+            private readonly RadioButton[] Buttons;
+            private readonly T[] Values;
+
+            /* Pair BUTTONS with VALUES, in the same order.  */
+            public Choice(RadioButton[] buttons, T[] values)
+            {
+                Buttons = buttons;
+                Values = values;
+            }
+
+            /* Check the button for VALUE.  Return false, checking nothing, if
+               no button stands for VALUE.  */
+            public bool Show(T value)
+            {
+                int i = Array.IndexOf(Values, value);
+                if (i < 0)
+                    return false;
+
+                Buttons[i].Checked = true;
+                return true;
+            }
+
+            /* Return the value of the checked button, or FALLBACK if none is
+               checked.  */
+            public T Selected(T fallback)
+            {
+                for (int i = 0; i < Buttons.Length; i++)
+                    if (Buttons[i].Checked)
+                        return Values[i];
+
+                return fallback;
+            }
+        }
+
+        /* Create the dialog and show the saved settings in it.  */
         public SerialPortOptionsForm()
         {
             InitializeComponent();
             comPortMonitorTimer = new Timer();
             comPortMonitorTimer.Interval = 250;
             comPortMonitorTimer.Tick += ComPortMonitorTimer_Tick;
+            FormClosed += (sender, e) => comPortMonitorTimer.Dispose();
 
-            /* Populate COM port list */
+            /* Fill the port list.  */
             COMPortComboBox_Click(this, EventArgs.Empty);
 
-            /* Load saved baud rate setting */
-            switch (Settings.Port.BaudRate)
-            {
-                case 600: BaudRate600RadioButton.Checked = true; break;
-                case 1200: BaudRate1200RadioButton.Checked = true; break;
-                case 2400: BaudRate2400RadioButton.Checked = true; break;
-                case 4800: BaudRate4800RadioButton.Checked = true; break;
-                case 9600: BaudRate9600RadioButton.Checked = true; break;
-                case 14400: BaudRate14400RadioButton.Checked = true; break;
-                case 19200: BaudRate19200RadioButton.Checked = true; break;
-                case 28800: BaudRate28800RadioButton.Checked = true; break;
-                case 38400: BaudRate38400RadioButton.Checked = true; break;
-                case 56000: BaudRate56000RadioButton.Checked = true; break;
-                case 57600: BaudRate57600RadioButton.Checked = true; break;
-                case 115200: BaudRate115200RadioButton.Checked = true; break;
-                case 128000: BaudRate128000RadioButton.Checked = true; break;
-                case 256000: BaudRate256000RadioButton.Checked = true; break;
-                default:
-                    /* Fallback to custom baud rate */
-                    BaudRateCustomRadioButton.Checked = true;
-                    BaudRateCustomRadioButton_Click(this, EventArgs.Empty);
-                    CustomBRTextBox.Text = Settings.Port.BaudRate.ToString();
-                    break;
-            }
+            BaudRateChoice = new Choice<int>(
+                new[] { BaudRate600RadioButton, BaudRate1200RadioButton, BaudRate2400RadioButton,
+                        BaudRate4800RadioButton, BaudRate9600RadioButton, BaudRate14400RadioButton,
+                        BaudRate19200RadioButton, BaudRate28800RadioButton, BaudRate38400RadioButton,
+                        BaudRate56000RadioButton, BaudRate57600RadioButton, BaudRate115200RadioButton,
+                        BaudRate128000RadioButton, BaudRate256000RadioButton },
+                new[] { 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400,
+                        56000, 57600, 115200, 128000, 256000 });
+            DataBitsChoice = new Choice<int>(
+                new[] { DataBits5RadioButton, DataBits6RadioButton, DataBits7RadioButton, DataBits8RadioButton },
+                new[] { 5, 6, 7, 8 });
+            ParityChoice = new Choice<Parity>(
+                new[] { ParityNoneRadioButton, ParityOddRadioButton, ParityEvenRadioButton,
+                        ParityMarkRadioButton, ParitySpaceRadioButton },
+                new[] { Parity.None, Parity.Odd, Parity.Even, Parity.Mark, Parity.Space });
+            StopBitsChoice = new Choice<StopBits>(
+                new[] { StopBits1RadioButton, StopBits15RadioButton, StopBits2RadioButton },
+                new[] { StopBits.One, StopBits.OnePointFive, StopBits.Two });
+            HandshakeChoice = new Choice<Handshake>(
+                new[] { HandshakingNoneRadioButton, HandshakingXONXOFRadioButton,
+                        HandshakingRTSCTSRadioButton, HandshakingRTSCTSXONXOFRadioButton },
+                new[] { Handshake.None, Handshake.XOnXOff, Handshake.RequestToSend,
+                        Handshake.RequestToSendXOnXOff });
+            AppendChoice = new Choice<Settings.Port.AppendType>(
+                new[] { AppendNoneRadioButton, AppendCRRadioButton, AppendLFRadioButton, AppendCRLFRadioButton },
+                new[] { Settings.Port.AppendType.AppendNothing, Settings.Port.AppendType.AppendCR,
+                        Settings.Port.AppendType.AppendLF, Settings.Port.AppendType.AppendCRLF });
 
-            /* Load saved append settings */
-            switch (Settings.Port.Append)
+            /* Show the saved settings.  A baud rate without a button is a
+               custom rate.  */
+            if (!BaudRateChoice.Show(Settings.Port.BaudRate))
             {
-                case Settings.Port.AppendType.AppendNothing: AppendNoneRadioButton.Checked = true; break;
-                case Settings.Port.AppendType.AppendCR: AppendCRRadioButton.Checked = true; break;
-                case Settings.Port.AppendType.AppendLF: AppendLFRadioButton.Checked = true; break;
-                case Settings.Port.AppendType.AppendCRLF: AppendCRLFRadioButton.Checked = true; break;
+                BaudRateCustomRadioButton.Checked = true;
+                BaudRateCustomRadioButton_Click(this, EventArgs.Empty);
+                CustomBRTextBox.Text = Settings.Port.BaudRate.ToString();
             }
+            DataBitsChoice.Show(Settings.Port.DataBits);
+            ParityChoice.Show(Settings.Port.Parity);
+            StopBitsChoice.Show(Settings.Port.StopBits);
+            HandshakeChoice.Show(Settings.Port.Handshake);
+            AppendChoice.Show(Settings.Port.Append);
 
-            /* Load saved data bits */
-            switch (Settings.Port.DataBits)
-            {
-                case 5: DataBits5RadioButton.Checked = true; break;
-                case 6: DataBits6RadioButton.Checked = true; break;
-                case 7: DataBits7RadioButton.Checked = true; break;
-                case 8: DataBits8RadioButton.Checked = true; break;
-            }
-
-            /* Load saved parity */
-            switch (Settings.Port.Parity)
-            {
-                case System.IO.Ports.Parity.None: ParityNoneRadioButton.Checked = true; break;
-                case System.IO.Ports.Parity.Odd: ParityOddRadioButton.Checked = true; break;
-                case System.IO.Ports.Parity.Even: ParityEvenRadioButton.Checked = true; break;
-                case System.IO.Ports.Parity.Mark: ParityMarkRadioButton.Checked = true; break;
-                case System.IO.Ports.Parity.Space: ParitySpaceRadioButton.Checked = true; break;
-            }
-
-            /* Load saved stop bits */
-            switch (Settings.Port.StopBits)
-            {
-                case System.IO.Ports.StopBits.One: StopBits1RadioButton.Checked = true; break;
-                case System.IO.Ports.StopBits.OnePointFive: StopBits15RadioButton.Checked = true; break;
-                case System.IO.Ports.StopBits.Two: StopBits2RadioButton.Checked = true; break;
-            }
-
-            /* Load saved handshake */
-            switch (Settings.Port.Handshake)
-            {
-                case System.IO.Ports.Handshake.None: HandshakingNoneRadioButton.Checked = true; break;
-                case System.IO.Ports.Handshake.XOnXOff: HandshakingXONXOFRadioButton.Checked = true; break;
-                case System.IO.Ports.Handshake.RequestToSend: HandshakingRTSCTSRadioButton.Checked = true; break;
-                case System.IO.Ports.Handshake.RequestToSendXOnXOff: HandshakingRTSCTSXONXOFRadioButton.Checked = true; break;
-            }
-
-            /* Load saved DTR and RTS settings */
+            /* Load saved DTR and RTS settings.  */
             TransmitDTRCheckBox.Checked = Settings.Port.Dtr;
             TransmitRTSCheckBox.Checked = Settings.Port.Rts;
         }
 
-        /*----------------------------------------------------------
-         * ComPortMonitorTimer_Tick
-         * 
-         * Updates COM port list dynamically while the dropdown is open.
-        *---------------------------------------------------------*/
+        /* While the port list is open, refresh it when ports appear or
+           disappear.  */
         private void ComPortMonitorTimer_Tick(object sender, EventArgs e)
         {
             if (!COMPortComboBox.DroppedDown)
@@ -133,44 +144,31 @@ namespace _4Term
             }
         }
 
-        /*----------------------------------------------------------
-         * COMPortComboBox_DropDown
-         * 
-         * Starts monitoring COM ports when dropdown opens.
-        *---------------------------------------------------------*/
+        /* Start watching for port changes when the list opens.  */
         private void COMPortComboBox_DropDown(object sender, EventArgs e)
         {
             lastKnownPorts = SerialPort.GetPortNames();
             comPortMonitorTimer.Start();
         }
 
-        /*----------------------------------------------------------
-         * COMPortComboBox_DropDownClosed
-         * 
-         * Stops monitoring COM ports when dropdown closes.
-        *---------------------------------------------------------*/
+        /* Stop watching when the list closes.  */
         private void COMPortComboBox_DropDownClosed(object sender, EventArgs e)
         {
             comPortMonitorTimer.Stop();
         }
 
-        /*----------------------------------------------------------
-         * COMPortComboBox_Click
-         * 
-         * Populates the COM port dropdown with all available ports.
-         * - Appends friendly device descriptions from WMI.
-         * - Removes duplicates from ports and descriptions.
-         * - Selects the last-used COM port if present.
-         *---------------------------------------------------------*/
+        /* Fill the port list with all available ports and their device
+           descriptions from WMI, without duplicates, and select the port from
+           the settings.  */
         private void COMPortComboBox_Click(object sender, EventArgs e)
         {
-            // Clear existing items
+            /* Clear existing items.  */
             COMPortComboBox.Items.Clear();
 
-            // Get unique COM ports
+            /* Get unique COM ports.  */
             string[] portList = SerialPort.GetPortNames().Distinct().ToArray();
 
-            // Load device descriptions from WMI
+            /* Load device descriptions from WMI.  */
             Dictionary<string, string> portDescriptions = new Dictionary<string, string>();
             try
             {
@@ -189,7 +187,7 @@ namespace _4Term
                         string comPort = match.Groups[1].Value;
                         string desc = caption.Replace($"({comPort})", "").Trim();
 
-                        // Avoid duplicate keys
+                        /* Avoid duplicate keys.  */
                         if (!portDescriptions.ContainsKey(comPort))
                             portDescriptions[comPort] = desc;
                     }
@@ -200,7 +198,7 @@ namespace _4Term
                 System.Diagnostics.Debug.WriteLine("COM port description load failed: " + ex.Message);
             }
 
-            // Populate ComboBox without duplicates
+            /* Populate ComboBox without duplicates.  */
             HashSet<string> addedItems = new HashSet<string>();
             int selectedIndex = -1;
 
@@ -210,117 +208,84 @@ namespace _4Term
                 if (portDescriptions.TryGetValue(portList[i], out string desc))
                     item += " - " + desc;
 
-                if (addedItems.Add(item)) // prevents duplicate entries
+                if (addedItems.Add(item)) /* Skip duplicates.  */
                     COMPortComboBox.Items.Add(item);
 
-                // Track selection of last-used port
+                /* Track selection of last-used port.  */
                 if (portList[i] == Settings.Port.PortName)
                     selectedIndex = COMPortComboBox.Items.IndexOf(item);
             }
 
-            // Select last-used port if present
+            /* Select last-used port if present.  */
             if (selectedIndex >= 0)
                 COMPortComboBox.SelectedIndex = selectedIndex;
         }
 
 
-        /*----------------------------------------------------------
-         * BaudRateRadioButton_Click
-         * 
-         * Hides custom baud rate input and resizes group box accordingly.
-        *---------------------------------------------------------*/
+        /* Hide the custom baud rate box when a standard rate is chosen.  */
         private void BaudRateRadioButton_Click(object sender, EventArgs e)
         {
             CustomBRTextBox.Visible = CustomBRTextBox.Enabled = CustomBRGroupBox.Visible = CustomBRGroupBox.Enabled = false;
             ComPortGroupBox.Size = new System.Drawing.Size(99, 95);
         }
 
-        /*----------------------------------------------------------
-         * BaudRateCustomRadioButton_Click
-         * 
-         * Shows custom baud rate input and resizes group box accordingly.
-        *---------------------------------------------------------*/
+        /* Show the custom baud rate box.  */
         private void BaudRateCustomRadioButton_Click(object sender, EventArgs e)
         {
             CustomBRTextBox.Visible = CustomBRTextBox.Enabled = CustomBRGroupBox.Visible = CustomBRGroupBox.Enabled = true;
             ComPortGroupBox.Size = new System.Drawing.Size(99, 46);
         }
 
-        /*----------------------------------------------------------
-         * SaveOptions_Click
-         * 
-         * Saves all current UI selections to application settings and writes XML.
-        *---------------------------------------------------------*/
+        /* Check the custom baud rate, store all choices in the settings, save
+           them and close the dialog with OK.  If no port is selected, the
+           previous port is kept.  */
         private void SaveOptions_Click(object sender, EventArgs e)
         {
-            /* Save COM Port */
-            Settings.Port.PortName = COMPortComboBox.Text.Split('-')[0].Trim();
+            /* Validate custom baud rate before changing anything.  */
+            int customBaud = 0;
+            if (BaudRateCustomRadioButton.Checked &&
+                (!int.TryParse(CustomBRTextBox.Text, out customBaud) || customBaud <= 0))
+            {
+                MessageBox.Show("Please enter a valid custom baud rate (a positive number).",
+                                "Invalid Baud Rate",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+                CustomBRTextBox.Focus();
+                return;
+            }
 
-            /* Save baud rate */
-            if (BaudRateCustomRadioButton.Checked && int.TryParse(CustomBRTextBox.Text, out int customBaud))
-                Settings.Port.BaudRate = customBaud;
-            else
-                Settings.Port.BaudRate = BaudRate600RadioButton.Checked ? 600 :
-                                        BaudRate1200RadioButton.Checked ? 1200 :
-                                        BaudRate2400RadioButton.Checked ? 2400 :
-                                        BaudRate4800RadioButton.Checked ? 4800 :
-                                        BaudRate9600RadioButton.Checked ? 9600 :
-                                        BaudRate14400RadioButton.Checked ? 14400 :
-                                        BaudRate19200RadioButton.Checked ? 19200 :
-                                        BaudRate28800RadioButton.Checked ? 28800 :
-                                        BaudRate38400RadioButton.Checked ? 38400 :
-                                        BaudRate56000RadioButton.Checked ? 56000 :
-                                        BaudRate57600RadioButton.Checked ? 57600 :
-                                        BaudRate115200RadioButton.Checked ? 115200 :
-                                        BaudRate128000RadioButton.Checked ? 128000 :
-                                        BaudRate256000RadioButton.Checked ? 256000 : 9600;
+            /* Save the port, keeping the previous one if none is selected.  */
+            string portName = COMPortComboBox.Text.Split('-')[0].Trim();
+            if (!string.IsNullOrEmpty(portName))
+                Settings.Port.PortName = portName;
 
-            /* Save data bits */
-            Settings.Port.DataBits = DataBits5RadioButton.Checked ? 5 :
-                                    DataBits6RadioButton.Checked ? 6 :
-                                    DataBits7RadioButton.Checked ? 7 : 8;
+            /* Save the checked choices.  A group with no button checked gets
+               a fixed default.  */
+            Settings.Port.BaudRate = BaudRateCustomRadioButton.Checked
+                ? customBaud : BaudRateChoice.Selected(9600);
+            Settings.Port.DataBits = DataBitsChoice.Selected(8);
+            Settings.Port.Append = AppendChoice.Selected(Settings.Port.AppendType.AppendCRLF);
+            Settings.Port.Parity = ParityChoice.Selected(Parity.Space);
+            Settings.Port.StopBits = StopBitsChoice.Selected(StopBits.Two);
+            Settings.Port.Handshake = HandshakeChoice.Selected(Handshake.RequestToSendXOnXOff);
 
-            /* Save append type */
-            Settings.Port.Append = AppendNoneRadioButton.Checked ? Settings.Port.AppendType.AppendNothing :
-                                  AppendCRRadioButton.Checked ? Settings.Port.AppendType.AppendCR :
-                                  AppendLFRadioButton.Checked ? Settings.Port.AppendType.AppendLF :
-                                  Settings.Port.AppendType.AppendCRLF;
-
-            /* Save parity */
-            Settings.Port.Parity = ParityNoneRadioButton.Checked ? Parity.None :
-                                  ParityOddRadioButton.Checked ? Parity.Odd :
-                                  ParityEvenRadioButton.Checked ? Parity.Even :
-                                  ParityMarkRadioButton.Checked ? Parity.Mark : Parity.Space;
-
-            /* Save stop bits */
-            Settings.Port.StopBits = StopBits1RadioButton.Checked ? StopBits.One :
-                                    StopBits15RadioButton.Checked ? StopBits.OnePointFive : StopBits.Two;
-
-            /* Save handshake */
-            Settings.Port.Handshake = HandshakingNoneRadioButton.Checked ? Handshake.None :
-                                     HandshakingXONXOFRadioButton.Checked ? Handshake.XOnXOff :
-                                     HandshakingRTSCTSRadioButton.Checked ? Handshake.RequestToSend :
-                                     Handshake.RequestToSendXOnXOff;
-
-            /* Save DTR/RTS */
+            /* Save DTR/RTS.  */
             Settings.Port.Dtr = TransmitDTRCheckBox.Checked;
             Settings.Port.Rts = TransmitRTSCheckBox.Checked;
 
-            /* Write settings to XML */
+            /* Write settings to XML.  */
             Settings.WriteXml();
 
-            /* Close form */
-            Close();
+            /* Close form, reporting that settings were saved.  */
+            DialogResult = DialogResult.OK;
         }
 
-        /*----------------------------------------------------------
-         * WndProc
-         * 
-         * Blocks right-clicks on title bar and borders.
-        *---------------------------------------------------------*/
+        /* Ignore right-clicks on the title bar and borders (the system menu)
+           and double-clicks on the title bar (maximize); pass every other
+           message BUFFER on.  */
         protected override void WndProc(ref Message buffer)
         {
-            if (buffer.Msg != 0xA3)
+            if (!Main_Form.IsBlockedNonClientMessage(buffer.Msg))
                 base.WndProc(ref buffer);
         }
     }

@@ -28,8 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.AdvancedModeCheckBox = new System.Windows.Forms.CheckBox();
             this.FormGroupBox = new System.Windows.Forms.GroupBox();
+            this.TimestampsCheckBox = new System.Windows.Forms.CheckBox();
+            this.LogGroupBox = new System.Windows.Forms.GroupBox();
+            this.LogCheckBox = new System.Windows.Forms.CheckBox();
+            this.LogPathTextBox = new System.Windows.Forms.TextBox();
+            this.LogBrowseButton = new System.Windows.Forms.Button();
+            this.HighlightsButton = new System.Windows.Forms.Button();
             this.FormHeightTextBox = new System.Windows.Forms.TextBox();
             this.WidthLabel = new System.Windows.Forms.Label();
             this.HeightLabel = new System.Windows.Forms.Label();
@@ -43,47 +48,36 @@
             this.WordWrapCheckBox = new System.Windows.Forms.CheckBox();
             this.HexOutputCheckBox = new System.Windows.Forms.CheckBox();
             this.LocalEchoCheckBox = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.ColorGroupBox = new System.Windows.Forms.GroupBox();
             this.ReceiveColorPictureBox = new System.Windows.Forms.PictureBox();
             this.BackgroundColorPictureBox = new System.Windows.Forms.PictureBox();
             this.TransmitColorPictureBox = new System.Windows.Forms.PictureBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.ProgramGroupBox = new System.Windows.Forms.GroupBox();
             this.FontButton = new System.Windows.Forms.Button();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.FontGroupBox = new System.Windows.Forms.GroupBox();
             this.ExampleLabel = new System.Windows.Forms.Label();
             this.ShowWelcomeMessageCheckBox = new System.Windows.Forms.CheckBox();
             this.FormGroupBox.SuspendLayout();
+            this.LogGroupBox.SuspendLayout();
             this.RichTextBoxGroupBox.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.ColorGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ReceiveColorPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BackgroundColorPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TransmitColorPictureBox)).BeginInit();
-            this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
+            this.ProgramGroupBox.SuspendLayout();
+            this.FontGroupBox.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // AdvancedModeCheckBox
-            // 
-            this.AdvancedModeCheckBox.AutoSize = true;
-            this.AdvancedModeCheckBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AdvancedModeCheckBox.Location = new System.Drawing.Point(6, 37);
-            this.AdvancedModeCheckBox.Name = "AdvancedModeCheckBox";
-            this.AdvancedModeCheckBox.Size = new System.Drawing.Size(104, 17);
-            this.AdvancedModeCheckBox.TabIndex = 11;
-            this.AdvancedModeCheckBox.Text = "Advanced mode";
-            this.AdvancedModeCheckBox.UseVisualStyleBackColor = true;
             // 
             // FormGroupBox
             // 
             this.FormGroupBox.Controls.Add(this.FormHeightTextBox);
-            this.FormGroupBox.Controls.Add(this.AdvancedModeCheckBox);
             this.FormGroupBox.Controls.Add(this.WidthLabel);
             this.FormGroupBox.Controls.Add(this.HeightLabel);
             this.FormGroupBox.Controls.Add(this.FormWidthTextBox);
             this.FormGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormGroupBox.Location = new System.Drawing.Point(4, 32);
             this.FormGroupBox.Name = "FormGroupBox";
-            this.FormGroupBox.Size = new System.Drawing.Size(157, 62);
+            this.FormGroupBox.Size = new System.Drawing.Size(157, 40);
             this.FormGroupBox.TabIndex = 6;
             this.FormGroupBox.TabStop = false;
             this.FormGroupBox.Text = "Form";
@@ -169,10 +163,11 @@
             this.RichTextBoxGroupBox.Controls.Add(this.WordWrapCheckBox);
             this.RichTextBoxGroupBox.Controls.Add(this.HexOutputCheckBox);
             this.RichTextBoxGroupBox.Controls.Add(this.LocalEchoCheckBox);
+            this.RichTextBoxGroupBox.Controls.Add(this.TimestampsCheckBox);
             this.RichTextBoxGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextBoxGroupBox.Location = new System.Drawing.Point(4, 93);
+            this.RichTextBoxGroupBox.Location = new System.Drawing.Point(4, 71);
             this.RichTextBoxGroupBox.Name = "RichTextBoxGroupBox";
-            this.RichTextBoxGroupBox.Size = new System.Drawing.Size(157, 111);
+            this.RichTextBoxGroupBox.Size = new System.Drawing.Size(157, 134);
             this.RichTextBoxGroupBox.TabIndex = 13;
             this.RichTextBoxGroupBox.TabStop = false;
             this.RichTextBoxGroupBox.Text = "RichTextBox";
@@ -221,21 +216,86 @@
             this.LocalEchoCheckBox.Text = "Local echo";
             this.LocalEchoCheckBox.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
+            // TimestampsCheckBox
             // 
-            this.groupBox1.Controls.Add(this.ReceiveColorPictureBox);
-            this.groupBox1.Controls.Add(this.TransmitColorLabel);
-            this.groupBox1.Controls.Add(this.BackgroundColorPictureBox);
-            this.groupBox1.Controls.Add(this.TransmitColorPictureBox);
-            this.groupBox1.Controls.Add(this.BackgroundColorLabel);
-            this.groupBox1.Controls.Add(this.ReceiveColorLabel);
-            this.groupBox1.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(165, 1);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(150, 93);
-            this.groupBox1.TabIndex = 14;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Color";
+            this.TimestampsCheckBox.AutoSize = true;
+            this.TimestampsCheckBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TimestampsCheckBox.Location = new System.Drawing.Point(6, 111);
+            this.TimestampsCheckBox.Name = "TimestampsCheckBox";
+            this.TimestampsCheckBox.Size = new System.Drawing.Size(86, 17);
+            this.TimestampsCheckBox.TabIndex = 6;
+            this.TimestampsCheckBox.Text = "Timestamps";
+            this.TimestampsCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // LogGroupBox
+            // 
+            this.LogGroupBox.Controls.Add(this.LogCheckBox);
+            this.LogGroupBox.Controls.Add(this.LogPathTextBox);
+            this.LogGroupBox.Controls.Add(this.LogBrowseButton);
+            this.LogGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LogGroupBox.Location = new System.Drawing.Point(4, 207);
+            this.LogGroupBox.Name = "LogGroupBox";
+            this.LogGroupBox.Size = new System.Drawing.Size(311, 66);
+            this.LogGroupBox.TabIndex = 17;
+            this.LogGroupBox.TabStop = false;
+            this.LogGroupBox.Text = "Log";
+            // 
+            // LogCheckBox
+            // 
+            this.LogCheckBox.AutoSize = true;
+            this.LogCheckBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LogCheckBox.Location = new System.Drawing.Point(6, 17);
+            this.LogCheckBox.Name = "LogCheckBox";
+            this.LogCheckBox.Size = new System.Drawing.Size(134, 17);
+            this.LogCheckBox.TabIndex = 0;
+            this.LogCheckBox.Text = "Log output to file";
+            this.LogCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // LogPathTextBox
+            // 
+            this.LogPathTextBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LogPathTextBox.Location = new System.Drawing.Point(6, 40);
+            this.LogPathTextBox.Name = "LogPathTextBox";
+            this.LogPathTextBox.Size = new System.Drawing.Size(262, 20);
+            this.LogPathTextBox.TabIndex = 1;
+            // 
+            // LogBrowseButton
+            // 
+            this.LogBrowseButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LogBrowseButton.Location = new System.Drawing.Point(272, 39);
+            this.LogBrowseButton.Name = "LogBrowseButton";
+            this.LogBrowseButton.Size = new System.Drawing.Size(33, 22);
+            this.LogBrowseButton.TabIndex = 2;
+            this.LogBrowseButton.Text = "...";
+            this.LogBrowseButton.UseVisualStyleBackColor = true;
+            this.LogBrowseButton.Click += new System.EventHandler(this.LogBrowseButton_Click);
+            // 
+            // HighlightsButton
+            // 
+            this.HighlightsButton.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.HighlightsButton.Location = new System.Drawing.Point(165, 142);
+            this.HighlightsButton.Name = "HighlightsButton";
+            this.HighlightsButton.Size = new System.Drawing.Size(150, 23);
+            this.HighlightsButton.TabIndex = 16;
+            this.HighlightsButton.Text = "Highlights...";
+            this.HighlightsButton.UseVisualStyleBackColor = true;
+            this.HighlightsButton.Click += new System.EventHandler(this.HighlightsButton_Click);
+            // 
+            // ColorGroupBox
+            // 
+            this.ColorGroupBox.Controls.Add(this.ReceiveColorPictureBox);
+            this.ColorGroupBox.Controls.Add(this.TransmitColorLabel);
+            this.ColorGroupBox.Controls.Add(this.BackgroundColorPictureBox);
+            this.ColorGroupBox.Controls.Add(this.TransmitColorPictureBox);
+            this.ColorGroupBox.Controls.Add(this.BackgroundColorLabel);
+            this.ColorGroupBox.Controls.Add(this.ReceiveColorLabel);
+            this.ColorGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ColorGroupBox.Location = new System.Drawing.Point(165, 1);
+            this.ColorGroupBox.Name = "ColorGroupBox";
+            this.ColorGroupBox.Size = new System.Drawing.Size(150, 93);
+            this.ColorGroupBox.TabIndex = 14;
+            this.ColorGroupBox.TabStop = false;
+            this.ColorGroupBox.Text = "Color";
             // 
             // ReceiveColorPictureBox
             // 
@@ -270,16 +330,16 @@
             this.TransmitColorPictureBox.TabStop = false;
             this.TransmitColorPictureBox.Click += new System.EventHandler(this.TransmitColorButtonPictureBox_Click);
             // 
-            // groupBox2
+            // ProgramGroupBox
             // 
-            this.groupBox2.Controls.Add(this.ShowWelcomeMessageCheckBox);
-            this.groupBox2.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(4, 1);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(157, 34);
-            this.groupBox2.TabIndex = 15;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Program";
+            this.ProgramGroupBox.Controls.Add(this.ShowWelcomeMessageCheckBox);
+            this.ProgramGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ProgramGroupBox.Location = new System.Drawing.Point(4, 1);
+            this.ProgramGroupBox.Name = "ProgramGroupBox";
+            this.ProgramGroupBox.Size = new System.Drawing.Size(157, 34);
+            this.ProgramGroupBox.TabIndex = 15;
+            this.ProgramGroupBox.TabStop = false;
+            this.ProgramGroupBox.Text = "Program";
             // 
             // FontButton
             // 
@@ -292,23 +352,24 @@
             this.FontButton.UseVisualStyleBackColor = true;
             this.FontButton.Click += new System.EventHandler(this.FontButton_Click);
             // 
-            // groupBox3
+            // FontGroupBox
             // 
-            this.groupBox3.Controls.Add(this.FontButton);
-            this.groupBox3.Controls.Add(this.ExampleLabel);
-            this.groupBox3.Location = new System.Drawing.Point(165, 93);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(150, 45);
-            this.groupBox3.TabIndex = 16;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Font";
+            this.FontGroupBox.Controls.Add(this.FontButton);
+            this.FontGroupBox.Controls.Add(this.ExampleLabel);
+            this.FontGroupBox.Location = new System.Drawing.Point(165, 93);
+            this.FontGroupBox.Name = "FontGroupBox";
+            this.FontGroupBox.Size = new System.Drawing.Size(150, 45);
+            this.FontGroupBox.TabIndex = 16;
+            this.FontGroupBox.TabStop = false;
+            this.FontGroupBox.Text = "Font";
             // 
             // ExampleLabel
             // 
-            this.ExampleLabel.AutoSize = true;
-            this.ExampleLabel.Location = new System.Drawing.Point(6, 15);
+            this.ExampleLabel.AutoEllipsis = true;
+            this.ExampleLabel.Location = new System.Drawing.Point(6, 13);
             this.ExampleLabel.Name = "ExampleLabel";
-            this.ExampleLabel.Size = new System.Drawing.Size(47, 13);
+            this.ExampleLabel.Size = new System.Drawing.Size(100, 27);
+            this.ExampleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ExampleLabel.TabIndex = 0;
             this.ExampleLabel.Text = "Example";
             // 
@@ -327,10 +388,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(318, 207);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(318, 277);
+            this.Controls.Add(this.LogGroupBox);
+            this.Controls.Add(this.HighlightsButton);
+            this.Controls.Add(this.FontGroupBox);
+            this.Controls.Add(this.ProgramGroupBox);
+            this.Controls.Add(this.ColorGroupBox);
             this.Controls.Add(this.RichTextBoxGroupBox);
             this.Controls.Add(this.SaveSettingsButton);
             this.Controls.Add(this.FormGroupBox);
@@ -344,17 +407,19 @@
             this.Text = "Settings";
             this.FormGroupBox.ResumeLayout(false);
             this.FormGroupBox.PerformLayout();
+            this.LogGroupBox.ResumeLayout(false);
+            this.LogGroupBox.PerformLayout();
             this.RichTextBoxGroupBox.ResumeLayout(false);
             this.RichTextBoxGroupBox.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.ColorGroupBox.ResumeLayout(false);
+            this.ColorGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ReceiveColorPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BackgroundColorPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.TransmitColorPictureBox)).EndInit();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
+            this.ProgramGroupBox.ResumeLayout(false);
+            this.ProgramGroupBox.PerformLayout();
+            this.FontGroupBox.ResumeLayout(false);
+            this.FontGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -369,19 +434,24 @@
         private System.Windows.Forms.Label HeightLabel;
         private System.Windows.Forms.Label WidthLabel;
         private System.Windows.Forms.Button SaveSettingsButton;
-        private System.Windows.Forms.CheckBox AdvancedModeCheckBox;
         private System.Windows.Forms.GroupBox RichTextBoxGroupBox;
         private System.Windows.Forms.CheckBox ToggleScrollingCheckBox;
         private System.Windows.Forms.CheckBox WordWrapCheckBox;
         private System.Windows.Forms.CheckBox HexOutputCheckBox;
         private System.Windows.Forms.CheckBox LocalEchoCheckBox;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.CheckBox TimestampsCheckBox;
+        private System.Windows.Forms.GroupBox LogGroupBox;
+        private System.Windows.Forms.CheckBox LogCheckBox;
+        private System.Windows.Forms.TextBox LogPathTextBox;
+        private System.Windows.Forms.Button LogBrowseButton;
+        private System.Windows.Forms.Button HighlightsButton;
+        private System.Windows.Forms.GroupBox ColorGroupBox;
+        private System.Windows.Forms.GroupBox ProgramGroupBox;
         private System.Windows.Forms.PictureBox BackgroundColorPictureBox;
         private System.Windows.Forms.PictureBox TransmitColorPictureBox;
         private System.Windows.Forms.PictureBox ReceiveColorPictureBox;
         private System.Windows.Forms.Button FontButton;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox FontGroupBox;
         private System.Windows.Forms.Label ExampleLabel;
         private System.Windows.Forms.CheckBox ShowWelcomeMessageCheckBox;
     }

@@ -1,41 +1,43 @@
-﻿using System.Xml;
+﻿/* Xml.cs -- reading and writing config.xml, the settings file kept next to
+   4Term.exe.  Values are addressed by paths such as "Port/BaudRate".
+
+   Copyright (C) 2025-2026 NoGraphic999.  This file is part of 4Term, released
+   under the MIT License; see the LICENSE file for details.  */
+
+using System.Xml;
 using System.Windows.Forms;
 
 namespace _4Term
 {
+    /* Access to the configuration file.  */
     public class Xml
     {
-        /*----------------------------------------------------------
-         * Class variables
-         * -------------------------------------------------------*/
+        /* Full path of the configuration file, next to the executable rather
+           than in the working directory.  */
+        public static string FileName = System.IO.Path.Combine(
+            System.AppDomain.CurrentDomain.BaseDirectory, "config.xml");
 
-        /* XML configuration filename */
-        public static string FileName = "config.xml";
+        /* Error message from the last LoadFile if the file exists but could
+           not be parsed, otherwise null.  */
+        public static string LoadError = null;
 
-        /* Loaded XML document instance */
+        /* The loaded document, or null when no file is loaded.  */
         public static System.Xml.XmlDocument XmlFile = null;
 
-        /* Root element of the loaded XML document */
+        /* Root element of XmlFile, or null when no file is loaded.  */
         public static System.Xml.XmlElement RootElement = null;
 
-        /*----------------------------------------------------------
-         * Class Functions
-         * -------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * CreateNew
-         *
-         * Prompts the user to create a new XML configuration file
-         * if it doesn't exist. Returns true if the file was created.
-         *---------------------------------------------------------*/
-        public static bool CreateNew()
+        /* Create an empty configuration file if none exists, asking the user
+           first when ASK is true.  Return true if the file exists afterwards,
+           or false if the user declined or the file could not be written.  */
+        public static bool CreateNew(bool ask = true)
         {
-            /* Check if file exists */
+            /* Nothing to do if the file exists.  */
             if (System.IO.File.Exists(FileName))
                 return true;
 
-            /* Show message box */
-            DialogResult result = MessageBox.Show(
+            /* Ask the user, unless ASK is false.  */
+            DialogResult result = !ask ? DialogResult.Yes : MessageBox.Show(
                 "The configuration file does not exist. Would you like to create a new configuration file?",
                 "Create New Configuration",
                 MessageBoxButtons.YesNo,
@@ -47,15 +49,15 @@ namespace _4Term
                 {
                     XmlFile = new System.Xml.XmlDocument();
 
-                    /* Create XML declaration explicitly */
+                    /* Write the XML declaration explicitly.  */
                     System.Xml.XmlDeclaration xmlDeclaration = XmlFile.CreateXmlDeclaration("1.0", "UTF-8", null);
                     XmlFile.AppendChild(xmlDeclaration);
 
-                    /* Create <Settings> root element */
+                    /* Create the <Settings> root element.  */
                     System.Xml.XmlElement root = XmlFile.CreateElement("Settings");
                     XmlFile.AppendChild(root);
 
-                    /* Save the XML document */
+                    /* Save the XML document.  */
                     XmlFile.Save(FileName);
 
                     RootElement = root;
@@ -70,208 +72,119 @@ namespace _4Term
             return false;
         }
 
-        /*----------------------------------------------------------
-         * LoadFile
-         * 
-         * Loads XML file into memory.
-         * Returns true if successful.
-         *---------------------------------------------------------*/
+        /* Load the configuration file into XmlFile.  Return true on success.
+           Return false if the file does not exist, or if it cannot be parsed
+           or has no root element, in which case LoadError says why.  */
         public static bool LoadFile()
         {
-            /* Check if file exists */
+            LoadError = null;
+
+            /* A missing file is not an error.  */
             if (!System.IO.File.Exists(FileName))
                 return false;
 
-            /* Load XML file into the class-level XmlFile */
-            XmlFile = new System.Xml.XmlDocument();
-            XmlFile.Load(FileName);
+            /* Parse the file into XmlFile.  */
+            try
+            {
+                XmlFile = new System.Xml.XmlDocument();
+                XmlFile.Load(FileName);
+            }
+            catch (System.Exception ex)
+            {
+                XmlFile = null;
+                RootElement = null;
+                LoadError = ex.Message;
+                return false;
+            }
 
-            /* Optionally, you can verify the root element exists */
+            /* Verify the root element exists.  */
             RootElement = XmlFile.DocumentElement;
             if (RootElement == null)
+            {
+                LoadError = "The file has no root element.";
                 return false;
+            }
 
-            /* Return true if load succeeded and root element is found */
+            /* Loaded, with a root element.  */
             return true;
         }
 
-        /*----------------------------------------------------------
-         * ReadBoolParm
-         * 
-         * Reads a bool from loaded XML at XPath.
-         * Returns false if not found or invalid.
-         *---------------------------------------------------------*/
-        public static bool ReadBoolParm(string xpath)
+        /* Return the boolean at XPATH, or FALLBACK if it is missing or not a
+           valid boolean.  */
+        public static bool ReadBoolParm(string xpath, bool fallback = false)
         {
-            /* Find the boolean node */
-            var BoolNode = RootElement.SelectSingleNode(xpath);
-            if (BoolNode != null && bool.TryParse(BoolNode.InnerText, out bool result))
-            {
-                return result;
-            }
-
-            /* Return false if node not found or value is not a valid bool */
-            return false;
+            string text = ReadStringParm(xpath);
+            return text != null && bool.TryParse(text, out bool result) ? result : fallback;
         }
 
-        /*----------------------------------------------------------
-         * ReadIntParm
-         * 
-         * Reads an int from loaded XML at XPath.
-         * Returns -1 if not found or invalid.
-         *---------------------------------------------------------*/
-        public static int ReadIntParm(string xpath)
+        /* Return the integer at XPATH, or FALLBACK if it is missing or not a
+           valid integer.  */
+        public static int ReadIntParm(string xpath, int fallback = -1)
         {
-            /* Find the integer node */
-            var IntNode = RootElement.SelectSingleNode(xpath);
-            if (IntNode != null && int.TryParse(IntNode.InnerText, out int result))
-            {
-                return result;
-            }
-
-            /* Return -1 if node not found or value is not a valid int */
-            return -1;
+            string text = ReadStringParm(xpath);
+            return text != null && int.TryParse(text, out int result) ? result : fallback;
         }
 
-        /*----------------------------------------------------------
-         * ReadStringParm
-         * 
-         * Reads a string from loaded XML at XPath.
-         * Returns null if not found.
-         *---------------------------------------------------------*/
-        public static string ReadStringParm(string xpath)
+        /* Return the number at XPATH, written with a dot as decimal separator,
+           or FALLBACK if it is missing or invalid.  */
+        public static float ReadFloatParm(string xpath, float fallback)
         {
-            /* Find the string node */
-            var StringNode = RootElement.SelectSingleNode(xpath);
-            if (StringNode != null)
-            {
-                return StringNode.InnerText;
-            }
-
-            /* Return null if node not found */
-            return null;
+            string text = ReadStringParm(xpath);
+            return text != null && float.TryParse(text,
+                       System.Globalization.NumberStyles.Float,
+                       System.Globalization.CultureInfo.InvariantCulture, out float result)
+                ? result : fallback;
         }
 
-        /*----------------------------------------------------------
-         * WriteBoolParm
-         * 
-         * Writes a bool to loaded XML node at XPath.
-         * Returns true if successful.
-         *---------------------------------------------------------*/
-        public static bool WriteBoolParm(string xpath, bool value)
+        /* Return the text at XPATH, or FALLBACK if the node is missing.  */
+        public static string ReadStringParm(string xpath, string fallback = null)
         {
-            /* Split the XPath into individual node names */
-            string[] parts = xpath.Split('/');
-
-            /* Start from the root element */
-            System.Xml.XmlNode current = RootElement;
-
-            /* Traverse or create each node along the XPath */
-            foreach (string part in parts)
-            {
-                var next = current.SelectSingleNode(part);
-
-                /* If node doesn't exist, create it */
-                if (next == null)
-                {
-                    next = XmlFile.CreateElement(part);
-                    current.AppendChild(next);
-                }
-
-                /* Move to the next node */
-                current = next;
-            }
-
-            /* Set the node's inner text to the bool value */
-            current.InnerText = value.ToString().ToLower();
-
-            /* Indicate success */
-            return true;
+            var node = RootElement.SelectSingleNode(xpath);
+            return node != null ? node.InnerText : fallback;
         }
 
-        /*----------------------------------------------------------
-         * WriteIntParm
-         * 
-         * Writes an int to loaded XML node at XPath.
-         * Returns true if successful.
-         *---------------------------------------------------------*/
-        public static bool WriteIntParm(string xpath, int value)
-        {
-            /* Split the XPath into individual node names */
-            string[] parts = xpath.Split('/');
+        /* Store VALUE at XPATH as "true" or "false", creating missing nodes on
+           the way.  Always return true.  */
+        public static bool WriteBoolParm(string xpath, bool value) =>
+            WriteStringParm(xpath, value.ToString().ToLower());
 
-            /* Start from the root element */
-            System.Xml.XmlNode current = RootElement;
+        /* Store the integer VALUE at XPATH, creating missing nodes on the way.
+           Always return true.  */
+        public static bool WriteIntParm(string xpath, int value) =>
+            WriteStringParm(xpath, value.ToString());
 
-            /* Traverse or create each node along the XPath */
-            foreach (string part in parts)
-            {
-                var next = current.SelectSingleNode(part);
+        /* Store the number VALUE at XPATH with a dot as decimal separator.
+           Always return true.  */
+        public static bool WriteFloatParm(string xpath, float value) =>
+            WriteStringParm(xpath, value.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
-                /* If node doesn't exist, create it */
-                if (next == null)
-                {
-                    next = XmlFile.CreateElement(part);
-                    current.AppendChild(next);
-                }
-
-                /* Move to the next node */
-                current = next;
-            }
-
-            /* Set the node's inner text to the intvalue */
-            current.InnerText = value.ToString();
-
-            /* Indicate success */
-            return true;
-        }
-
-        /*----------------------------------------------------------
-         * WriteStringParm
-         * 
-         * Writes a string to loaded XML node at XPath.
-         * Returns true if successful.
-         *---------------------------------------------------------*/
+        /* Store the text VALUE at XPATH, creating missing nodes on the way.
+           Always return true.  */
         public static bool WriteStringParm(string xpath, string value)
         {
-            /* Split the XPath into individual node names */
-            string[] parts = xpath.Split('/');
-
-            /* Start from the root element */
+            /* Walk down the path from the root, creating each missing
+               node.  */
             System.Xml.XmlNode current = RootElement;
-
-            /* Traverse or create each node along the XPath */
-            foreach (string part in parts)
+            foreach (string part in xpath.Split('/'))
             {
                 var next = current.SelectSingleNode(part);
-
-                /* If node doesn't exist, create it */
                 if (next == null)
                 {
                     next = XmlFile.CreateElement(part);
                     current.AppendChild(next);
                 }
-
-                /* Move to the next node */
                 current = next;
             }
 
-            /* Set the node's inner text to the string value */
             current.InnerText = value;
-
-            /* Indicate success */
             return true;
         }
 
-         /*----------------------------------------------------------
-	     * CloseFile
-	     *
-	     * Saves the current XML document to disk and then clears it
-	     * from memory to release resources.
-	     *---------------------------------------------------------*/
+        /* Save the loaded document to the configuration file, indented, and
+            release it.  */
 	    public static void CloseFile()
 	    {
-	        // Save the XML file using XmlWriter with custom settings
+            /* Write the file indented, keeping the XML declaration.  */
 	        using (var writer = System.Xml.XmlWriter.Create(FileName, new System.Xml.XmlWriterSettings
 	        {
 		    Indent = true,
@@ -282,7 +195,7 @@ namespace _4Term
 		          XmlFile.Save(writer);
 		      }
 
-	        // Clear references from memory
+            /* Release the document.  */
 	        XmlFile = null;
 	        RootElement = null;
 	    }

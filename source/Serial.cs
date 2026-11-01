@@ -1,321 +1,392 @@
-﻿using System;
+﻿/* Serial.cs -- the serial port connection: opening and closing the port, a
+   background thread that reads incoming data, sending, and the DTR and RTS
+   lines.
+
+   Copyright (C) 2025-2026 NoGraphic999.  This file is part of 4Term, released
+   under the MIT License; see the LICENSE file for details.  */
+
+using System;
+using System.IO;
 using System.Threading;
 
 namespace _4Term
 {
+    /* The serial port connection, shared through Instance.  */
     public sealed class Serial
     {
-        /*----------------------------------------------------------
-         * Constants
-         * -------------------------------------------------------*/
+        /* Timing constants, in milliseconds.  */
 
-        /* Maximum wait time for read/write operations*/
-        private const int ReadWriteTimeout = 10;
+        /* How long a read waits for the first byte before the reader checks
+           the port again.  A read returns as soon as any byte arrives, so this
+           adds no delay.  */
+        private const int ReadTimeout = 50;
 
-        /* Sleep duration when port is unavailable */
-        private const int LoopPreventDelay = 100;
+        /* Longest wait for a write, which covers a device holding off with
+           handshaking.  */
+        private const int WriteTimeout = 250;
 
-        /* Pause after read timeouts */
-        private const int TimeoutDelay = 50;
+        /* How often an idle reader checks that the port still exists, to
+           notice a USB unplug.  */
+        private const int PortCheckInterval = 500;
 
-        /*----------------------------------------------------------
-         * Class variables
-         * -------------------------------------------------------*/
+        /* Longest wait for the reading thread to finish when the port
+           closes.  */
+        private const int ThreadJoinTimeout = 1000;
 
-        /* Core serial port communication handler. */
+        /* The underlying serial port.  */
         private readonly System.IO.Ports.SerialPort SerialPortInstance;
 
-        /* Provides global access to the serial port manager. */
+        /* The one Serial object, shared by the whole program.  */
         public static Serial Instance => instance;
 
-        /* The singleton instance of Serial class. */
+        /* Backing field for Instance.  */
         static readonly Serial instance = new Serial();
         
-        /* Gets the current open/closed state of the serial port. */
+        /* True while the port is open.  */
         public bool IsOpen => SerialPortInstance.IsOpen;
 
-        /* Control flag for serial port reading operations. */
+        /* True while the reading thread should keep running; clearing it asks
+           the thread to stop.  */
         private volatile bool ReadThreadFlag = false;      
 
-        /*----------------------------------------------------------
-         * Event Handlers
-         * -------------------------------------------------------*/
+        /* Events.  */
 
-        /* Defines the signature for serial port notification events. */
-        public delegate void EventHandler(string param);
+        /* Signature of the Serial events; PARAM is the status text or the
+           received data.  */
+        public delegate void SerialEventHandler(string param);
 
-        /* Event triggered when serial port status changes. */
-        public event EventHandler StatusChanged;
+        /* Raised with a status line when the port opens, closes or fails.  */
+        public event SerialEventHandler StatusChanged;
 
-        /* Event triggered when new data arrives from serial port.*/
-        public event EventHandler DataReceived;
+        /* Raised on the reading thread when data arrives.  The string carries
+           raw bytes, one char per byte (0-255), not decoded text.  */
+        public event SerialEventHandler DataReceived;
 
-        /*----------------------------------------------------------
-         * Threads
-         * -------------------------------------------------------*/
+        /* Latin-1 maps every byte 0-255 to the char with the same code, so
+           received data reaches the UI without losing bytes 0x80 and
+           above.  */
+        public static System.Text.Encoding RawEncoding => System.Text.Encoding.GetEncoding(28591);
 
-        /* Background thread for continuous data reading. */
+        /* The thread running ReadThread, or null when the port is closed.  */
         private Thread ReadThreadInstance = null;         
 
-        /*----------------------------------------------------------
-         * Class Functions
-         * -------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * Serial (Constructor)
-         * 
-         * Private constructor for singleton Serial class instance.
-         *---------------------------------------------------------*/
+        /* Create the one Serial object.  The port uses RawEncoding so that no
+           byte is altered by text conversion.  */
         private Serial()
         {
-            SerialPortInstance = new System.IO.Ports.SerialPort();
+            SerialPortInstance = new System.IO.Ports.SerialPort
+            {
+                Encoding = RawEncoding
+            };
         }
 
-        /*----------------------------------------------------------
-         * Open
-         * 
-         * Opens and configures the serial port connection with 
-         * settings from application configuration.
-         *---------------------------------------------------------*/
+        /* Open the port with the settings in Settings.Port and start the
+           reading thread.  A port that is already open is closed first.  The
+           result, or the error, is reported through StatusChanged.  */
         public void Open()
         {
-            /* Check if serial port is open, if not close serial port */
+            /* Make sure no previous reading thread or connection is left
+               over.  */
+            StopReadThread();
             if (SerialPortInstance.IsOpen)
-                SerialPortInstance.Close();
-            
+                ClosePortQuietly();
+
             try
             {
-                /* Configure the serial port instance with settings from the application configuration */
+                /* Apply the port settings.  */
                 SerialPortInstance.PortName = Settings.Port.PortName;
                 SerialPortInstance.BaudRate = Settings.Port.BaudRate;
-                SerialPortInstance.Parity = Settings.Port.Parity; 
+                SerialPortInstance.Parity = Settings.Port.Parity;
                 SerialPortInstance.DataBits = Settings.Port.DataBits;
                 SerialPortInstance.StopBits = Settings.Port.StopBits;
                 SerialPortInstance.Handshake = Settings.Port.Handshake;
-                SerialPortInstance.ReadTimeout = ReadWriteTimeout;
-                SerialPortInstance.WriteTimeout = ReadWriteTimeout;
+                SerialPortInstance.ReadTimeout = ReadTimeout;
+                SerialPortInstance.WriteTimeout = WriteTimeout;
                 SerialPortInstance.DtrEnable = Settings.Port.Dtr;
-                SerialPortInstance.RtsEnable = Settings.Port.Rts;
 
-                /* Open serial port */
+                /* Under RTS/CTS handshaking the handshake drives RTS, and
+                   .NET refuses to have it set by hand.  */
+                if (!RtsUsedByHandshake)
+                    SerialPortInstance.RtsEnable = Settings.Port.Rts;
+
+                /* Open the port.  */
                 SerialPortInstance.Open();
 
-                /* Start read thread */
-                try
-                {
-                    ReadThreadFlag = true;
-                    ReadThreadInstance = new Thread(ReadThread);
-                    ReadThreadInstance.Start();
-                }
+                /* Work around a .NET Framework bug: after a USB serial device
+                   is unplugged, the stream's finalizer fails on the finalizer
+                   thread and ends the whole program.  The stream is closed
+                   explicitly by Close instead, which tolerates the missing
+                   device.  */
+                GC.SuppressFinalize(SerialPortInstance.BaseStream);
 
-                /*This is a generic catch block that catches any other exceptions that may occur.*/
-                catch (Exception ex)
+                /* Start the reading thread.  As a background thread it never
+                   keeps the process alive.  */
+                ReadThreadFlag = true;
+                ReadThreadInstance = new Thread(ReadThread)
                 {
-                    ReadThreadFlag = false;
-                    ReadThreadInstance = null;
-                    SerialPortInstance.Close();
-                    StatusChanged?.Invoke($"Error: {ex.Message}");                 
-                    return;
-                }
+                    IsBackground = true,
+                    Name = "4Term serial reader"
+                };
+                ReadThreadInstance.Start();
 
-                /* Set program status when connected to serial port */
+                /* Report the connection, for example "Connected to COM3:
+                   115200, 8N1, no handshake".  */
                 string Parity = SerialPortInstance.Parity.ToString().Substring(0, 1);
+                string StopBits = SerialPortInstance.StopBits == System.IO.Ports.StopBits.OnePointFive
+                    ? "1.5"
+                    : ((int)SerialPortInstance.StopBits).ToString();
                 string Handshake = SerialPortInstance.Handshake.ToString();
                 if (SerialPortInstance.Handshake == System.IO.Ports.Handshake.None)
                     Handshake = "no handshake";
 
                 StatusChanged?.Invoke($"Connected to {SerialPortInstance.PortName}: " +
                     $"{SerialPortInstance.BaudRate}, " +
-                    $"{SerialPortInstance.DataBits}{Parity}{(int)SerialPortInstance.StopBits}, " +
+                    $"{SerialPortInstance.DataBits}{Parity}{StopBits}, " +
                     $"{Handshake}");
             }
 
-            /*This is a generic catch block that catches any other exceptions that may occur.*/
-            catch (Exception ex)            
-            { 
+            /* Opening failed: clean up and report the error.  */
+            catch (Exception ex)
+            {
+                ReadThreadFlag = false;
+                ReadThreadInstance = null;
+                ClosePortQuietly();
                 StatusChanged?.Invoke($"Error: {ex.Message}");
-            }       
+            }
         }
 
-        /*----------------------------------------------------------
-         * ReadThread
-         * 
-         * Background thread for continuous serial port data reading.
-         *---------------------------------------------------------*/
+        /* Body of the reading thread.  Block in Read until bytes arrive, so
+           data is handled within a millisecond or two with no CPU use while
+           idle, and pass each chunk to DataReceived.
+
+           Any port failure, including a USB unplug, counts as a disconnect:
+           the port is closed so that IsOpen becomes false and auto-connect can
+           reopen it.  */
         private void ReadThread()
         {
-            /* Read while enabled and port is available */
-            while (ReadThreadFlag && SerialPortInstance != null)         
+            int lastPortCheck = Environment.TickCount;
+            byte[] buffer = new byte[4096];
+
+            while (ReadThreadFlag)
             {
-                /* Only proceed if port is open and operational */
-                if (SerialPortInstance.IsOpen)            
+                try
                 {
+                    /* The port was closed underneath the thread.  */
+                    if (!SerialPortInstance.IsOpen)
+                    {
+                        if (ReadThreadFlag)
+                        {
+                            ReadThreadFlag = false;
+                            StatusChanged?.Invoke("Disconnected");
+                        }
+                        break;
+                    }
+
+                    /* Wait for data; Read returns as soon as any bytes
+                       arrive.  */
+                    int count = 0;
+                    bool timedOut = false;
                     try
                     {
-                        /* Read all immediately available data */
-                        string serialIn = SerialPortInstance.ReadExisting();
-
-                        /* Process non-empty data */
-                        if (!string.IsNullOrEmpty(serialIn))
-                        {
-                            /* Notify subscribers of new data */
-                            DataReceived?.Invoke(serialIn);                            
-                        }
+                        count = SerialPortInstance.BaseStream.Read(buffer, 0, buffer.Length);
                     }
-
-                    /* Handles serial port timeout exceptions during read operations. */
-                    catch (TimeoutException ex)
+                    catch (TimeoutException)
                     {
-                        StatusChanged?.Invoke($"Timeout: {ex.Message}");
-                        Thread.Sleep(TimeoutDelay);
+                        timedOut = true;
                     }
 
-                    /* This is a generic catch block that catches any other exceptions that may occur. */
-                    catch (Exception ex)
-                    {                        
-                        StatusChanged?.Invoke($"Error: {ex.Message}");
-                        ReadThreadFlag = false;
+                    /* Pass the data on, one char per byte.  */
+                    if (count > 0)
+                    {
+                        DataReceived?.Invoke(RawEncoding.GetString(buffer, 0, count));
+                        continue;
                     }
-                    
+
+                    /* Nothing read.  A read that returns nothing at once,
+                       which some drivers do once the device is gone, must
+                       not make the loop spin.  */
+                    if (!timedOut)
+                        Thread.Sleep(ReadTimeout);
+
+                    /* Idle: now and then, check that the port still
+                       exists.  */
+                    if (unchecked(Environment.TickCount - lastPortCheck) >= PortCheckInterval)
+                    {
+                        lastPortCheck = Environment.TickCount;
+                        if (!PortStillPresent(SerialPortInstance.PortName))
+                            throw new IOException($"{SerialPortInstance.PortName} was removed");
+                    }
                 }
 
-                else
+                /* Any failure while reading ends the connection.  */
+                catch (Exception ex)
                 {
-                    /* Prevent tight loop when no port available */
-                    Thread.Sleep(LoopPreventDelay);
+                    /* Expected while Close is shutting the port down.  */
+                    if (!ReadThreadFlag)
+                        break;
+
+                    ReadThreadFlag = false;
+                    ClosePortQuietly();
+                    StatusChanged?.Invoke($"Error: {ex.Message}");
                 }
             }
         }
 
-        /*----------------------------------------------------------
-         * Send
-         * 
-         * Sends data through the serial port with configurable line 
-         * ending.
-         *---------------------------------------------------------*/
+        /* Send DATA followed by the line ending chosen in the settings (none,
+           CR, LF or CR LF), encoded as UTF-8.  Return the line ending that was
+           added, or null if nothing could be sent; the reason is then reported
+           through StatusChanged.  A write timeout keeps the connection; any
+           other failure closes it.  */
         public string Send(string data)
         {
             string LineEnding = "";
 
-            /* Determine which line ending to append based on user settings */
+            /* Choose the line ending from the settings.  */
             switch (Settings.Port.Append)
             {
-                /* Carriage Return */
+                /* Carriage return.  */
                 case Settings.Port.AppendType.AppendCR:
                     LineEnding = "\r";
                     break;
 
-                /* Line Feed */
+                /* Line feed.  */
                 case Settings.Port.AppendType.AppendLF:
                     LineEnding = "\n";
                     break;
 
-                /* Carriage Return + Line Feed */
+                /* Carriage return and line feed.  */
                 case Settings.Port.AppendType.AppendCRLF:
                     LineEnding = "\r\n";
                     break;
             }
 
-            /* Send the data with the selected line ending via the serial port */
-            SerialPortInstance.Write(data + LineEnding);
-
-            /* Return the appended line ending so the caller can use/display it */
-            return LineEnding;
-        }
-
-        /*----------------------------------------------------------
-         * Close
-         * 
-         * Gracefully shuts down serial port connection and reading thread.
-         *---------------------------------------------------------*/
-        public void Close()
-        {
-            /* Signal the reading thread to stop */
-            ReadThreadFlag = false;
+            if (!SerialPortInstance.IsOpen)
+            {
+                StatusChanged?.Invoke("Error: The serial port is not open");
+                return null;
+            }
 
             try
             {
-                /* Check if thread instance exists and is alive */
-                if (ReadThreadInstance?.IsAlive == true)
-                {
-                    /* Graceful shutdown */
-                    if (!ReadThreadInstance.Join(2000))
-                    {
-                        /* Cooperative interruption */
-                        ReadThreadInstance.Interrupt();
-
-                        /* Forced termination */
-                        if (!ReadThreadInstance.Join(500))
-                            ReadThreadInstance.Abort(); 
-                    }
-                }
-
-                /* Clean up thread reference */
-                ReadThreadInstance = null;
-
-                /* Clear serial port buffers if port is open */
-                if (SerialPortInstance.IsOpen)
-                {
-                    /* Discard all buffered data */
-                    SerialPortInstance.DiscardInBuffer();
-                    SerialPortInstance.DiscardOutBuffer();
-
-                    /* Close the port */
-                    SerialPortInstance.Close();
-                }
-
-                StatusChanged?.Invoke("Disconnected");
+                /* Send DATA and the line ending as UTF-8.  */
+                byte[] bytes = System.Text.Encoding.UTF8.GetBytes(data + LineEnding);
+                SerialPortInstance.Write(bytes, 0, bytes.Length);
             }
 
-            /* Occurs when the reading thread is forcibly terminated via Thread.Interrupt().*/
-            catch (ThreadInterruptedException)
+            /* The device is not accepting data, for example because
+               handshaking holds it off; keep the connection.  */
+            catch (TimeoutException)
             {
-                StatusChanged?.Invoke("Warning: Reading thread was forcefully terminated");
+                StatusChanged?.Invoke("Error: Write timeout, device is not accepting data");
+                return null;
             }
 
-            /* This is a generic catch block that catches any other exceptions that may occur. */
+            /* Port failure, for example a USB unplug: treat it as a
+               disconnect.  */
             catch (Exception ex)
             {
+                Close();
                 StatusChanged?.Invoke($"Error: {ex.Message}");
-            } 
+                return null;
+            }
+
+            /* Return the line ending so the caller can show it.  */
+            return LineEnding;
         }
 
-        /*----------------------------------------------------------
-         * SetDtr
-         * 
-         * Controls the Data Terminal Ready (DTR) signal state.
-         * 
-         * Safety:
-         * - Only operates when port exists and is open
-         * - No effect if port is not available
-         * 
-         * Typical Usage:
-         * - Flow control handshaking
-         * - Device reset/wakeup signals
-         *---------------------------------------------------------*/
+        /* Stop the reading thread, close the port and report
+           "Disconnected".  */
+        public void Close()
+        {
+            StopReadThread();
+            ClosePortQuietly();
+            StatusChanged?.Invoke("Disconnected");
+        }
+
+        /* Ask the reading thread to stop and wait up to ThreadJoinTimeout for
+           it to finish.  The thread blocks for at most ReadTimeout and its
+           handlers never wait for the UI, so it normally ends at once; if it
+           is still running, closing the port ends it.  */
+        private void StopReadThread()
+        {
+            ReadThreadFlag = false;
+
+            Thread thread = ReadThreadInstance;
+            if (thread != null && thread.IsAlive && thread != Thread.CurrentThread)
+                thread.Join(ThreadJoinTimeout);
+
+            ReadThreadInstance = null;
+        }
+
+        /* Discard the buffers and close the port, ignoring errors from a
+           device that has already gone away.  */
+        private void ClosePortQuietly()
+        {
+            try
+            {
+                if (SerialPortInstance.IsOpen)
+                {
+                    SerialPortInstance.DiscardInBuffer();
+                    SerialPortInstance.DiscardOutBuffer();
+                }
+            }
+            catch { }
+
+            try
+            {
+                SerialPortInstance.Close();
+            }
+            catch { }
+        }
+
+        /* Return true if the system still lists the port PORTNAME.  Tolerate
+           the known GetPortNames quirk of extra characters after the name, and
+           assume the port is present if the list cannot be read.  */
+        private static bool PortStillPresent(string portName)
+        {
+            try
+            {
+                foreach (string name in System.IO.Ports.SerialPort.GetPortNames())
+                {
+                    if (name.StartsWith(portName, StringComparison.OrdinalIgnoreCase) &&
+                        (name.Length == portName.Length || !char.IsDigit(name[portName.Length])))
+                        return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+
+        /* True if the handshake setting of the port lets RTS/CTS
+           handshaking drive the RTS line, so that it cannot be set by
+           hand.  */
+        public bool RtsUsedByHandshake =>
+            SerialPortInstance.Handshake == System.IO.Ports.Handshake.RequestToSend ||
+            SerialPortInstance.Handshake == System.IO.Ports.Handshake.RequestToSendXOnXOff;
+
+        /* Set the DTR line to ENABLED.  Do nothing if the port is not open.
+           DTR is often used to reset or wake a device, and some USB boards
+           only send output while it is on.  */
         public void SetDtr(bool enabled)
         {
-            if (SerialPortInstance != null && SerialPortInstance.IsOpen)
+            if (SerialPortInstance.IsOpen)
                 SerialPortInstance.DtrEnable = enabled;
         }
 
-        /*----------------------------------------------------------
-         * SetRts
-         * 
-         * Controls the Request to Send (RTS) signal state.
-         * 
-         * Safety:
-         * - Only operates when port exists and is open
-         * - No effect if port is not available
-         * 
-         * Typical Usage:
-         * - Hardware flow control
-         * - Half-duplex communication control
-         *---------------------------------------------------------*/
-        public void SetRts(bool enabled)
+        /* Set the RTS line to ENABLED.  Return false, changing nothing, if
+           the port is not open or RTS/CTS handshaking drives the line.  RTS
+           is used for hardware flow control, and on many boards to reset the
+           device or select its boot mode.  */
+        public bool SetRts(bool enabled)
         {
-            if (SerialPortInstance != null && SerialPortInstance.IsOpen)
-                SerialPortInstance.RtsEnable = enabled;
+            if (!SerialPortInstance.IsOpen || RtsUsedByHandshake)
+                return false;
+
+            SerialPortInstance.RtsEnable = enabled;
+            return true;
         }
     }
 }

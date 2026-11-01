@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main_Form));
             this.MenuStrip = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NewPortStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PortOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ScanCOMsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,7 +46,7 @@
             this.OpenConfiginiToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.EditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.UndoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.CutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,31 +57,15 @@
             this.SelectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.ClearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.formatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FormatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.WordWrapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToggleScrollingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.MacroModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AdvancedModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.M1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.M1SetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.M1ToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
-            this.M2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.M2SetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.M2ToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
-            this.M3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.M3SetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.M3ToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
-            this.M4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.M4SetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.M4ToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
-            this.M5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.M5SetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.M5ToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
             this.COMBox = new System.Windows.Forms.GroupBox();
             this.TXPictureBox = new System.Windows.Forms.PictureBox();
             this.RXPictureBox = new System.Windows.Forms.PictureBox();
@@ -120,7 +104,7 @@
             this.MacroButton3 = new System.Windows.Forms.Button();
             this.MacroButton2 = new System.Windows.Forms.Button();
             this.SwapButton = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.TransmitGroupBox = new System.Windows.Forms.GroupBox();
             this.NonePictureBox = new System.Windows.Forms.PictureBox();
             this.CRPictureBox = new System.Windows.Forms.PictureBox();
             this.LFPictureBox = new System.Windows.Forms.PictureBox();
@@ -129,16 +113,6 @@
             this.ComboBox = new System.Windows.Forms.ComboBox();
             this.SendButton = new System.Windows.Forms.Button();
             this.RichTextBox = new System.Windows.Forms.RichTextBox();
-            this.MacroSetPanel = new System.Windows.Forms.Panel();
-            this.MacroSetGroupBox = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.ProgButton = new System.Windows.Forms.Button();
-            this.PageLabel = new System.Windows.Forms.Label();
-            this.PageBox = new System.Windows.Forms.TextBox();
-            this.MacroLabel = new System.Windows.Forms.Label();
-            this.MacroTextLabel = new System.Windows.Forms.Label();
-            this.MacroBox = new System.Windows.Forms.TextBox();
-            this.MacroTextBox = new System.Windows.Forms.TextBox();
             this.MenuStrip.SuspendLayout();
             this.COMBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TXPictureBox)).BeginInit();
@@ -148,37 +122,30 @@
             ((System.ComponentModel.ISupportInitialize)(this.DTRPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SerialPictureBox)).BeginInit();
             this.MacrosGroupBox.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.TransmitGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NonePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CRPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LFPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CRLFPictureBox)).BeginInit();
-            this.MacroSetPanel.SuspendLayout();
-            this.MacroSetGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // MenuStrip
             // 
             this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.editToolStripMenuItem,
-            this.formatToolStripMenuItem,
-            this.viewToolStripMenuItem,
-            this.helpToolStripMenuItem,
-            this.M1ToolStripMenuItem,
-            this.M2ToolStripMenuItem,
-            this.M3ToolStripMenuItem,
-            this.M4ToolStripMenuItem,
-            this.M5ToolStripMenuItem});
+            this.FileToolStripMenuItem,
+            this.EditToolStripMenuItem,
+            this.FormatToolStripMenuItem,
+            this.ViewToolStripMenuItem,
+            this.HelpToolStripMenuItem});
             this.MenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip.Name = "MenuStrip";
             this.MenuStrip.Size = new System.Drawing.Size(702, 24);
             this.MenuStrip.TabIndex = 0;
             this.MenuStrip.Text = "menuStrip1";
             // 
-            // fileToolStripMenuItem
+            // FileToolStripMenuItem
             // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewPortStripMenuItem,
             this.PortOptionsToolStripMenuItem,
             this.ScanCOMsToolStripMenuItem,
@@ -194,10 +161,10 @@
             this.OpenConfiginiToolStripMenuItem1,
             this.toolStripSeparator1,
             this.ExitToolStripMenuItem});
-            this.fileToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
-            this.fileToolStripMenuItem.Text = "File";
+            this.FileToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FileToolStripMenuItem.Name = "FileToolStripMenuItem";
+            this.FileToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.FileToolStripMenuItem.Text = "File";
             // 
             // NewPortStripMenuItem
             // 
@@ -308,9 +275,9 @@
             this.ExitToolStripMenuItem.Text = "E&xit";
             this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
-            // editToolStripMenuItem
+            // EditToolStripMenuItem
             // 
-            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.EditToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.UndoToolStripMenuItem,
             this.toolStripSeparator8,
             this.CutToolStripMenuItem,
@@ -321,10 +288,10 @@
             this.SelectAllToolStripMenuItem,
             this.toolStripSeparator3,
             this.ClearToolStripMenuItem});
-            this.editToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
-            this.editToolStripMenuItem.Text = "&Edit";
+            this.EditToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.EditToolStripMenuItem.Name = "EditToolStripMenuItem";
+            this.EditToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.EditToolStripMenuItem.Text = "&Edit";
             // 
             // UndoToolStripMenuItem
             // 
@@ -397,15 +364,15 @@
             this.ClearToolStripMenuItem.Text = "C&lear";
             this.ClearToolStripMenuItem.Click += new System.EventHandler(this.ClearToolStripMenuItem_Click);
             // 
-            // formatToolStripMenuItem
+            // FormatToolStripMenuItem
             // 
-            this.formatToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FormatToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.WordWrapToolStripMenuItem,
             this.SettingsToolStripMenuItem});
-            this.formatToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.formatToolStripMenuItem.Name = "formatToolStripMenuItem";
-            this.formatToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.formatToolStripMenuItem.Text = "&Format";
+            this.FormatToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FormatToolStripMenuItem.Name = "FormatToolStripMenuItem";
+            this.FormatToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.FormatToolStripMenuItem.Text = "&Format";
             // 
             // WordWrapToolStripMenuItem
             // 
@@ -425,17 +392,16 @@
             this.SettingsToolStripMenuItem.Text = "&Settings...";
             this.SettingsToolStripMenuItem.Click += new System.EventHandler(this.SettingsToolStripMenuItem_Click);
             // 
-            // viewToolStripMenuItem
+            // ViewToolStripMenuItem
             // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ViewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToggleScrollingToolStripMenuItem,
             this.toolStripSeparator4,
-            this.MacroModeToolStripMenuItem,
-            this.AdvancedModeToolStripMenuItem});
-            this.viewToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
-            this.viewToolStripMenuItem.Text = "&View";
+            this.MacroModeToolStripMenuItem});
+            this.ViewToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem";
+            this.ViewToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.ViewToolStripMenuItem.Text = "&View";
             // 
             // ToggleScrollingToolStripMenuItem
             // 
@@ -455,27 +421,19 @@
             // MacroModeToolStripMenuItem
             // 
             this.MacroModeToolStripMenuItem.Name = "MacroModeToolStripMenuItem";
-            this.MacroModeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
+            this.MacroModeToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F9;
             this.MacroModeToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
-            this.MacroModeToolStripMenuItem.Text = "&Macro Mode";
+            this.MacroModeToolStripMenuItem.Text = "&Macro Buffer";
             this.MacroModeToolStripMenuItem.Click += new System.EventHandler(this.MacroModeToolStripMenuItem_Click);
             // 
-            // AdvancedModeToolStripMenuItem
+            // HelpToolStripMenuItem
             // 
-            this.AdvancedModeToolStripMenuItem.Name = "AdvancedModeToolStripMenuItem";
-            this.AdvancedModeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.A)));
-            this.AdvancedModeToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
-            this.AdvancedModeToolStripMenuItem.Text = "&Advanced Mode";
-            this.AdvancedModeToolStripMenuItem.Click += new System.EventHandler(this.AdvancedModeToolStripMenuItem_Click);
-            // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.HelpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AboutToolStripMenuItem});
-            this.helpToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
-            this.helpToolStripMenuItem.Text = "&Help";
+            this.HelpToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem";
+            this.HelpToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.HelpToolStripMenuItem.Text = "&Help";
             // 
             // AboutToolStripMenuItem
             // 
@@ -484,152 +442,6 @@
             this.AboutToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.AboutToolStripMenuItem.Text = "&About...";
             this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
-            // 
-            // M1ToolStripMenuItem
-            // 
-            this.M1ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.M1SetToolStripMenuItem,
-            this.M1ToolStripTextBox});
-            this.M1ToolStripMenuItem.Enabled = false;
-            this.M1ToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M1ToolStripMenuItem.Margin = new System.Windows.Forms.Padding(268, 0, 0, 0);
-            this.M1ToolStripMenuItem.Name = "M1ToolStripMenuItem";
-            this.M1ToolStripMenuItem.Size = new System.Drawing.Size(31, 20);
-            this.M1ToolStripMenuItem.Text = "M1";
-            this.M1ToolStripMenuItem.Visible = false;
-            this.M1ToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.M1ToolStripMenuItem_MouseDown);
-            // 
-            // M1SetToolStripMenuItem
-            // 
-            this.M1SetToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M1SetToolStripMenuItem.Name = "M1SetToolStripMenuItem";
-            this.M1SetToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.M1SetToolStripMenuItem.Text = "Set";
-            this.M1SetToolStripMenuItem.Click += new System.EventHandler(this.M1SetToolStripMenuItem_Click);
-            // 
-            // M1ToolStripTextBox
-            // 
-            this.M1ToolStripTextBox.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M1ToolStripTextBox.Name = "M1ToolStripTextBox";
-            this.M1ToolStripTextBox.Size = new System.Drawing.Size(100, 22);
-            this.M1ToolStripTextBox.Text = "500";
-            // 
-            // M2ToolStripMenuItem
-            // 
-            this.M2ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.M2SetToolStripMenuItem,
-            this.M2ToolStripTextBox});
-            this.M2ToolStripMenuItem.Enabled = false;
-            this.M2ToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M2ToolStripMenuItem.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.M2ToolStripMenuItem.Name = "M2ToolStripMenuItem";
-            this.M2ToolStripMenuItem.Size = new System.Drawing.Size(31, 20);
-            this.M2ToolStripMenuItem.Text = "M2";
-            this.M2ToolStripMenuItem.Visible = false;
-            this.M2ToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.M2ToolStripMenuItem_MouseDown);
-            // 
-            // M2SetToolStripMenuItem
-            // 
-            this.M2SetToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M2SetToolStripMenuItem.Name = "M2SetToolStripMenuItem";
-            this.M2SetToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.M2SetToolStripMenuItem.Text = "Set";
-            this.M2SetToolStripMenuItem.Click += new System.EventHandler(this.M2SetToolStripMenuItem_Click);
-            // 
-            // M2ToolStripTextBox
-            // 
-            this.M2ToolStripTextBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M2ToolStripTextBox.Name = "M2ToolStripTextBox";
-            this.M2ToolStripTextBox.Size = new System.Drawing.Size(100, 20);
-            this.M2ToolStripTextBox.Text = "500";
-            // 
-            // M3ToolStripMenuItem
-            // 
-            this.M3ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.M3SetToolStripMenuItem,
-            this.M3ToolStripTextBox});
-            this.M3ToolStripMenuItem.Enabled = false;
-            this.M3ToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M3ToolStripMenuItem.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.M3ToolStripMenuItem.Name = "M3ToolStripMenuItem";
-            this.M3ToolStripMenuItem.Size = new System.Drawing.Size(31, 20);
-            this.M3ToolStripMenuItem.Text = "M3";
-            this.M3ToolStripMenuItem.Visible = false;
-            this.M3ToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.M3ToolStripMenuItem_MouseDown);
-            // 
-            // M3SetToolStripMenuItem
-            // 
-            this.M3SetToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M3SetToolStripMenuItem.Name = "M3SetToolStripMenuItem";
-            this.M3SetToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.M3SetToolStripMenuItem.Text = "Set";
-            this.M3SetToolStripMenuItem.Click += new System.EventHandler(this.M3SetToolStripMenuItem_Click);
-            // 
-            // M3ToolStripTextBox
-            // 
-            this.M3ToolStripTextBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M3ToolStripTextBox.Name = "M3ToolStripTextBox";
-            this.M3ToolStripTextBox.Size = new System.Drawing.Size(100, 20);
-            this.M3ToolStripTextBox.Text = "500";
-            // 
-            // M4ToolStripMenuItem
-            // 
-            this.M4ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.M4SetToolStripMenuItem,
-            this.M4ToolStripTextBox});
-            this.M4ToolStripMenuItem.Enabled = false;
-            this.M4ToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M4ToolStripMenuItem.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.M4ToolStripMenuItem.Name = "M4ToolStripMenuItem";
-            this.M4ToolStripMenuItem.Size = new System.Drawing.Size(31, 20);
-            this.M4ToolStripMenuItem.Text = "M4";
-            this.M4ToolStripMenuItem.Visible = false;
-            this.M4ToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.M4ToolStripMenuItem_MouseDown);
-            // 
-            // M4SetToolStripMenuItem
-            // 
-            this.M4SetToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M4SetToolStripMenuItem.Name = "M4SetToolStripMenuItem";
-            this.M4SetToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.M4SetToolStripMenuItem.Text = "Set";
-            this.M4SetToolStripMenuItem.Click += new System.EventHandler(this.M4SetToolStripMenuItem_Click);
-            // 
-            // M4ToolStripTextBox
-            // 
-            this.M4ToolStripTextBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M4ToolStripTextBox.Name = "M4ToolStripTextBox";
-            this.M4ToolStripTextBox.Size = new System.Drawing.Size(100, 20);
-            this.M4ToolStripTextBox.Text = "500";
-            // 
-            // M5ToolStripMenuItem
-            // 
-            this.M5ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.M5SetToolStripMenuItem,
-            this.M5ToolStripTextBox});
-            this.M5ToolStripMenuItem.Enabled = false;
-            this.M5ToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M5ToolStripMenuItem.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.M5ToolStripMenuItem.Name = "M5ToolStripMenuItem";
-            this.M5ToolStripMenuItem.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.M5ToolStripMenuItem.Size = new System.Drawing.Size(31, 20);
-            this.M5ToolStripMenuItem.Text = "M5";
-            this.M5ToolStripMenuItem.Visible = false;
-            this.M5ToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.M5ToolStripMenuItem_MouseDown);
-            // 
-            // M5SetToolStripMenuItem
-            // 
-            this.M5SetToolStripMenuItem.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M5SetToolStripMenuItem.Name = "M5SetToolStripMenuItem";
-            this.M5SetToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.M5SetToolStripMenuItem.Text = "Set";
-            this.M5SetToolStripMenuItem.Click += new System.EventHandler(this.M5SetToolStripMenuItem_Click);
-            // 
-            // M5ToolStripTextBox
-            // 
-            this.M5ToolStripTextBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.M5ToolStripTextBox.Name = "M5ToolStripTextBox";
-            this.M5ToolStripTextBox.Size = new System.Drawing.Size(100, 20);
-            this.M5ToolStripTextBox.Text = "500";
             // 
             // COMBox
             // 
@@ -1140,25 +952,25 @@
             this.SwapButton.UseVisualStyleBackColor = false;
             this.SwapButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SwapButton_MouseDown);
             // 
-            // groupBox1
+            // TransmitGroupBox
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.TransmitGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.BackColor = System.Drawing.Color.Transparent;
-            this.groupBox1.Controls.Add(this.NonePictureBox);
-            this.groupBox1.Controls.Add(this.CRPictureBox);
-            this.groupBox1.Controls.Add(this.LFPictureBox);
-            this.groupBox1.Controls.Add(this.CRLFPictureBox);
-            this.groupBox1.Controls.Add(this.ClearButton);
-            this.groupBox1.Controls.Add(this.ComboBox);
-            this.groupBox1.Controls.Add(this.SendButton);
-            this.groupBox1.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(4, 368);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(434, 38);
-            this.groupBox1.TabIndex = 214;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Transmit                                NONE      CR      LF    CRLF";
+            this.TransmitGroupBox.BackColor = System.Drawing.Color.Transparent;
+            this.TransmitGroupBox.Controls.Add(this.NonePictureBox);
+            this.TransmitGroupBox.Controls.Add(this.CRPictureBox);
+            this.TransmitGroupBox.Controls.Add(this.LFPictureBox);
+            this.TransmitGroupBox.Controls.Add(this.CRLFPictureBox);
+            this.TransmitGroupBox.Controls.Add(this.ClearButton);
+            this.TransmitGroupBox.Controls.Add(this.ComboBox);
+            this.TransmitGroupBox.Controls.Add(this.SendButton);
+            this.TransmitGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TransmitGroupBox.Location = new System.Drawing.Point(4, 368);
+            this.TransmitGroupBox.Name = "TransmitGroupBox";
+            this.TransmitGroupBox.Size = new System.Drawing.Size(434, 38);
+            this.TransmitGroupBox.TabIndex = 214;
+            this.TransmitGroupBox.TabStop = false;
+            this.TransmitGroupBox.Text = "Transmit                                NONE      CR      LF    CRLF";
             // 
             // NonePictureBox
             // 
@@ -1261,123 +1073,13 @@
             this.RichTextBox.TabIndex = 213;
             this.RichTextBox.Text = "";
             // 
-            // MacroSetPanel
-            // 
-            this.MacroSetPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.MacroSetPanel.BackColor = System.Drawing.SystemColors.Control;
-            this.MacroSetPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.MacroSetPanel.Controls.Add(this.MacroSetGroupBox);
-            this.MacroSetPanel.Enabled = false;
-            this.MacroSetPanel.Location = new System.Drawing.Point(400, 261);
-            this.MacroSetPanel.Name = "MacroSetPanel";
-            this.MacroSetPanel.Size = new System.Drawing.Size(280, 86);
-            this.MacroSetPanel.TabIndex = 241;
-            this.MacroSetPanel.Visible = false;
-            // 
-            // MacroSetGroupBox
-            // 
-            this.MacroSetGroupBox.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.MacroSetGroupBox.Controls.Add(this.button1);
-            this.MacroSetGroupBox.Controls.Add(this.ProgButton);
-            this.MacroSetGroupBox.Controls.Add(this.PageLabel);
-            this.MacroSetGroupBox.Controls.Add(this.PageBox);
-            this.MacroSetGroupBox.Controls.Add(this.MacroLabel);
-            this.MacroSetGroupBox.Controls.Add(this.MacroTextLabel);
-            this.MacroSetGroupBox.Controls.Add(this.MacroBox);
-            this.MacroSetGroupBox.Controls.Add(this.MacroTextBox);
-            this.MacroSetGroupBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MacroSetGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.MacroSetGroupBox.Location = new System.Drawing.Point(3, 0);
-            this.MacroSetGroupBox.Name = "MacroSetGroupBox";
-            this.MacroSetGroupBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.MacroSetGroupBox.Size = new System.Drawing.Size(272, 82);
-            this.MacroSetGroupBox.TabIndex = 241;
-            this.MacroSetGroupBox.TabStop = false;
-            this.MacroSetGroupBox.Text = "Macro Set";
-            // 
-            // button1
-            // 
-            this.button1.Font = new System.Drawing.Font("Consolas", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(227, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(42, 22);
-            this.button1.TabIndex = 265;
-            this.button1.Text = "Close";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.CloseButton_Click);
-            // 
-            // ProgButton
-            // 
-            this.ProgButton.Image = ((System.Drawing.Image)(resources.GetObject("ProgButton.Image")));
-            this.ProgButton.Location = new System.Drawing.Point(227, 35);
-            this.ProgButton.Name = "ProgButton";
-            this.ProgButton.Size = new System.Drawing.Size(42, 42);
-            this.ProgButton.TabIndex = 264;
-            this.ProgButton.UseVisualStyleBackColor = true;
-            this.ProgButton.Click += new System.EventHandler(this.AlienButton_Click);
-            // 
-            // PageLabel
-            // 
-            this.PageLabel.AutoSize = true;
-            this.PageLabel.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.PageLabel.Location = new System.Drawing.Point(3, 16);
-            this.PageLabel.Name = "PageLabel";
-            this.PageLabel.Size = new System.Drawing.Size(31, 13);
-            this.PageLabel.TabIndex = 262;
-            this.PageLabel.Text = "Page";
-            // 
-            // PageBox
-            // 
-            this.PageBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PageBox.Location = new System.Drawing.Point(41, 13);
-            this.PageBox.Name = "PageBox";
-            this.PageBox.Size = new System.Drawing.Size(184, 20);
-            this.PageBox.TabIndex = 261;
-            // 
-            // MacroLabel
-            // 
-            this.MacroLabel.AutoSize = true;
-            this.MacroLabel.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MacroLabel.Location = new System.Drawing.Point(3, 59);
-            this.MacroLabel.Name = "MacroLabel";
-            this.MacroLabel.Size = new System.Drawing.Size(37, 13);
-            this.MacroLabel.TabIndex = 259;
-            this.MacroLabel.Text = "Macro";
-            // 
-            // MacroTextLabel
-            // 
-            this.MacroTextLabel.AutoSize = true;
-            this.MacroTextLabel.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MacroTextLabel.Location = new System.Drawing.Point(3, 38);
-            this.MacroTextLabel.Name = "MacroTextLabel";
-            this.MacroTextLabel.Size = new System.Drawing.Size(31, 13);
-            this.MacroTextLabel.TabIndex = 258;
-            this.MacroTextLabel.Text = "Text";
-            // 
-            // MacroBox
-            // 
-            this.MacroBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.MacroBox.Location = new System.Drawing.Point(41, 57);
-            this.MacroBox.Name = "MacroBox";
-            this.MacroBox.Size = new System.Drawing.Size(184, 20);
-            this.MacroBox.TabIndex = 258;
-            // 
-            // MacroTextBox
-            // 
-            this.MacroTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.MacroTextBox.Location = new System.Drawing.Point(41, 35);
-            this.MacroTextBox.Name = "MacroTextBox";
-            this.MacroTextBox.Size = new System.Drawing.Size(184, 20);
-            this.MacroTextBox.TabIndex = 256;
-            // 
             // Main_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(702, 486);
-            this.Controls.Add(this.MacroSetPanel);
             this.Controls.Add(this.COMBox);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.TransmitGroupBox);
             this.Controls.Add(this.RichTextBox);
             this.Controls.Add(this.MenuStrip);
             this.Controls.Add(this.MacrosGroupBox);
@@ -1399,14 +1101,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.SerialPictureBox)).EndInit();
             this.MacrosGroupBox.ResumeLayout(false);
             this.MacrosGroupBox.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
+            this.TransmitGroupBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.NonePictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CRPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.LFPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CRLFPictureBox)).EndInit();
-            this.MacroSetPanel.ResumeLayout(false);
-            this.MacroSetGroupBox.ResumeLayout(false);
-            this.MacroSetGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1415,19 +1114,19 @@
         #endregion
 
         private System.Windows.Forms.MenuStrip MenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem FileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem NewPortStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem EditToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CopyToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem SelectAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem ClearToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ViewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ToggleScrollingToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem HelpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.GroupBox COMBox;
@@ -1459,7 +1158,7 @@
         private System.Windows.Forms.Button MacroButton1;
         private System.Windows.Forms.Button MacroButton3;
         private System.Windows.Forms.Button MacroButton2;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox TransmitGroupBox;
         private System.Windows.Forms.Button ClearButton;
         private System.Windows.Forms.ComboBox ComboBox;
         private System.Windows.Forms.Button SendButton;
@@ -1472,7 +1171,7 @@
         private System.Windows.Forms.ToolStripMenuItem OpenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SaveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SaveAsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem formatToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem FormatToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem WordWrapToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
@@ -1483,33 +1182,7 @@
         private System.Windows.Forms.ToolStripMenuItem ConnectDisconnectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AutoConnectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ScanCOMsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem M1ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem M2ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem M3ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem M4ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem M5ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem M1SetToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem M2SetToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem M3SetToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem M4SetToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem MacroModeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem AdvancedModeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripTextBox M1ToolStripTextBox;
-        private System.Windows.Forms.ToolStripTextBox M2ToolStripTextBox;
-        private System.Windows.Forms.ToolStripTextBox M3ToolStripTextBox;
-        private System.Windows.Forms.ToolStripTextBox M4ToolStripTextBox;
-        private System.Windows.Forms.ToolStripMenuItem M5SetToolStripMenuItem;
-        private System.Windows.Forms.ToolStripTextBox M5ToolStripTextBox;
-        private System.Windows.Forms.Panel MacroSetPanel;
-        private System.Windows.Forms.GroupBox MacroSetGroupBox;
-        private System.Windows.Forms.Label PageLabel;
-        private System.Windows.Forms.TextBox PageBox;
-        private System.Windows.Forms.Label MacroLabel;
-        private System.Windows.Forms.Label MacroTextLabel;
-        private System.Windows.Forms.TextBox MacroBox;
-        private System.Windows.Forms.TextBox MacroTextBox;
-        private System.Windows.Forms.Button ProgButton;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button MinusButton;
         private System.Windows.Forms.Button PlusButton;
         private System.Windows.Forms.RichTextBox RichTextBox;

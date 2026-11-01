@@ -1,240 +1,252 @@
-﻿using System;
+﻿/* Settings_Form.cs -- the settings dialog: window size, display options, font
+   and colors.
+
+   Copyright (C) 2025-2026 NoGraphic999.  This file is part of 4Term, released
+   under the MIT License; see the LICENSE file for details.  */
+
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace _4Term
 {
+    /* The settings dialog.  */
     public partial class Settings_Form : Form
     {
-        /*----------------------------------------------------------
-         * Class Functions
-         *---------------------------------------------------------*/
+        /* Working copies of the colors and font, written to the settings only
+           on Save, so that closing the dialog discards them.  */
 
-        /*----------------------------------------------------------
-        * Constructor
-        *
-        * Initializes the form and populates all UI controls
-        * with current application settings.
-        *---------------------------------------------------------*/
+        private Color BackColorValue;
+        private Color TransmitColorValue;
+        private Color ReceiveColorValue;
+        private string FontName = Settings.Output.Font;
+        private float FontSize = Settings.Output.Size;
+        private string FontStyleName = Settings.Output.FontStyle;
+        private bool FontStrikeout = Settings.Output.Strikeout;
+        private bool FontUnderline = Settings.Output.Underline;
+
+        /* Create the dialog and show the current settings in it.  */
         public Settings_Form()
         {
             InitializeComponent();
+
+            BackColorValue = TupleToColor(Settings.Colors.Back);
+            TransmitColorValue = TupleToColor(Settings.Colors.Transmit);
+            ReceiveColorValue = TupleToColor(Settings.Colors.Receive);
+
             LoadSettings();
         }
 
-        /*----------------------------------------------------------
-        * SaveSettingsButton_Click
-        *
-        * Collects user input from the form and writes updated
-        * values back to the Settings structure before persisting
-        * them to disk.
-        *---------------------------------------------------------*/
+        /* Store the dialog's values in the settings, save them and close the
+           dialog with OK.  */
         private void SaveSettingsButton_Click(object sender, EventArgs e)
         {
-            /* Program */
+            /* Program.  */
             Settings.Program.ShowWelcomeMessage = ShowWelcomeMessageCheckBox.Checked;
 
-            /* Form */
+            /* Form.  */
             if (int.TryParse(FormWidthTextBox.Text, out int width))
-                Settings.Form.Width = width;
+                Settings.Window.Width = width;
             if (int.TryParse(FormHeightTextBox.Text, out int height))
-                Settings.Form.Height = height;
-            Settings.Form.AdvancedMode = AdvancedModeCheckBox.Checked;
+                Settings.Window.Height = height;
 
-            /* RichTextBox */
-            Settings.RichTextBox.WordWrap = WordWrapCheckBox.Checked;
-            Settings.RichTextBox.Scroll = ToggleScrollingCheckBox.Checked;
-            Settings.RichTextBox.HexOutput = HexOutputCheckBox.Checked;
-            Settings.RichTextBox.LocalEcho = LocalEchoCheckBox.Checked;
+            /* RichTextBox.  */
+            Settings.Output.WordWrap = WordWrapCheckBox.Checked;
+            Settings.Output.Scroll = ToggleScrollingCheckBox.Checked;
+            Settings.Output.HexOutput = HexOutputCheckBox.Checked;
+            Settings.Output.LocalEcho = LocalEchoCheckBox.Checked;
+            Settings.Output.Timestamps = TimestampsCheckBox.Checked;
 
-            /* Save changes */
+            /* Log.  */
+            Settings.Log.Enabled = LogCheckBox.Checked && LogPathTextBox.Text.Trim().Length > 0;
+            Settings.Log.Path = LogPathTextBox.Text.Trim();
+
+            /* Font.  */
+            Settings.Output.Font = FontName;
+            Settings.Output.Size = FontSize;
+            Settings.Output.FontStyle = FontStyleName;
+            Settings.Output.Strikeout = FontStrikeout;
+            Settings.Output.Underline = FontUnderline;
+
+            /* Colors.  */
+            Settings.Colors.Back = (BackColorValue.R, BackColorValue.G, BackColorValue.B);
+            Settings.Colors.Transmit = (TransmitColorValue.R, TransmitColorValue.G, TransmitColorValue.B);
+            Settings.Colors.Receive = (ReceiveColorValue.R, ReceiveColorValue.G, ReceiveColorValue.B);
+
+            /* Save changes.  */
             Settings.WriteXml();
 
-            /* Close form */
-            Close();
+            /* Close form, reporting that settings were saved.  */
+            DialogResult = DialogResult.OK;
         }
 
-        /*----------------------------------------------------------
-        * FontButton_Click
-        *
-        * Displays a font selection dialog and applies the chosen
-        * font configuration to both the preview label and the
-        * stored RichTextBox settings.
-        *---------------------------------------------------------*/
+        /* Let the user choose the log file.  Choosing one turns logging
+           on.  */
+        private void LogBrowseButton_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new SaveFileDialog
+            {
+                Title = "Log File",
+                Filter = "Log files (*.log;*.txt)|*.log;*.txt|All files (*.*)|*.*",
+                OverwritePrompt = false,
+                FileName = LogPathTextBox.Text.Trim().Length > 0
+                    ? System.IO.Path.GetFileName(LogPathTextBox.Text.Trim())
+                    : $"4term-{DateTime.Now:yyyyMMdd}.log"
+            })
+            {
+                if (dialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+                LogPathTextBox.Text = dialog.FileName;
+                LogCheckBox.Checked = true;
+            }
+        }
+
+        /* True if the dialog was closed with Highlights, to open the
+           highlight editor.  */
+        public bool HighlightsRequested { get; private set; }
+
+        /* Save the settings, close the dialog and ask for the highlight
+           editor.  */
+        private void HighlightsButton_Click(object sender, EventArgs e)
+        {
+            HighlightsRequested = true;
+            SaveSettingsButton_Click(sender, e);
+        }
+
+        /* Let the user choose the font, and show it in the preview label.  */
         private void FontButton_Click(object sender, EventArgs e)
         {
             using (FontDialog fontDialog = new FontDialog())
             {
-                fontDialog.Font = new Font(
-                new FontFamily(Settings.RichTextBox.Font),
-                Settings.RichTextBox.Size,
-                BuildFontStyle(),
-                GraphicsUnit.Point);
-
-
+                fontDialog.Font = CreatePreviewFont();
                 fontDialog.FontMustExist = true;
                 fontDialog.MinSize = 6;
                 fontDialog.MaxSize = 18;
                 fontDialog.ShowEffects = true;
 
-
                 if (fontDialog.ShowDialog() == DialogResult.OK)
                 {
-                    Settings.RichTextBox.Font = fontDialog.Font.Name;
-                    Settings.RichTextBox.Size = (int)fontDialog.Font.Size;
+                    FontName = fontDialog.Font.Name;
+                    FontSize = fontDialog.Font.SizeInPoints;
 
+                    /* Keep both Bold and Italic ("Bold, Italic" parses back as
+                       flags).  */
+                    FontStyleName = (fontDialog.Font.Style & (FontStyle.Bold | FontStyle.Italic)).ToString();
 
-                    FontStyle fs = fontDialog.Font.Style;
+                    FontStrikeout = fontDialog.Font.Strikeout;
+                    FontUnderline = fontDialog.Font.Underline;
 
-
-                    if (fs.HasFlag(FontStyle.Bold))
-                        Settings.RichTextBox.FontStyle = "Bold";
-                    else if (fs.HasFlag(FontStyle.Italic))
-                        Settings.RichTextBox.FontStyle = "Italic";
-                    else
-                        Settings.RichTextBox.FontStyle = "Regular";
-
-
-                    Settings.RichTextBox.Strikeout = fontDialog.Font.Strikeout;
-                    Settings.RichTextBox.Underline = fontDialog.Font.Underline;
-
-
-                    ExampleLabel.Font = new Font(
-                    Settings.RichTextBox.Font,
-                    Settings.RichTextBox.Size,
-                    BuildFontStyle()
-                    );
+                    ExampleLabel.Font = CreatePreviewFont();
                 }
             }
         }
 
-        /*----------------------------------------------------------
-        * BackgroundColorPictureBox_Click
-        *
-        * Opens color selector for background color and updates
-        * both preview and stored value.
-        *---------------------------------------------------------*/
+        /* Let the user choose the background color.  */
         private void BackgroundColorPictureBox_Click(object sender, EventArgs e)
         {
-            ChangeColor(ref Settings.Color.Back);
-            BackgroundColorPictureBox.BackColor = TupleToColor(Settings.Color.Back);
+            ChangeColor(ref BackColorValue);
+            BackgroundColorPictureBox.BackColor = BackColorValue;
         }
 
-        /*----------------------------------------------------------
-        * TransmitColorButtonPictureBox_Click
-        *
-        * Allows user to define transmit text color.
-        *---------------------------------------------------------*/
+        /* Let the user choose the color of sent data.  */
         private void TransmitColorButtonPictureBox_Click(object sender, EventArgs e)
         {
-            ChangeColor(ref Settings.Color.Transmit);
-            TransmitColorPictureBox.BackColor = TupleToColor(Settings.Color.Transmit);
+            ChangeColor(ref TransmitColorValue);
+            TransmitColorPictureBox.BackColor = TransmitColorValue;
         }
 
-        /*----------------------------------------------------------
-        * ReceiveColorButtonPictureBox_Click
-        *
-        * Allows user to define receive text color.
-        *---------------------------------------------------------*/
+        /* Let the user choose the color of received data.  */
         private void ReceiveColorButtonPictureBox_Click(object sender, EventArgs e)
         {
-            ChangeColor(ref Settings.Color.Receive);
-            ReceiveColorPictureBox.BackColor = TupleToColor(Settings.Color.Receive);
+            ChangeColor(ref ReceiveColorValue);
+            ReceiveColorPictureBox.BackColor = ReceiveColorValue;
         }
 
-        /*----------------------------------------------------------
-        * LoadSettings
-        *
-        * Populates all form controls with values from the
-        * Settings structure during form initialization.
-        *---------------------------------------------------------*/
+        /* Show the current settings in the dialog.  */
         private void LoadSettings()
         {
-            /* Program */
+            /* Program.  */
             ShowWelcomeMessageCheckBox.Checked = Settings.Program.ShowWelcomeMessage;
 
-            /* Form */
-            FormWidthTextBox.Text = Settings.Form.Width.ToString();
-            FormHeightTextBox.Text = Settings.Form.Height.ToString();
-            AdvancedModeCheckBox.Checked = Settings.Form.AdvancedMode;
+            /* Form.  */
+            FormWidthTextBox.Text = Settings.Window.Width.ToString();
+            FormHeightTextBox.Text = Settings.Window.Height.ToString();
 
-            /* RichTextBox */
-            WordWrapCheckBox.Checked = Settings.RichTextBox.WordWrap;
-            ToggleScrollingCheckBox.Checked = Settings.RichTextBox.Scroll;
-            HexOutputCheckBox.Checked = Settings.RichTextBox.HexOutput;
-            LocalEchoCheckBox.Checked = Settings.RichTextBox.LocalEcho;
+            /* RichTextBox.  */
+            WordWrapCheckBox.Checked = Settings.Output.WordWrap;
+            ToggleScrollingCheckBox.Checked = Settings.Output.Scroll;
+            HexOutputCheckBox.Checked = Settings.Output.HexOutput;
+            LocalEchoCheckBox.Checked = Settings.Output.LocalEcho;
+            TimestampsCheckBox.Checked = Settings.Output.Timestamps;
 
-            /* Color */
-            BackgroundColorPictureBox.BackColor = TupleToColor(Settings.Color.Back);
-            TransmitColorPictureBox.BackColor = TupleToColor(Settings.Color.Transmit);
-            ReceiveColorPictureBox.BackColor = TupleToColor(Settings.Color.Receive);
+            /* Log.  */
+            LogCheckBox.Checked = Settings.Log.Enabled;
+            LogPathTextBox.Text = Settings.Log.Path;
 
+            /* Color.  */
+            BackgroundColorPictureBox.BackColor = TupleToColor(Settings.Colors.Back);
+            TransmitColorPictureBox.BackColor = TupleToColor(Settings.Colors.Transmit);
+            ReceiveColorPictureBox.BackColor = TupleToColor(Settings.Colors.Receive);
 
-            ExampleLabel.Font = new Font(
-            Settings.RichTextBox.Font,
-            Settings.RichTextBox.Size,
-            BuildFontStyle()
-            );
+            /* Font preview.  */
+            ExampleLabel.Font = CreatePreviewFont();
         }
 
-        /*----------------------------------------------------------
-        * TupleToColor
-        *
-        * Converts an (R,G,B) tuple into a System.Drawing.Color.
-        *---------------------------------------------------------*/
+        /* Return the color with the red, green and blue values in COLOR.  */
         private static Color TupleToColor((int R, int G, int B) color)
         {
             return Color.FromArgb(color.R, color.G, color.B);
         }
 
-        /*----------------------------------------------------------
-        * ChangeColor
-        *
-        * Opens color picker dialog using current color
-        * and updates the referenced tuple upon confirmation.
-        *---------------------------------------------------------*/
-        private static void ChangeColor(ref (int R, int G, int B) colorTuple)
+        /* Show a color picker starting at COLOR, and store the chosen color in
+           COLOR unless the user cancels.  */
+        private static void ChangeColor(ref Color color)
         {
             using (ColorDialog dialog = new ColorDialog())
             {
-                dialog.Color = Color.FromArgb(colorTuple.R, colorTuple.G, colorTuple.B);
+                dialog.Color = color;
                 if (dialog.ShowDialog() == DialogResult.OK)
-                    colorTuple = (dialog.Color.R, dialog.Color.G, dialog.Color.B);
+                    color = Color.FromArgb(dialog.Color.R, dialog.Color.G, dialog.Color.B);
             }
         }
 
-        /*----------------------------------------------------------
-        * BuildFontStyle
-        *
-        * Constructs a FontStyle object based on stored
-        * RichTextBox configuration values.
-        *---------------------------------------------------------*/
+        /* Return the font style being edited, with underline and strikeout
+           added.  */
         private FontStyle BuildFontStyle()
         {
-            FontStyle style = Enum.TryParse(Settings.RichTextBox.FontStyle, out FontStyle parsed)
+            FontStyle style = Enum.TryParse(FontStyleName, out FontStyle parsed)
             ? parsed
             : FontStyle.Regular;
 
-
-            if (Settings.RichTextBox.Underline)
+            if (FontUnderline)
                 style |= FontStyle.Underline;
 
-
-            if (Settings.RichTextBox.Strikeout)
+            if (FontStrikeout)
                 style |= FontStyle.Strikeout;
-
 
             return style;
         }
 
-        /*----------------------------------------------------------
-         * WndProc
-         * 
-         * Blocks right-clicks on title bar/borders.
-        *---------------------------------------------------------*/
+        /* Return the font being edited.  An unknown family falls back to the
+           system font, and a style the family lacks falls back to Regular.  */
+        private Font CreatePreviewFont()
+        {
+            try
+            {
+                return new Font(FontName, FontSize, BuildFontStyle(), GraphicsUnit.Point);
+            }
+            catch (ArgumentException)
+            {
+                return new Font(FontName, FontSize, FontStyle.Regular, GraphicsUnit.Point);
+            }
+        }
+
+        /* Ignore right-clicks on the title bar and borders (the system menu)
+           and double-clicks on the title bar (maximize); pass every other
+           message BUFFER on.  */
         protected override void WndProc(ref Message buffer)
         {
-            if (buffer.Msg != 0xA3)
+            if (!Main_Form.IsBlockedNonClientMessage(buffer.Msg))
                 base.WndProc(ref buffer);
         }
     }

@@ -92,6 +92,33 @@ All notable changes to **4Term** will be documented in this file.
  - Bolded program name and version in About Form.
  - Added experimental script loading.
 
+## [2.0.0] - 2026-11-01
+
+### Added
+ - Macro buffer: edits the 16 macros of a page at once, shown over the output window (F9 or right-click a macro button), with Save, Revert, tags for changed lines, problems, scripts and risky commands, and a strip with the latest output.
+ - Repeat interval per macro, set in the macro buffer; clicking the macro's button starts and stops the repeat. View > Stop Repeats (Ctrl+Shift+R).
+ - Keyboard shortcuts for the macro buttons: Ctrl+1..8 and Ctrl+Shift+1..8.
+ - Tooltips on the macro buttons with their commands; marks for repeating, script and risky macros.
+ - Hex view with offsets and a text column (Ctrl+Shift+H).
+ - Output log size limit (RichTextBox/MaxLogMB).
+ - High-DPI awareness on Windows.
+ - Timestamps at the start of output lines (View > Timestamps, Ctrl+Shift+T; off by default).
+ - Logging the output to a file as it arrives (File > Log to File, Ctrl+L; File > Log File).
+ - Find in the output (Edit > Find, Ctrl+F; F3 and Shift+F3).
+ - Highlighting: up to 64 rules that color output lines containing a text, or only the text itself, edited over the output like the macro buffer (View > Highlights, F7).
+
+### Changed
+ - Risky commands (MacroBuffer/RiskyCommands) are never repeated.
+ - Script delays must be 0 ms or more.
+ - Code comments follow the GNU style; settings are kept in one table.
+
+### Removed
+ - M1 to M5 repeat menus and Advanced mode (replaced by per-macro repeats).
+ - The old one-macro editor panel and the ExternalTools setting.
+
+### Fixed
+ - Many stability fixes in the serial port handling, settings and scripts.
+
 ## License
 
 This project is licensed under the [MIT License](./LICENSE).

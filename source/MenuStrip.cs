@@ -1,4 +1,10 @@
-﻿using System;
+﻿/* MenuStrip.cs -- handlers for the main window's menus: File, Edit, Format,
+   View and Help.  Part of the Main_Form class.
+
+   Copyright (C) 2025-2026 NoGraphic999.  This file is part of 4Term, released
+   under the MIT License; see the LICENSE file for details.  */
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -13,213 +19,170 @@ namespace _4Term
 {
     public partial class Main_Form : Form
     {
-	    /*----------------------------------------------------------
-         * Class Functions
-         * -------------------------------------------------------*/
-	
-        /*----------------------------------------------------------
-         * MenuStrip - File
-         *---------------------------------------------------------*/
+        /* File menu.  */
 
-        /*----------------------------------------------------------
-         * NewPortStripMenuItem_Click
-         * 
-         * Closes the current serial port if open, clears the RichTextBox,
-         * opens the SerialPortOptionsForm for new configuration,
-         * then opens the serial port with updated settings.
-         *---------------------------------------------------------*/
+        /* Configure a new connection: close the open port after asking, show
+           the serial options dialog, then clear the output and open the port.
+           Do nothing if the user keeps the connection or cancels the
+           dialog.  */
         private void NewPortStripMenuItem_Click(object sender, EventArgs e)
         {
-            /* Check if serial port is open */
-            if (Port.IsOpen)
-            {
-                /* Ask user if they want to close the serial port */
-                DialogResult result = MessageBox.Show("A serial port connection is currently active. Close it to configure a new one?",
-                            "Active Serial Connection",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Question,
-                            MessageBoxDefaultButton.Button1);
+            /* Ask to close an open port; stop if the user keeps it.  */
+            if (!ConfirmClosePort(NewConnectionQuestion, MessageBoxDefaultButton.Button1))
+                return;
 
-                if (result == DialogResult.Yes)
-                    Port.Close();
-                if (result == DialogResult.No)
-                    return;
-            }
+            /* Open the SerialPortOptionsForm dialog; do nothing if
+               cancelled.  */
+            if (!ShowSerialOptions())
+                return;
 
-            /* Clear RichTextBox */
+            /* Clear the output.  */
             RichTextBox.Clear();
 
-            /* Open the SerialPortOptionsForm dialog to configure settings */
-            SerialPortOptionsForm OptionsForm = new SerialPortOptionsForm();
-            OptionsForm.ShowDialog();
-
-            /* Open the serial port */
+            /* Open the serial port.  */
             Port.Open();
         }
 
-        /*----------------------------------------------------------
-         * PortOptionsToolStripMenuItem_Click
-         * 
-         * Opens the SerialPortOptionsForm dialog to configure serial port settings.
-         *---------------------------------------------------------*/
-        private void PortOptionsToolStripMenuItem_Click(object sender, EventArgs e)
+        /* Show the serial options dialog.  */
+        private void PortOptionsToolStripMenuItem_Click(object sender, EventArgs e) => ShowSerialOptions();
+
+        /* Show the serial options dialog.  When the user saves, update the
+           DTR, RTS and line ending indicators; if the port is open, apply DTR
+           and RTS at once and note that the other settings take effect on
+           reconnect.  Return true if the settings were saved.  */
+        private bool ShowSerialOptions()
         {
-            /* Open the SerialPortOptionsForm dialog to configure settings */
-            SerialPortOptionsForm OptionsForm = new SerialPortOptionsForm();
-            OptionsForm.ShowDialog();
+            using (SerialPortOptionsForm OptionsForm = new SerialPortOptionsForm())
+            {
+                if (OptionsForm.ShowDialog() != DialogResult.OK)
+                    return false;
+            }
+
+            UpdateLineIndicators();
+            UpdateAppendButtons();
+
+            if (Port.IsOpen)
+            {
+                Port.SetDtr(Settings.Port.Dtr);
+                Port.SetRts(Settings.Port.Rts);
+                InfoMessage("Port settings saved. Reconnect to apply port, baud rate and framing changes.\n");
+            }
+
+            return true;
         }
 
-        /*----------------------------------------------------------
-         * ScanCOMsToolStripMenuItem_Click
-         * 
-         * Retrieves and displays the list of available COM ports 
-         * in the RichTextBox.
-         *---------------------------------------------------------*/
+        /* List the available COM ports in the output window, with the device
+           description from WMI where available.  */
         private void ScanCOMsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RichTextBox.AppendText("-------------------------------------------------------------------------------------------------\n");
+            const string Separator = "-------------------------------------------------------------------------------------------------\n";
 
-            /* Step 1: Get all available COM port names using the basic .NET API
-             * This returns just the raw port names (e.g., "COM1", "COM3") */
+            AppendColored(Separator, TransmitColor);
+
+            /* Get the port names, such as "COM1" and "COM3".  */
             string[] allPorts = SerialPort.GetPortNames();
 
-            /* Check if any ports were found */
+            /* Check if any ports were found.  */
             if (allPorts.Length == 0)
             {
-                RichTextBox.SelectionColor = Color.Red;
-                RichTextBox.AppendText("No COM ports found\n");
-                RichTextBox.AppendText("-------------------------------------------------------------------------------------------------\n");
+                AppendColored("No COM ports found\n", Color.Red);
+                AppendColored(Separator, TransmitColor);
                 return;
             }
 
-            RichTextBox.AppendText("Detected COM Ports:\n");
+            AppendColored("Detected COM Ports:\n", TransmitColor);
 
-            /* Step 2: Attempt to get detailed port descriptions using WMI
-             * This provides more human-readable information about each port */
+            /* Get the device descriptions from WMI; they are easier to
+               recognize than bare port names.  */
             Dictionary<string, string> portDescriptions = new Dictionary<string, string>();
             try
             {
                 using (var searcher = new ManagementObjectSearcher(
                     "SELECT Caption, DeviceID FROM Win32_PnPEntity WHERE Caption LIKE '%(COM%'"))
                 {
-                    /* Execute query and process results */
+                    /* Execute query and process results.  */
                     foreach (ManagementBaseObject baseObj in searcher.Get())
                     {
                         ManagementObject obj = (ManagementObject)baseObj;
-                        /* Get the device caption (description) and ID */
+                        /* Get the device caption (description) and ID.  */
                         string caption = obj["Caption"]?.ToString();
                         string deviceId = obj["DeviceID"]?.ToString();
 
-                        /* Only process if we have valid data */
+                        /* Skip entries without a caption or ID.  */
                         if (caption != null && deviceId != null)
                         {
-                            /* Extract COM port number from caption */
+                            /* Extract the port name from the caption.  */
                             var match = System.Text.RegularExpressions.Regex.Match(caption, @"\((COM\d+)\)");
                             if (match.Success)
                             {
                                 string comPort = match.Groups[1].Value;
-                                /* Clean up the description by removing the COM port reference */
+                                /* Clean up the description by removing the COM
+                                   port reference.  */
                                 string description = caption.Replace($"({comPort})", "").Trim();
-                                /* Store in dictionary for later lookup */
+                                /* Store in dictionary for later lookup.  */
                                 portDescriptions[comPort] = description;
                             }
                         }
                     }
                 }
             }
-            /* WMI query might fail due to permissions or other issues */
+            /* The WMI query can fail because of permissions or other
+               issues.  */
             catch (Exception ex)
             {
-                RichTextBox.AppendText($"Note: Could not retrieve detailed port info ({ex.Message})\n");
+                AppendColored($"Note: Could not retrieve detailed port info ({ex.Message})\n", TransmitColor);
             }
 
-            /* Step 3: Display all detected ports with their descriptions
-             * Ports are displayed in alphabetical order (COM1, COM2, etc.) */
+            /* Show the ports in alphabetical order, with their
+               descriptions.  */
             foreach (string port in allPorts.OrderBy(p => p))
             {
-                /* Try to get the description from our WMI results */
+                AppendColored($"{port}: ", Color.Tomato);
+
+                /* Use the WMI description if there is one.  */
                 if (portDescriptions.TryGetValue(port, out string description))
-                {
-                    /* Display port with its detailed description in green */
-                    RichTextBox.SelectionColor = Color.Tomato;
-                    RichTextBox.AppendText($"{port}: ");
-                    RichTextBox.SelectionColor = Color.MediumTurquoise;
-                    RichTextBox.AppendText($"{description}\n");
-                }
+                    AppendColored($"{description}\n", Color.MediumTurquoise);
                 else
-                {
-                    /* Fallback display for ports without WMI information in orange */
-                    RichTextBox.SelectionColor = Color.Tomato;
-                    RichTextBox.AppendText($"{port}: [Driver/Device description not available]\n");
-                    RichTextBox.SelectionColor = Color.MediumTurquoise; // Reset to default color
-                }
+                    AppendColored("[Driver/Device description not available]\n", Color.Tomato);
             }
 
-            /* Display summary information */
-            RichTextBox.AppendText($"-------------------------------------------------------------------------------------------------\n");
-            RichTextBox.AppendText($"Total ports detected: ");
-            RichTextBox.SelectionColor = Color.Gold;
-            RichTextBox.AppendText($"{allPorts.Length}\n");
+            /* Show the total.  */
+            AppendColored(Separator, TransmitColor);
+            AppendColored("Total ports detected: ", TransmitColor);
+            AppendColored($"{allPorts.Length}\n", Color.Gold);
         }
 
-        /*----------------------------------------------------------
-         * NewWindowToolStripMenuItem_Click
-         * 
-         * Launches a new instance of the current application.
-         *---------------------------------------------------------*/
-        private void NewWindowToolStripMenuItem_Click(object sender, EventArgs e) => Process.Start(Process.GetCurrentProcess().ProcessName);
+        /* Start another copy of 4Term.  */
+        private void NewWindowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start(Application.ExecutablePath);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage($"Could not open a new window: {ex.Message}\n");
+            }
+        }
 
-        /*----------------------------------------------------------
-         * Separator
-         *---------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * ConnectDisconnectToolStripMenuItem_Click
-         * 
-         * Toggles the connection state by invoking the same logic 
-         * as the Connect button.
-         *---------------------------------------------------------*/
+        /* Connect or disconnect, like the Connect button.  */
         private void ConnectDisconnectToolStripMenuItem_Click(object sender, EventArgs e) => ConnectButton_Click(sender, e);
 
-        /*----------------------------------------------------------
-         * ConnectDisconnectToolStripMenuItem_Click
-         * 
-         * Toggles the Auto Connect feature by invoking the same logic 
-         * as the Auto Connect button.
-         *---------------------------------------------------------*/
+        /* Switch auto-connect on or off, like the AutoConnect button.  */
         private void AutoConnectToolStripMenuItem_Click(object sender, EventArgs e) => AutoConnectButton_Click(sender, e);
 
-        /*----------------------------------------------------------
-         * Separator
-         *---------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * OpenToolStripMenuItem_Click
-         * 
-         * Opens a file dialog to select and load a file into the application.
-         *---------------------------------------------------------*/
+        /* Load a text or log file into the output window, after asking to
+           close the port if it is open.  Files over 10 MB are refused.  */
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             { 
-                /* Check if serial port is open */
-                if (Port.IsOpen)
-                {
-                    /* Ask user if they want to close the serial port */
-                    DialogResult result = MessageBox.Show("A serial port connection is currently active. Close it to proceed with file operations?",
-                                "Active Serial Connection",
-                                MessageBoxButtons.YesNo,
-                                MessageBoxIcon.Question,
-                                MessageBoxDefaultButton.Button2);
-
-                    if (result == DialogResult.Yes)
-                        Port.Close();
-                    if (result == DialogResult.No)
-                        return;
-                }
+                /* Ask to close an open port; stop if the user keeps it.  */
+                if (!ConfirmClosePort(FileQuestion, MessageBoxDefaultButton.Button2))
+                    return;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    /* Set dialog properties */
+                    /* Set up the dialog.  */
                     openFileDialog.Title = "Select File to Open";
                     openFileDialog.Filter = "Log Files (*.log)|*.log|Config Files (*.cfg)|*.cfg|All Files (*.*)|*.*";
                     openFileDialog.FilterIndex = 1;
@@ -227,16 +190,16 @@ namespace _4Term
                     openFileDialog.CheckFileExists = true;
                     openFileDialog.CheckPathExists = true;
 
-                    /* Process file selection */
+                    /* Process file selection.  */
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
                     
-                            /* Step 3: Handle the selected file */
+                            /* Remember the file for File > Save.  */
                             FilePath = openFileDialog.FileName;
 
-                            /* Verify file size before loading */
+                            /* Check the file size before loading.  */
                             FileInfo fileInfo = new FileInfo(FilePath);
-                            /* 10MB limit */
+                            /* Refuse files over 10 MB.  */
                             if (fileInfo.Length > 10 * 1024 * 1024)
                             {
                                 MessageBox.Show(
@@ -247,10 +210,10 @@ namespace _4Term
                                 return;
                             }
 
-                            /* Clear existing content */
+                            /* Clear existing content.  */
                             RichTextBox.Clear();
 
-                            /* Use ReadAllText with explicit encoding handling */
+                            /* Read the file as UTF-8.  */
                             RichTextBox.Text = File.ReadAllText(FilePath, Encoding.UTF8);
                     }
                 }
@@ -264,30 +227,18 @@ namespace _4Term
             }
         }
 
-        /*----------------------------------------------------------
-         * SaveToolStripMenuItem_Click
-         * 
-         * Saves the current document.
-         *---------------------------------------------------------*/
-        private void SaveToolStripMenuItem_Click(object sender, EventArgs e) // added messageboxes, must be changed
+        /* Save the output to the current file, or ask for a file name if there
+           is none.  Ask to close the port first if it is open.
+
+           FIXME: the message boxes here were added as a stopgap and are to be
+           changed.  */
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            /* Check if serial port is open */
-            if (Port.IsOpen)
-            {
-                /* Ask user if they want to close the serial port */
-                DialogResult result = MessageBox.Show("A serial port connection is currently active. Close it to proceed with file operations?",
-                            "Active Serial Connection",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Question,
-                            MessageBoxDefaultButton.Button2);
+            /* Ask to close an open port; stop if the user keeps it.  */
+            if (!ConfirmClosePort(FileQuestion, MessageBoxDefaultButton.Button2))
+                return;
 
-                if (result == DialogResult.Yes)
-                    Port.Close();
-                if (result == DialogResult.No)
-                    return;
-            }
-
-            /* Validate content */
+            /* Refuse to save empty output.  */
             if (string.IsNullOrWhiteSpace(RichTextBox.Text))
             {
                 MessageBox.Show("There is nothing to save.",
@@ -297,11 +248,11 @@ namespace _4Term
                 return;
             }
 
-            /* Save to existing path or prompt for new one */
+            /* Save to the current file, or ask for a new one.  */
             try
             {
                 if (!string.IsNullOrWhiteSpace(FilePath))
-                    File.WriteAllText(FilePath, RichTextBox.Text, Encoding.UTF8);
+                    SaveTextTo(FilePath);
                 else
                     SaveAsToolStripMenuItem_Click(sender, e);
             }
@@ -314,30 +265,15 @@ namespace _4Term
             }
         }
 
-        /*----------------------------------------------------------
-         * SaveAsToolStripMenuItem_Click
-         * 
-         * Saves the current document to a user-specified location.
-         *---------------------------------------------------------*/
+        /* Ask for a file name and save the output there.  Ask to close the
+           port first if it is open.  */
         private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            /* Check if serial port is open */
-            if (Port.IsOpen)
-            {
-                /* Ask user if they want to close the serial port */
-                DialogResult result = MessageBox.Show("A serial port connection is currently active. Close it to proceed with file operations?",
-                            "Active Serial Connection",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Question,
-                            MessageBoxDefaultButton.Button2);
+            /* Ask to close an open port; stop if the user keeps it.  */
+            if (!ConfirmClosePort(FileQuestion, MessageBoxDefaultButton.Button2))
+                return;
 
-                if (result == DialogResult.Yes)
-                    Port.Close();
-                if (result == DialogResult.No)
-                    return;
-            }
-
-            /* Validate content */
+            /* Refuse to save empty output.  */
             if (string.IsNullOrWhiteSpace(RichTextBox.Text))
             {
                 MessageBox.Show("There is nothing to save.",
@@ -347,7 +283,7 @@ namespace _4Term
                 return;
             }
 
-            /* Show save dialog and save file */
+            /* Show save dialog and save file.  */
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
                 saveFileDialog.Filter = "Log Files (*.log)|*.log|Config Files (*.cfg)|*.cfg|Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
@@ -355,7 +291,8 @@ namespace _4Term
                 saveFileDialog.OverwritePrompt = true;
                 saveFileDialog.RestoreDirectory = true;
 
-                /* Set initial directory if available */
+                /* Start in the folder of the current file, if there is
+                   one.  */
                 if (!string.IsNullOrWhiteSpace(FilePath))
                 {
                     saveFileDialog.InitialDirectory = Path.GetDirectoryName(FilePath);
@@ -366,12 +303,14 @@ namespace _4Term
                 {
                     try
                     {
-                        File.WriteAllText(saveFileDialog.FileName, RichTextBox.Text, Encoding.UTF8);
-                        FilePath = saveFileDialog.FileName;
-                        MessageBox.Show("File saved successfully.",
-                                      "Success",
-                                      MessageBoxButtons.OK,
-                                      MessageBoxIcon.Information);
+                        if (SaveTextTo(saveFileDialog.FileName))
+                        {
+                            FilePath = saveFileDialog.FileName;
+                            MessageBox.Show("File saved successfully.",
+                                          "Success",
+                                          MessageBoxButtons.OK,
+                                          MessageBoxIcon.Information);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -384,36 +323,18 @@ namespace _4Term
             }
         }
 
-        /*----------------------------------------------------------
-         * Separator
-         *---------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * OpenConfigXmlToolStripMenuItem_Click
-         * 
-         * Opens and loads the configuration from the config.xml file.
-         *---------------------------------------------------------*/
+        /* Show config.xml in the output window for editing, after asking to
+           close the port if it is open.  Saving it with File > Save checks the
+           XML and reloads the settings.  */
         private void OpenConfigXmlToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                /* Check if serial port is open */
-                if (Port.IsOpen)
-                {
-                    /* Ask user if they want to close the serial port */
-                    DialogResult result = MessageBox.Show("A serial port connection is currently active. Close it to proceed with file operations?",
-                                "Active Serial Connection",
-                                MessageBoxButtons.YesNo,
-                                MessageBoxIcon.Question,
-                                MessageBoxDefaultButton.Button1);
+                /* Ask to close an open port; stop if the user keeps it.  */
+                if (!ConfirmClosePort(FileQuestion, MessageBoxDefaultButton.Button1))
+                    return;
 
-                    if (result == DialogResult.Yes)
-                        Port.Close();
-                    if (result == DialogResult.No)
-                        return;
-                }
-
-                /* Validate config file existence */
+                /* Check that the file exists.  */
                 if (!File.Exists(Xml.FileName))
                 {
                     MessageBox.Show($"Configuration file not found: {Xml.FileName}",
@@ -423,9 +344,9 @@ namespace _4Term
                     return;
                 }
 
-                /* Check file size(limit to 1MB for XML) */
+                /* Refuse files over 1 MB.  */
                 FileInfo configFile = new FileInfo(Xml.FileName);
-                if (configFile.Length > 1024 * 1024)  // 1MB limit
+                if (configFile.Length > 1024 * 1024)
                 {
                     MessageBox.Show("Configuration file exceeds maximum size (1MB)",
                                   "File Too Large",
@@ -434,10 +355,10 @@ namespace _4Term
                     return;
                 }
 
-                /* Clear and load content */
+                /* Clear and load content.  */
                 RichTextBox.Clear();
 
-                /* Read with explicit UTF-8 encoding and error handling */
+                /* Read the file as UTF-8.  */
                 RichTextBox.Text = File.ReadAllText(Xml.FileName, Encoding.UTF8);
                 FilePath = Xml.FileName;
             }
@@ -450,313 +371,163 @@ namespace _4Term
             }
         }
 
-        /*----------------------------------------------------------
-         * Separator
-         *---------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * ExitToolStripMenuItem_Click
-         * 
-         * Cleans buffers, closes the COM port properly, 
-         * and exits the application.
-         *---------------------------------------------------------*/
+        /* Close the main window.  Closing it stops the macro timers and closes
+           the port.  */
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e) => this.Close();
 
-        /*----------------------------------------------------------
-         * MenuStrip - Edit
-         *---------------------------------------------------------*/
+        /* Edit menu.  */
 
-        /*----------------------------------------------------------
-         * UndoToolStripMenuItem_Click
-         * 
-         * Reverts the last change made in the RichTextBox
-         *---------------------------------------------------------*/
+        /* Undo the last change in the output window.  */
         private void UndoToolStripMenuItem_Click(object sender, EventArgs e) => RichTextBox.Undo();
 
-        /*----------------------------------------------------------
-         * Separator
-         *---------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * CutToolStripMenuItem_Click
-         * 
-         * Cuts the selected text from the RichTextBox
-         * and places it on the clipboard
-         *---------------------------------------------------------*/
+        /* Cut the selected text to the clipboard.  */
         private void CutToolStripMenuItem_Click(object sender, EventArgs e) => RichTextBox.Cut();
 
-        /*----------------------------------------------------------
-         * CopyToolStripMenuItem_Click
-         * 
-         * Copies the selected text from the RichTextBox
-         * to the clipboard
-         *---------------------------------------------------------*/
+        /* Copy the selected text to the clipboard.  */
         private void CopyToolStripMenuItem_Click(object sender, EventArgs e) => RichTextBox.Copy();
 
-        /*----------------------------------------------------------
-         * PasteToolStripMenuItem_Click
-         * 
-         * Pastes the clipboard content into the RichTextBox
-         * at the current cursor position
-         *---------------------------------------------------------*/
+        /* Paste the clipboard at the cursor.  */
         private void PasteToolStripMenuItem_Click(object sender, EventArgs e) => RichTextBox.Paste();
             
-        /*----------------------------------------------------------
-         * DeleteToolStripMenuItem_Click
-         * 
-         * Deletes the selected text from the RichTextBox
-         *---------------------------------------------------------*/
+        /* Delete the selected text.  */
         private void DeleteToolStripMenuItem_Click(object sender, EventArgs e) => RichTextBox.SelectedText = "";
 
-        /*----------------------------------------------------------
-         * Separator
-         *---------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * SelectAllToolStripMenuItem_Click
-         * 
-         * Selects all the text in the RichTextBox
-         *---------------------------------------------------------*/
+        /* Select all text in the output window.  */
         private void SelectAllToolStripMenuItem_Click(object sender, EventArgs e) => RichTextBox.SelectAll();
 
-        /*----------------------------------------------------------
-         * Separator
-         *---------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * ClearToolStripMenuItem_Click
-         * 
-         * Clears all text from the RichTextBox
-         *---------------------------------------------------------*/
+        /* Clear the output window.  */
         private void ClearToolStripMenuItem_Click(object sender, EventArgs e) => RichTextBox.Clear();
 
-        /*----------------------------------------------------------
-         * MenuStrip - Format
-         *---------------------------------------------------------*/
+        /* Format menu.  */
 
-        /*----------------------------------------------------------
-         * WordWrapToolStripMenuItem_Click
-         * 
-         * Toggles word wrap in the RichTextBox. Updates the
-         * settings and saves them to XML.
-         *---------------------------------------------------------*/
+        /* Switch word wrap on or off and save the setting.  */
         private void WordWrapToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RichTextBox.WordWrap = !RichTextBox.WordWrap;
-            Settings.RichTextBox.WordWrap = WordWrapToolStripMenuItem.Checked = RichTextBox.WordWrap;
+            Settings.Output.WordWrap = WordWrapToolStripMenuItem.Checked = RichTextBox.WordWrap;
             Settings.WriteXml();
         }
 
-        /*----------------------------------------------------------
-         * SettingsToolStripMenuItem_Click
-         * 
-         * Opens the Settings form as a modal dialog
-         *---------------------------------------------------------*/
+        /* Show the settings dialog and, if the user saved, apply the new
+           colors, font and display options.  */
         private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Settings_Form SettingsForm = new Settings_Form();
-            SettingsForm.ShowDialog();
-            
+            bool highlights;
+            using (Settings_Form SettingsForm = new Settings_Form())
+            {
+                if (SettingsForm.ShowDialog() != DialogResult.OK)
+                    return;
+                highlights = SettingsForm.HighlightsRequested;
+            }
 
-            /* Set Form size*/
-            //Size = new Size(Settings.Form.Width, Settings.Form.Height);
+            /* Apply colors, font, word wrap, scrolling, timestamps and the
+               log.  */
+            ApplyDisplaySettings();
 
-            /* Set Advanced Mode */
-            SetAdvancedMode(Settings.Form.AdvancedMode);
+            /* Apply the background color.  */
+            RichTextBox.BackColor = BackgroundColor;
 
-            /* Initialize color settings */
-            BackgroundColor = Color.FromArgb(Settings.Color.Back.R, Settings.Color.Back.G, Settings.Color.Back.B);
-            TransmitColor = Color.FromArgb(Settings.Color.Transmit.R, Settings.Color.Transmit.G, Settings.Color.Transmit.B);
-            ReceiveColor = Color.FromArgb(Settings.Color.Receive.R, Settings.Color.Receive.G, Settings.Color.Receive.B);
-
-            /* Set RichTextBox font */
-            FontStyle style = Enum.TryParse(Settings.RichTextBox.FontStyle, out FontStyle parsedStyle)
-                ? parsedStyle
-                : FontStyle.Regular;
-
-            if (Settings.RichTextBox.Underline)
-                style |= FontStyle.Underline;
-
-            if (Settings.RichTextBox.Strikeout)
-                style |= FontStyle.Strikeout;
-
-            RichTextBox.Font = new Font(
-                new FontFamily(Settings.RichTextBox.Font),
-                Settings.RichTextBox.Size,
-                style
-            );
-
-            /* Set Word wrap */
-            RichTextBox.WordWrap = WordWrapToolStripMenuItem.Checked = Settings.RichTextBox.WordWrap;
-
-            /* Set Toggle scrolling */
-            ToggleScrollingToolStripMenuItem.Checked = Settings.RichTextBox.Scroll;
-
-            /* Set RichTextBox background color */
-            RichTextBox.BackColor = Color.FromArgb(Settings.Color.Back.R, Settings.Color.Back.G, Settings.Color.Back.B);        
+            if (highlights)
+                SetHighlightPane(true);
         }
 
-        /*----------------------------------------------------------
-         * MenuStrip - View
-         *---------------------------------------------------------*/
+        /* View menu.  */
 
-        /*----------------------------------------------------------
-         * ToggleScrollingToolStripMenuItem_Click
-         * 
-         * Toggles the custom scrolling feature. Updates the setting
-         * and saves it to XML.
-         *---------------------------------------------------------*/
+        /* Switch automatic scrolling to new output on or off and save the
+           setting.  */
         private void ToggleScrollingToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ToggleScrollingToolStripMenuItem.Checked = !ToggleScrollingToolStripMenuItem.Checked;
-            Settings.RichTextBox.Scroll = ToggleScrollingToolStripMenuItem.Checked;
+            Settings.Output.Scroll = ToggleScrollingToolStripMenuItem.Checked;
             Settings.WriteXml();
         }
 
-        /*----------------------------------------------------------
-         * Separator
-         *---------------------------------------------------------*/
+        /* Show or hide the macro buffer below the output window.  */
+        private void MacroModeToolStripMenuItem_Click(object sender, EventArgs e) =>
+            SetMacroBuffer(!MacroBufferVisible);
 
-        /*----------------------------------------------------------
-         * MacroModeToolStripMenuItem_Click
-         * 
-         * Toggles Macro Mode. When enabled, it activates all macro 
-         * editing UI elements and disables the main interface. 
-         * Updates visibility and enable states accordingly.
-         *---------------------------------------------------------*/
-        private void MacroModeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MacroEditingFlag = !MacroEditingFlag;
-            SetMacroSetMode(MacroEditingFlag);
-        }
+        /* Help menu.  */
 
-        /*----------------------------------------------------------
-         * AdvancedModeToolStripMenuItem_Click
-         * 
-         * Toggles the Advanced Mode option when clicked,
-         * updates the UI accordingly, and saves the setting.
-         *---------------------------------------------------------*/
-        private void AdvancedModeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AdvancedModeToolStripMenuItem.Checked = !AdvancedModeToolStripMenuItem.Checked;
-            SetAdvancedMode(AdvancedModeToolStripMenuItem.Checked);
-            Settings.WriteXml();
-        }
-
-        /*----------------------------------------------------------
-         * MenuStrip - Help
-         *---------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * AboutToolStripMenuItem_Click
-         * 
-         * Opens the About form as a modal dialog to display
-         * application information.
-         *---------------------------------------------------------*/
+        /* Show the About dialog.  */
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            About_Form AboutForm = new About_Form();
-            AboutForm.ShowDialog();
+            using (About_Form AboutForm = new About_Form())
+                AboutForm.ShowDialog();
         }
 
-        /*----------------------------------------------------------
-         * MenuStrip - M1
-         *---------------------------------------------------------*/
+        /* Helper functions.  */
 
-        private void M1ToolStripMenuItem_MouseDown(object sender, MouseEventArgs e) => HandleMacroMouseDown(0, M1ToolStripMenuItem, M1ToolStripTextBox, e);
-        private void M1SetToolStripMenuItem_Click(object sender, EventArgs e) => SetMMacro(0, M1ToolStripMenuItem);
+        /* Questions asked before closing an open port.  */
+        private const string NewConnectionQuestion =
+            "A serial port connection is currently active. Close it to configure a new one?";
+        private const string FileQuestion =
+            "A serial port connection is currently active. Close it to proceed with file operations?";
 
-        /*----------------------------------------------------------
-         * MenuStrip - M2
-         *---------------------------------------------------------*/
-        private void M2ToolStripMenuItem_MouseDown(object sender, MouseEventArgs e) => HandleMacroMouseDown(1, M2ToolStripMenuItem, M2ToolStripTextBox, e);
-        private void M2SetToolStripMenuItem_Click(object sender, EventArgs e) => SetMMacro(1, M2ToolStripMenuItem);
-
-        /*----------------------------------------------------------
-         * MenuStrip - M3
-         *---------------------------------------------------------*/
-
-        private void M3ToolStripMenuItem_MouseDown(object sender, MouseEventArgs e) => HandleMacroMouseDown(2, M3ToolStripMenuItem, M3ToolStripTextBox, e);
-        private void M3SetToolStripMenuItem_Click(object sender, EventArgs e) => SetMMacro(2, M3ToolStripMenuItem);
-
-
-        /*----------------------------------------------------------
-         * MenuStrip - M4
-         *---------------------------------------------------------*/
-
-        private void M4ToolStripMenuItem_MouseDown(object sender, MouseEventArgs e) => HandleMacroMouseDown(3, M4ToolStripMenuItem, M4ToolStripTextBox, e);
-        private void M4SetToolStripMenuItem_Click(object sender, EventArgs e) => SetMMacro(3, M4ToolStripMenuItem);
-
-
-        /*----------------------------------------------------------
-         * MenuStrip - M5
-         *---------------------------------------------------------*/
-
-        private void M5ToolStripMenuItem_MouseDown(object sender, MouseEventArgs e) => HandleMacroMouseDown(4, M5ToolStripMenuItem, M5ToolStripTextBox, e);
-        private void M5SetToolStripMenuItem_Click(object sender, EventArgs e) => SetMMacro(4, M5ToolStripMenuItem);
-
-        /*----------------------------------------------------------
-         * Helper Functions
-         *---------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * SetMMacro
-         * 
-         * Activates the macro selection mode for the specified
-         * macro index if no other macros are currently flagged.
-         * Changes the menu item's background color to yellow
-         * and displays an informational message.
-         *---------------------------------------------------------*/
-        private void SetMMacro(int index, ToolStripMenuItem menuItem)
+        /* If the port is open, ask QUESTION, with DEFAULTBUTTON preselected,
+           and close the port if the user answers Yes.  Return false if the
+           user wants to keep the port open.  */
+        private bool ConfirmClosePort(string question, MessageBoxDefaultButton defaultButton)
         {
-            if (MFlag.Where((flag, i) => i != index).All(flag => !flag))
-            {
-                menuItem.BackColor = Color.Yellow;
-                MFlag[index] = true;
-                InfoMessage("Please Select macro\n");
-            }
+            if (!Port.IsOpen)
+                return true;
+
+            DialogResult result = MessageBox.Show(question,
+                                                  "Active Serial Connection",
+                                                  MessageBoxButtons.YesNo,
+                                                  MessageBoxIcon.Question,
+                                                  defaultButton);
+            if (result == DialogResult.Yes)
+                Port.Close();
+
+            return result != DialogResult.No;
         }
 
-        /*----------------------------------------------------------
-         * HandleMacroMouseDown
-         * 
-         * Handles right-click events on macro menu items.
-         * - Checks if the COM port is open and macro is valid.
-         * - Parses interval input and toggles the corresponding
-         *   timer's enabled state and interval.
-         * - Updates the menu item's background color accordingly.
-         * - Displays error messages for invalid inputs or port state.
-         *---------------------------------------------------------*/
-        private void HandleMacroMouseDown(int index, ToolStripMenuItem menuItem, ToolStripTextBox textBox, MouseEventArgs e)
+        /* Write the output text to PATH and return true if the file was
+           written.  When PATH is the configuration file, the text must be
+           valid XML with a <Settings> root, so that terminal output cannot
+           overwrite it, and the settings are reloaded afterwards, so that
+           later saves do not undo the edit.  */
+        private bool SaveTextTo(string path)
         {
-            if (e.Button != MouseButtons.Right)
-                return;
+            bool isConfig = string.Equals(Path.GetFullPath(path), Path.GetFullPath(Xml.FileName),
+                StringComparison.OrdinalIgnoreCase);
 
-            if (!Port.IsOpen || CurrentMRepeat[index] == -1)
+            if (isConfig)
             {
-                RichTextBox.AppendText("COM port is not open.\n");
-                return;
-            }
-
-            if (!MTimer[index].Enabled)
-            {
-                if (int.TryParse(textBox.Text, out int interval) && interval > 0)
+                try
                 {
-                    MTimer[index].Interval = interval;
-                    MTimer[index].Enabled = true;
-                    menuItem.BackColor = Color.Green;
+                    var check = new System.Xml.XmlDocument();
+                    check.LoadXml(RichTextBox.Text);
+                    if (check.DocumentElement == null || check.DocumentElement.Name != "Settings")
+                        throw new System.Xml.XmlException("The root element must be <Settings>.");
                 }
-                else
+                catch (System.Xml.XmlException ex)
                 {
-                    RichTextBox.SelectionColor = Color.IndianRed;
-                    RichTextBox.AppendText("Please enter a valid positive number.\n");
+                    MessageBox.Show("The text is not a valid 4Term configuration, so it was not saved " +
+                                    $"over {Path.GetFileName(path)}.\n\n{ex.Message}\n\nUse Save As to save it as another file.",
+                                    "Not Saved",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Warning);
+                    return false;
                 }
             }
-            else
+
+            File.WriteAllText(path, RichTextBox.Text, Encoding.UTF8);
+
+            if (isConfig)
             {
-                MTimer[index].Enabled = false;
-                menuItem.BackColor = SystemColors.Control;
+                Settings.ReadXml();
+                ApplyDisplaySettings();
+                RichTextBox.BackColor = BackgroundColor;
+                UpdateLineIndicators();
+                UpdateAppendButtons();
+                if (MacroBufferVisible)
+                    MacroBuffer.ShowPage(CurrentPage);
+                LoadGroupContent();
             }
+
+            return true;
         }
+
     }
 }

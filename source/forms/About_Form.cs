@@ -1,26 +1,31 @@
-﻿using System;
+﻿/* About_Form.cs -- the About dialog, showing the name, version, copyright and
+   license from AssemblyInfo.cs.
+
+   Copyright (C) 2025-2026 NoGraphic999.  This file is part of 4Term, released
+   under the MIT License; see the LICENSE file for details.  */
+
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
 namespace _4Term
 {
+    /* The About dialog.  */
     partial class About_Form : Form
     {
-        /*----------------------------------------------------------
-         * Assembly Attribute Accessors
-         * Provides properties to access assembly metadata such as
-         * title, version, description, product, copyright, and company.
-         * -------------------------------------------------------*/
+        /* Properties that read the assembly information: title, version,
+           description, product, copyright and company.  */
         #region Assembly Attribute Accessors
-        /* Generic helper to fetch a specific assembly attribute. */
+        /* Return the assembly attribute of type T, or null if there is
+           none.  */
         private static T GetAssemblyAttribute<T>() where T : Attribute
         {
             return (T)Assembly.GetExecutingAssembly()
                 .GetCustomAttributes(typeof(T), false)
                 .FirstOrDefault();
         }
-        /* Gets the assembly title from AssemblyTitleAttribute. */
+        /* The title from AssemblyTitle, or the file name if there is none.  */
         public string AssemblyTitle
         {
             get
@@ -32,28 +37,30 @@ namespace _4Term
                 return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
             }
         }
-        /* Gets the assembly version as a string. */
+        /* The version as shown to the user: major.minor, with the build
+           number only if it is not 0, such as "2.0" or "2.0.1".  */
+        public static string ShownVersion
+        {
+            get
+            {
+                Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                return version.ToString(version.Build > 0 ? 3 : 2);
+            }
+        }
+
+        /* The full version, such as 2.0.0.0.  */
         public string AssemblyVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();
-        /* Gets the assembly description from AssemblyDescriptionAttribute. */
+        /* The description from AssemblyDescription.  */
         public string AssemblyDescription => GetAssemblyAttribute<AssemblyDescriptionAttribute>()?.Description ?? "";
-        /* Gets the assembly product name from AssemblyProductAttribute. */
+        /* The product name.  */
         public string AssemblyProduct => GetAssemblyAttribute<AssemblyProductAttribute>()?.Product ?? "";
-        /* Gets the assembly copyright from AssemblyCopyrightAttribute. */
+        /* The copyright notice.  */
         public string AssemblyCopyright => GetAssemblyAttribute<AssemblyCopyrightAttribute>()?.Copyright ?? "";
-        /* Gets the assembly company name from AssemblyCompanyAttribute. */
+        /* The company name.  */
         public string AssemblyCompany => GetAssemblyAttribute<AssemblyCompanyAttribute>()?.Company ?? "";
         #endregion
 
-        /*----------------------------------------------------------
-         * Class Functions
-         * -------------------------------------------------------*/
-
-        /*----------------------------------------------------------
-         * About_Form
-         * 
-         * Main application form constructor.
-         * Initializes UI components and sets up core event handlers.
-         *---------------------------------------------------------*/
+        /* Create the dialog and fill in the assembly information.  */
         public About_Form()
         {
             InitializeComponent();
@@ -65,28 +72,22 @@ namespace _4Term
 
             this.Text = $"About {AssemblyTitle}";
             this.labelProductName.Text = AssemblyProduct;
-            this.labelVersion.Text = $"Version {AssemblyVersion.Substring(0, AssemblyVersion.LastIndexOf("."))}";
+            this.labelVersion.Text = $"Version {ShownVersion}";
             this.labelCopyright.Text = AssemblyCopyright;
             this.labelCompanyName.Text = AssemblyCompany;
             this.textBoxDescription.Text = AssemblyDescription;
             this.labelMetadata.Text = license;
         }
 
-        /*----------------------------------------------------------
-         * CloseButton_Click
-         * 
-         * Closes the About form when the Close button is clicked
-         *---------------------------------------------------------*/
+        /* Close the dialog.  */
         private void CloseButton_Click(object sender, EventArgs e) => Close();
 
-        /*----------------------------------------------------------
-        * WndProc
-        * 
-        * Blocks right-clicks on title bar/borders.
-        *---------------------------------------------------------*/
+        /* Ignore right-clicks on the title bar and borders (the system menu)
+           and double-clicks on the title bar (maximize); pass every other
+           message BUFFER on.  */
         protected override void WndProc(ref Message buffer)
         {
-            if (buffer.Msg != 0xA3)
+            if (!Main_Form.IsBlockedNonClientMessage(buffer.Msg))
                 base.WndProc(ref buffer);
         }
     }
